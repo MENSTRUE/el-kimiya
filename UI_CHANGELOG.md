@@ -1,30 +1,31 @@
-# El-Kīmiyā — UI/UX Redesign Checklist
+# El-Kīmiyā — Interaction Redesign V2
 
-## Original audit
+**16 November 2026 — authored source update from Studio Edition V1**
 
-- Original components used very small type (including text at 6–10px) throughout desktop, landing and mobile views.
-- The dashboard had no clear greeting hierarchy or prominent mobile learning actions.
-- Original dark sidebar and numerous navy cards created too much visual density.
-- The main molecule artwork showed an inconsistent depiction of CO₂ (only one C and O atom).
-- Search field and support button lacked functional navigation.
-- Brand assets were already approved and required preservation.
+### Correctness fixes
 
-## Changes applied
+- Removed universal “Exactly right” response; now evaluates chosen quiz answer for three distinct balanced chemical equations.
+- Added editable 1–6 stoichiometry coefficient steppers and live element count verification.
+- Replaced flashcard counter-only interaction with a real changing deck, flip, ratings and completion.
+- Notes are now saved, searched, copied and removed through browser-local storage.
+- Made reader chapter selection, passage actions, larger text, bookmark and flashcard generation functional.
+- Replaced falsely interactive 3D drag label with accurately described 2D molecule models and element data.
+- Replaced scanner fake OCR with actual image selection and **manual** text review.
+- Enabled `.txt/.md` import, local preview, delete, and note creation; no copyrighted text bundled.
+- Separated curated demo tutoring from optional real Firebase AI Logic requests.
+- Added verified provider reporting from Firebase `response.inferenceSource` when configured.
+- Added new progress counters for locally answered quizzes and reviewed flashcards.
+- Added browser hash history/back and cross-platform navigation.
 
-- New type scale, readable interface labels, and distinct academic serif for editorial headings.
-- One cohesive palette that harmonizes with the approved monochrome logo.
-- New dashboard information architecture: welcome → main learning task → books → recommended lessons → supporting study tools.
-- New scan and tutor shortcuts for touch and desktop.
-- Clean H₂O molecule illustration with correct two-hydrogen bent geometry and approximately 104.5° bond angle.
-- New responsive treatments for landing, sidebar, dashboard and cards.
-- Basic real search-to-page behavior (not an external search service).
-- Preserved existing study/demo routes, text selection, quiz state and mock hybrid scenarios.
+### Visual and UX work
 
-## Testing before shipping to judges
+- Preserved user-approved monochrome El-Kīmiyā Arabic flask SVG.
+- Added `src/interactive.css` for measured transitions, focus states, helper panels, mobile steps and cards.
+- Added device-responsive coefficient practice, scan review, notes browser, live Firebase check and accessibility controls.
+- Added opt-in reduced motion and maintained system `prefers-reduced-motion`.
+- Kept original `src/index.css` and Studio V1 `src/editorial.css` intact.
+- Added production service worker for visited app-shell resources, not AI responses.
 
-1. `npm install`, `npm run dev`, `npm run build`.
-2. Check at 360px, 390px, 768px, 1280px and 1440px.
-3. Test all nav destinations, collapse, scan demo, flashcard flip, quiz responses, reader actions and hybrid scenarios.
-4. Test both themes and keyboard focus.
-5. Replace demo statistics and unverified textbook sources with tested content.
-6. Integrate Firebase AI Logic runtime and App Check for hackathon compliance.
+### Status / limitations
+
+Pure TypeScript/TSX syntax, CSS syntax and chemistry demo data tests passed. **Full install/build and end-to-end browser testing remain unverified.** Real Firebase setup, App Check and a supported device are required to demonstrate hybrid inference. No native Android code is included in this web/mobile-responsive package.
