@@ -58,3 +58,8 @@ private/           # Local research index, NEVER commit
 See [docs/HACKATHON_SUBMISSION.md](docs/HACKATHON_SUBMISSION.md). A source ZIP alone is **not** a hackathon submission; the delivered project still needs configured Firebase/App Check, live platform/device validation, hosted Web, public source and 3-minute YouTube demo.
 
 License: Apache 2.0 applies to the authored source only, not third-party books.
+
+
+## V3.2 — Activate real Firebase inference
+
+See [`docs/FIREBASE_LIVE_SETUP.md`](docs/FIREBASE_LIVE_SETUP.md). Use `npm run firebase:check` to validate local Web configuration (not model access), `npm run verify` to run source checks, TypeScript, and build. The Web app supports App Check reCAPTCHA Enterprise or v3; Firebase must still be configured and actual inference verified on compatible devices.
