@@ -1,0 +1,17 @@
+{
+  "title": "El-Kīmiyā — Understand Chemistry. Anywhere.",
+  "description": "An AI-powered chemistry learning platform for students and educators, combining textbook study, interactive practice, and offline-friendly tutoring.",
+  "icons": {
+    "icon": "/favicon.png"
+  },
+  "customScripts": {
+    "headEnd": "<link rel=\"manifest\" href=\"/manifest.webmanifest\"><meta name=\"theme-color\" content=\"#011F43\"><link rel=\"apple-touch-icon\" href=\"/brand/favicon-192.png\">"
+  },
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
