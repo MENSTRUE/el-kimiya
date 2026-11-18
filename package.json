@@ -1,15 +1,18 @@
 {
-  "name": "figma-make-app",
-  "version": "1.0.0",
+  "name": "el-kimiya-hybrid-learning",
+  "version": "3.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "typecheck": "tsc --noEmit",
+    "test:source": "node scripts/check-source.mjs"
   },
   "dependencies": {
+    "firebase": "^13.0.0",
     "lucide-react": "^1.73.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -24,5 +27,8 @@
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
     "vite": "^8.0.5"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.7"
   }
 }
