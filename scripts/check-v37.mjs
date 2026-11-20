@@ -1,0 +1,16 @@
+import {readFileSync, existsSync} from 'node:fs';
+const fs = readFileSync('src/App.tsx','utf8');
+const view = readFileSync('src/components/ChemistryFaithPage.tsx','utf8');
+const css = readFileSync('src/faith-chemistry.css','utf8');
+const must = (p,name) => { if (!p) throw new Error('[FAIL] ' + name); console.log('[PASS] ' + name); };
+must(fs.includes('"faith"') && fs.includes("page==='faith'"), 'Dedicated #faith route');
+must(fs.includes('Kimia & Keimanan') && fs.includes('openFaith'), 'Sidebar, landing and dashboard entrypoints');
+must(fs.includes('onSaveNote={addNote}') && view.includes('onSaveNote('), 'Real Saved Notes integration');
+must(view.includes('سَخَّرَ لَكُمْ') && view.includes('QS. Luqman') && view.includes('31:20'), 'Quran verse and citation');
+must(view.includes('bimasislam.kemenag.go.id/al-quran/luqman'), 'Official Kemenag source link');
+must(view.includes('PARAFRASA') && view.includes('bukan klaim'), 'Religious-scientific boundaries');
+must(view.includes('role="tablist"') && view.includes('role="tabpanel"'), 'Interactive examples');
+must(view.includes('onAskTutor(') && view.includes('onOpenLibrary'), 'Working navigation actions');
+must(css.includes('@media (max-width:680px)') && css.includes('.dark .faith-'), 'Responsive and dark theme styles');
+must(!existsSync('dist/private/chemistry_index.json'), 'No private index in production dist');
+console.log('V3.7 STATIC CHECKS PASS (visual browser verification still required).');

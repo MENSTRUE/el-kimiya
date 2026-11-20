@@ -9,6 +9,7 @@ import { sourceBooks, type SourceBook } from '../data/books';
 import { identifyLocalBook, expectedLocalBookCount } from '../lib/localBookFiles';
 import { contextForPrompt, parsePrivateIndex, searchIndex, type PrivateIndex } from '../lib/bookSearch';
 import '../library-v35.css';
+import { PrivateReadingWorkspace } from './PrivateReadingWorkspace';
 
 type Props = { askAbout: (text: string) => void; notify: (text: string) => void };
 type ReadingMap = Record<string, number>;
@@ -123,6 +124,20 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
     return () => controller.abort();
   }, []);
 
+  // Optional JSON index is served only by the loopback-only Vite dev plugin.
+  useEffect(() => {
+    if (!import.meta.env.DEV || !['localhost', '127.0.0.1'].includes(window.location.hostname)) return;
+    const controller = new AbortController();
+    void fetch('/__elkimiya_local_books__/index.json', {
+      signal:controller.signal, cache:'no-store', credentials:'same-origin',
+    }).then(async response => {
+      if (!response.ok) return null;
+      return parsePrivateIndex(await response.json());
+    }).then(data => {if (data && !controller.signal.aborted) setIndex(data);})
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
+
   useEffect(() => {
     folderInput.current?.setAttribute('webkitdirectory', '');
     folderInput.current?.setAttribute('directory', '');
@@ -131,19 +146,7 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
   useEffect(() => { try { localStorage.setItem(STORE_PAGES, JSON.stringify(pages)); } catch { /* storage unavailable */ } }, [pages]);
   useEffect(() => { try { localStorage.setItem(STORE_FAVORITES, JSON.stringify(favorites)); } catch { /* storage unavailable */ } }, [favorites]);
   useEffect(() => { try { recent ? localStorage.setItem(STORE_RECENT, recent) : localStorage.removeItem(STORE_RECENT); } catch { /* storage unavailable */ } }, [recent]);
-  useEffect(() => {
-    if (!readerId) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setReaderId(null);
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
-      if (event.key === 'ArrowRight') setReaderPage(p => boundPage(p + 1, getBook(readerId)?.pdfPages || 1));
-      if (event.key === 'ArrowLeft') setReaderPage(p => boundPage(p - 1, getBook(readerId)?.pdfPages || 1));
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', onKeyDown); };
-  }, [readerId]);
+
   useEffect(() => { setManualPage(String(readerPage)); }, [readerPage]);
 
   const connectedCount = sourceBooks.filter(book => !!pdfs[book.id]).length;
@@ -235,6 +238,26 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
   const applyManualPage = () => currentBook && setReaderPage(boundPage(Number(manualPage), currentBook.pdfPages));
   const chooseOwnPdf = (id: string) => { setSelectedForUpload(id); selectedInput.current?.click(); };
 
+  // Full-page reading workspace, not a modal layered on top of the library.
+  if (currentBook && currentUrl) {
+    return <PrivateReadingWorkspace
+      book={currentBook}
+      url={currentUrl}
+      page={readerPage}
+      savedPage={pages[currentBook.id] || 1}
+      favorite={favorites.includes(currentBook.id)}
+      privateIndex={index}
+      onPageChange={(next) => {
+        setReaderPage(next);
+        setPages(previous => ({ ...previous, [currentBook.id]: next }));
+      }}
+      onBookmark={savePage}
+      onFavorite={() => toggleFavorite(currentBook.id)}
+      onBack={() => setReaderId(null)}
+      onAsk={askAbout}
+    />;
+  }
+
   return (
     <section className="library35" aria-label="Perpustakaan kimia pribadi El-Kīmiyā">
       <input ref={selectedInput} className="library35-file-input" type="file" accept=".pdf,application/pdf" onChange={event => { uploadSelected(event.target.files?.[0]); event.target.value = ''; }} aria-label="Pilih PDF dari laptop" />
@@ -299,25 +322,18 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
       {message && <div className="library35-toast" role="status"><Check size={16}/>{message}<button onClick={() => setMessage('')} aria-label="Tutup pesan"><X size={15}/></button></div>}
 
       <div className="library35-research">
-        <div><span className="library35-overline">FROM READING TO UNDERSTANDING</span><h3>Ask your books, not just the AI.</h3><p>Punya indeks teks privat? Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.</p><span><ShieldCheck size={16}/> Pencarian di browser · kutipan berbasis halaman PDF</span></div>
+        <div><span className="library35-overline">FROM READING TO UNDERSTANDING</span><h3>Ask your books, not just the AI.</h3><p>Indeks teks PDF tersedia otomatis saat dibuat di laptop. Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.</p><span><ShieldCheck size={16}/> Pencarian di browser · kutipan berbasis halaman PDF</span></div>
         <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? 'Tutup pencarian' : 'Buka pencarian buku'}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
       </div>
       {showResearch && <section className="library35-research-panel" aria-label="Cari isi PDF dengan indeks privat">
-        <div className="library35-research-setup"><div><FileText size={22}/><div><strong>Indeks PDF pribadi</strong><p>Jika belum ada, buat dengan <code>python scripts/build_private_index.py</code>, lalu pilih JSON di bawah.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> Import JSON<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
+        <div className="library35-research-setup"><div><FileText size={22}/><div><strong>Indeks PDF pribadi</strong><p>Indeks otomatis dari folder private tersedia saat server lokal berjalan. Jika belum ada, buat dengan <code>python scripts/build_private_index.py</code>.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> Import JSON<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
         <label className="library35-question">Tanyakan topik dari buku<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder="Misalnya: apa perbedaan ikatan ion dan kovalen?" /></label>
         <p className="library35-index-status">{index ? `${index.pages.length} halaman terindeks · ${researchHits.length} cuplikan relevan` : 'Belum ada indeks pribadi yang dimuat.'}</p>
         {index && <><div className="library35-hits">{researchHits.map(hit => <article key={`${hit.bookId}-${hit.pdfPage}`}><strong>{hit.title} · PDF halaman {hit.pdfPage}</strong><p>{hit.text.slice(0, 340)}{hit.text.length > 340 ? '…' : ''}</p></article>)}</div><label className="library35-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> Saya setuju cuplikan buku terpilih dapat dikirim ke layanan AI cloud untuk menjawab pertanyaan ini.</label><button className="library35-btn library35-btn--dark" disabled={!consent || !researchHits.length} onClick={prepareTutor}><BrainCircuit size={17}/> Siapkan pertanyaan bersumber <ArrowRight size={16}/></button><p className="library35-footnote">Periksa nomor halaman dan kebenaran kutipan pada PDF asli. Sumber dan tafsir bukan hal yang sama.</p></>}
       </section>}
       <p className="library35-rights"><ShieldCheck size={14}/> PDF tetap pribadi. Katalog ini bukan izin untuk mempublikasikan atau menjual buku berhak cipta.</p>
 
-      {currentBook && currentUrl && <div className="library35-reader-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setReaderId(null); }}>
-        <section className="library35-reader" role="dialog" aria-modal="true" aria-label={`Membaca ${currentBook.title}`}>
-          <header className="library35-reader-header"><div><button className="library35-reader-back" onClick={() => setReaderId(null)} aria-label="Kembali ke katalog"><ArrowLeft size={19}/></button><span className="library35-reader-label">EL-KĪMIYĀ / PRIVATE READING ROOM</span><strong title={currentBook.title}>{currentBook.title}</strong></div><button className="library35-reader-close" onClick={() => setReaderId(null)} aria-label="Tutup pembaca PDF"><X size={20}/></button></header>
-          <div className="library35-reader-toolbar"><div className="library35-reader-pages"><button onClick={() => navigatePage(readerPage - 1)} disabled={readerPage <= 1} aria-label="Halaman sebelumnya"><ChevronLeft size={18}/></button><label>Halaman <input aria-label="Nomor halaman PDF" type="number" min={1} max={currentBook.pdfPages} value={manualPage} onChange={event => setManualPage(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') applyManualPage(); }}/><span>/ {currentBook.pdfPages}</span></label><button onClick={applyManualPage} title="Buka nomor halaman" aria-label="Buka nomor halaman"><ArrowRight size={16}/></button><button onClick={() => navigatePage(readerPage + 1)} disabled={readerPage >= currentBook.pdfPages} aria-label="Halaman berikutnya"><ChevronRight size={18}/></button></div><div className="library35-reader-tools"><button className="library35-reader-save" onClick={savePage}><BookmarkCheck size={17}/> Simpan halaman</button><button onClick={() => window.open(`${currentUrl}#page=${readerPage}`, '_blank', 'noopener,noreferrer')} title="Buka PDF di tab baru"><ExternalLink size={17}/><span>Tab baru</span></button><button onClick={() => toggleFavorite(currentBook.id)} title="Tambah atau hapus favorit">{favorites.includes(currentBook.id) ? <BookmarkCheck size={17}/> : <Bookmark size={17}/>}</button></div></div>
-          <div className="library35-reader-body"><aside className="library35-reader-side"><BookCover book={currentBook}/><span className="library35-reader-side-label">{roleLabels[currentBook.role]}</span><p>{currentBook.sourceNote}</p><div className="library35-reader-tags">{currentBook.topics.slice(0, 5).map(topic => <span key={topic}>{topic}</span>)}</div><p className="library35-reader-side-note"><ShieldCheck size={15}/> Materi hanya dibaca dari perangkatmu.</p></aside><div className="library35-reader-canvas"><iframe key={`${currentBook.id}-${readerPage}`} title={`PDF ${currentBook.title}, halaman ${readerPage}`} src={`${currentUrl}#page=${readerPage}&view=FitH`} /><div className="library35-reader-help"><BookMarked size={15}/> Navigasikan halaman dengan kontrol di atas, lalu klik “Simpan halaman” untuk melanjutkan nanti. Guliran dalam PDF tidak tersinkron otomatis.</div></div></div>
-          <footer className="library35-reader-footer"><span><ShieldCheck size={14}/> Private reading · No cloud PDF upload</span><span>Penanda terakhir: halaman {rememberedPage}</span></footer>
-        </section>
-      </div>}
+
     </section>
   );
 }

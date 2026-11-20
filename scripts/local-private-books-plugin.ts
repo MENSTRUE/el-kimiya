@@ -9,7 +9,7 @@
  *
  * IMPORTANT: do not expose the dev server to your LAN or a public host.
  */
-import { createReadStream, existsSync, lstatSync, readdirSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, lstatSync, readdirSync, statSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Plugin } from 'vite';
 
@@ -22,6 +22,7 @@ const MAX_FILE_BYTES = 80_000_000;
 
 export function localPrivateBooksPlugin(): Plugin {
   const dir = path.resolve(process.cwd(), 'private', 'chemistry-books');
+  const privateIndex = path.resolve(process.cwd(), 'private', 'chemistry_index.json');
 
   function locateBooks(): Map<string, { file: string; size: number }> {
     const result = new Map<string, { file: string; size: number }>();
@@ -54,7 +55,7 @@ export function localPrivateBooksPlugin(): Plugin {
         let pathname: string;
         try { pathname = new URL(req.url || '/', 'http://localhost').pathname; }
         catch { return next(); }
-        if (pathname !== PREFIX + '/manifest.json' && !pathname.startsWith(PREFIX + '/pdf/')) return next();
+        if (pathname !== PREFIX + '/manifest.json' && pathname !== PREFIX + '/index.json' && !pathname.startsWith(PREFIX + '/pdf/')) return next();
 
         const hostHeader = String(req.headers.host || '').toLowerCase();
         const allowedHost = /^(localhost|127\.0\.0\.1)(:\d+)?$/.test(hostHeader);
@@ -81,6 +82,18 @@ export function localPrivateBooksPlugin(): Plugin {
           res.statusCode = 200;
           if (req.method === 'HEAD') { res.end(); return; }
           res.end(data); return;
+        }
+        if (pathname === PREFIX + '/index.json') {
+          try {
+            const info = lstatSync(privateIndex);
+            if (!info.isFile() || info.isSymbolicLink() || info.size < 16 || info.size > 15_000_000) throw new Error('Private index unavailable');
+            const bytes = readFileSync(privateIndex);
+            res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            res.setHeader('Content-Length', String(bytes.length));
+            res.statusCode = 200;
+            if (req.method === 'HEAD') { res.end(); return; }
+            res.end(bytes); return;
+          } catch { res.statusCode = 404; res.end('Private index unavailable'); return; }
         }
         const id = pathname.substring((PREFIX + '/pdf/').length);
         if (!BOOK_IDS.some(candidate => candidate === id)) {

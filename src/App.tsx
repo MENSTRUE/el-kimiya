@@ -51,6 +51,7 @@ import {
 } from "lucide-react";
 import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
+import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
 import { getDemoAnswer, starterCards, quizzes, elements, type StudyCard } from "./data/learning";
 import { useStoredState, createNote, type SavedNote, type StudyProgress } from "./lib/storage";
 import { firebaseConfigured, runHybridInference, type InferencePreference } from "./lib/hybrid";
@@ -59,6 +60,7 @@ type Page =
   | "landing"
   | "dashboard"
   | "library"
+  | "faith"
   | "reader"
   | "tutor"
   | "hybrid"
@@ -74,6 +76,7 @@ type Page =
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "library", label: "My Library", icon: Library },
+  { id: "faith", label: "Kimia & Keimanan", icon: Sparkles },
   { id: "tutor", label: "AI Chemistry Tutor", icon: BrainCircuit },
   { id: "explorer", label: "Chemistry Explorer", icon: Atom },
   { id: "practice", label: "Practice Lab", icon: FlaskConical },
@@ -208,6 +211,7 @@ function Header({
     {label:"Atomic structure",meta:"Guided lesson",to:"reader"},
     {label:"Chemical bonding",meta:"Guided lesson",to:"reader"},
     {label:"My textbooks",meta:"Library",to:"library"},
+    {label:"QS. Luqman ayat 20",meta:"Kimia & Keimanan",to:"faith"},
     {label:"Ask AI chemistry tutor",meta:"Assistant · Demo",to:"tutor"},
     {label:"Hybrid AI status",meta:"Inference preferences",to:"hybrid"},
     {label:"Practice equations",meta:"Practice lab",to:"practice"},
@@ -219,6 +223,7 @@ function Header({
   const openSearchResult = (to:Page) => { setPage(to); setSearchTerm(""); };
   const titles: Partial<Record<Page, string>> = {
     library: "My chemistry library",
+    faith: "Kimia & Keimanan",
     tutor: "AI chemistry tutor",
     hybrid: "Hybrid AI engine",
     practice: "Practice lab",
@@ -291,7 +296,7 @@ function Header({
   );
 }
 
-function LandingPage({ enterApp }: { enterApp: () => void }) {
+function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith: () => void }) {
   return (
     <main className="landing-page">
       <header className="landing-nav">
@@ -303,6 +308,7 @@ function LandingPage({ enterApp }: { enterApp: () => void }) {
           <a href="#experience">How it works</a>
           <a href="#hybrid">Hybrid AI</a>
           <a href="#tools">Learning tools</a>
+          <button className="landing-faith-link" onClick={openFaith}>Sains & Iman</button>
         </nav>
         <div>
           <button className="landing-signin" onClick={enterApp}>
@@ -431,6 +437,11 @@ function LandingPage({ enterApp }: { enterApp: () => void }) {
         </div>
       </section>
 
+      <section className="faith-landing-teaser" aria-label="Kimia dan keimanan">
+        <div><span className="faith-eyebrow">TAFAKKUR · QS. LUQMAN 31:20</span><h2>Belajar kimia. Menemukan manfaat. Mensyukuri ciptaan.</h2><p>Temukan bagaimana ilmu kimia dapat mengajak kita berpikir kritis, berbuat manfaat, dan menjaga lingkungan—dengan ayat serta sumber yang jelas.</p></div>
+        <button onClick={openFaith}>Jelajahi Kimia & Keimanan <ArrowRight size={17}/></button>
+      </section>
+
       <section className="landing-hybrid" id="hybrid">
         <div>
           <Badge variant="gold">Hackathon signature experience</Badge>
@@ -523,6 +534,11 @@ function Dashboard({ setPage }: { setPage: (page: Page) => void }) {
             </button>
           </div>
           <BondIllustration />
+        </article>
+
+        <article className="faith-teaser" aria-label="Kimia dan keimanan">
+          <div><span className="faith-eyebrow"><Sparkles size={14}/> TAFAKKUR · QS. LUQMAN [31]: 20</span><h3>Mengapa kita mempelajari ilmu kimia?</h3><p>Kenali manfaat ilmu, renungkan nikmat Allah, dan pelajari cara menjaga alam secara bertanggung jawab.</p></div>
+          <button onClick={() => setPage("faith")}>Jelajahi hikmah <ArrowRight size={16}/></button>
         </article>
 
         <div className="section-heading compact-heading">
@@ -721,6 +737,10 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
         </div>
         <label className="primary-button upload-text-label"><Upload size={17}/> Upload .txt / .md <input type="file" accept=".txt,.md,text/plain,text/markdown" onChange={e=>{void handleUpload(e.target.files?.[0]);e.target.value=''}}/></label>
       </section>
+      <article className="faith-teaser" aria-label="Landasan belajar kimia">
+        <div><span className="faith-eyebrow"><Sparkles size={14}/> SAINS & KEIMANAN</span><h3>Ilmu kimia sebagai jalan untuk memberi manfaat.</h3><p>QS. Luqman: 20 mengajak kita memperhatikan nikmat Allah di langit dan bumi.</p></div>
+        <button onClick={() => setPage("faith")}>Baca refleksi <ArrowRight size={16}/></button>
+      </article>
       <BookResearchPanel askAbout={askAbout} notify={notify}/>
       <div className="toolbar">
         <label>
@@ -1423,7 +1443,7 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 }
 
 export default function App() {
-  const validPages: Page[] = ['landing','dashboard','library','reader','tutor','hybrid','practice','explorer','flashcards','progress','notes','settings','scan','profile'];
+  const validPages: Page[] = ['landing','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','flashcards','progress','notes','settings','scan','profile'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const [page,setCurrentPage] = useState<Page>(hashPage);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
@@ -1447,9 +1467,10 @@ export default function App() {
   const askAbout=(prompt:string)=>{setInitialPrompt(prompt);setPage('tutor')};
   const onAnswer=(correct:boolean)=>setStatistics(prev=>({ ...prev,answered:prev.answered+1,correct:prev.correct+(correct?1:0) }));
   const content=(() => {
-    if(page==='landing')return <LandingPage enterApp={()=>setPage('dashboard')}/>;
+    if(page==='landing')return <LandingPage enterApp={()=>setPage('dashboard')} openFaith={()=>setPage('faith')}/>;
     if(page==='dashboard')return <Dashboard setPage={setPage}/>;
     if(page==='library')return <LibraryPage setPage={setPage} addNote={addNote} notify={notify} askAbout={askAbout}/>;
+    if(page==='faith')return <ChemistryFaithPage onBack={()=>setPage('dashboard')} onOpenLibrary={()=>setPage('library')} onAskTutor={askAbout} onSaveNote={addNote}/>;
     if(page==='reader')return <ReaderPage setPage={setPage} addNote={addNote} addCard={addCard} dark={dark} notify={notify}/>;
     if(page==='tutor')return <TutorPage setPage={setPage} addNote={addNote} addCard={addCard} preference={preference} initialPrompt={initialPrompt} clearInitialPrompt={()=>setInitialPrompt('')}/>;
     if(page==='hybrid')return <HybridPage offline={offline} setOffline={setOffline} preference={preference} setPreference={setPreference}/>;

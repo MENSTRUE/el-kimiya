@@ -92,7 +92,7 @@ def main() -> None:
     args.output.write_text(json.dumps(payload,ensure_ascii=False,separators=(",",":")), encoding="utf-8")
     print(f"\nDONE: {len(pages)} indexed PDF pages -> {args.output.resolve()}")
     print("PRIVATE CONTENT: NEVER commit this JSON or the original PDFs to a public repository.")
-    print("In El-Kīmiyā > My Library > Import private JSON index, select the created JSON file.")
+    print("Restart local Vite. My Library will auto-load the private JSON index on localhost.")
 
 if __name__ == '__main__':
     main()
