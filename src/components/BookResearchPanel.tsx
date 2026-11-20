@@ -9,6 +9,7 @@ import { sourceBooks, type SourceBook } from '../data/books';
 import { identifyLocalBook, expectedLocalBookCount } from '../lib/localBookFiles';
 import { contextForPrompt, parsePrivateIndex, searchIndex, type PrivateIndex } from '../lib/bookSearch';
 import '../library-v35.css';
+import { t } from '../lib/language';
 import { PrivateReadingWorkspace } from './PrivateReadingWorkspace';
 
 type Props = { askAbout: (text: string) => void; notify: (text: string) => void };
@@ -60,10 +61,10 @@ function BookCover({ book, large = false }: { book: SourceBook; large?: boolean 
   return (
     <span className={`library35-cover library35-cover--${palettes[book.id] || 'ocean'} ${large ? 'library35-cover--large' : ''}`} aria-hidden="true">
       <span className="library35-cover-spine" />
-      <span className="library35-cover-top">EL-KĪMIYĀ <span>·</span> REFERENCE LIBRARY</span>
+      <span className="library35-cover-top">EL-KĪMIYĀ <span>·</span> {t("REFERENCE LIBRARY")}</span>
       <span className="library35-cover-emblem"><Sparkles size={large ? 26 : 19} strokeWidth={1.5} /></span>
       <span className="library35-cover-name">{book.title}</span>
-      <span className="library35-cover-foot">CHEMISTRY <span>✦</span> KNOWLEDGE</span>
+      <span className="library35-cover-foot">{t("CHEMISTRY")} <span>✦</span> {t("KNOWLEDGE")}</span>
     </span>
   );
 }
@@ -264,46 +265,46 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
       <input ref={folderInput} className="library35-file-input" type="file" multiple onChange={event => { connectFolder(event.target.files); event.target.value = ''; }} aria-label="Pilih folder PDF pribadi" />
 
       <div className="library35-heading">
-        <div><span className="library35-overline"><span /> THE KNOWLEDGE COLLECTION · EL-KĪMIYĀ</span><h2>Your chemistry, <em>beautifully organized.</em></h2><p>Delapan referensi yang kamu miliki, satu ruang belajar untuk menemukan dan memahami kimia.</p></div>
-        <span className="library35-private"><ShieldCheck size={16} /> Personal & private</span>
+        <div><span className="library35-overline"><span /> {t("THE KNOWLEDGE COLLECTION · EL-KĪMIYĀ")}</span><h2>{t("Your chemistry,")} <em>{t("beautifully organized.")}</em></h2><p>{t("Delapan referensi yang kamu miliki, satu ruang belajar untuk menemukan dan memahami kimia.")}</p></div>
+        <span className="library35-private"><ShieldCheck size={16} /> {t("Personal & private")}</span>
       </div>
 
       <div className="library35-hero">
         <div className="library35-hero-copy">
-          <div className="library35-pill"><Sparkles size={14} /> YOUR PRIVATE READING STUDIO</div>
+          <div className="library35-pill"><Sparkles size={14} /> {t("YOUR PRIVATE READING STUDIO")}</div>
           <h3>{lastBook ? 'Continue where curiosity took you.' : 'A new chapter of discovery awaits.'}</h3>
-          <p>Eksplorasi kimia dengan buku sungguhan. Buka, tandai halaman, dan temukan referensi tanpa meninggalkan El-Kīmiyā.</p>
+          <p>{t("Eksplorasi kimia dengan buku sungguhan. Buka, tandai halaman, dan temukan referensi tanpa meninggalkan El-Kīmiyā.")}</p>
           <div className="library35-hero-actions">
             <button className="library35-btn library35-btn--light" onClick={() => featured && openBook(featured.id)} disabled={!featured || !pdfs[featured.id]}><BookOpen size={17} /> {lastBook ? 'Lanjutkan membaca' : 'Mulai membaca'} <ArrowRight size={16} /></button>
             <span className="library35-hero-hint">{lastBook ? `${lastBook.title} · halaman tersimpan ${pages[lastBook.id] || 1}` : 'Pilih buku untuk mulai membaca'}</span>
           </div>
           <div className="library35-metrics">
-            <div><strong>{connectedCount}<small>/{expectedLocalBookCount}</small></strong><span>Buku terhubung</span></div>
-            <div><strong>{Object.keys(pages).length}</strong><span>Progres tersimpan</span></div>
-            <div><strong>{favorites.length}</strong><span>Buku favorit</span></div>
+            <div><strong>{connectedCount}<small>/{expectedLocalBookCount}</small></strong><span>{t("Buku terhubung")}</span></div>
+            <div><strong>{Object.keys(pages).length}</strong><span>{t("Progres tersimpan")}</span></div>
+            <div><strong>{favorites.length}</strong><span>{t("Buku favorit")}</span></div>
           </div>
         </div>
-        {featured && <div className="library35-hero-art"><div className="library35-hero-orbit"/><div className="library35-hero-book"><BookCover book={featured} large /></div><span className="library35-hero-annotation">CURATED READING <span>01 / 08</span></span></div>}
+        {featured && <div className="library35-hero-art"><div className="library35-hero-orbit"/><div className="library35-hero-book"><BookCover book={featured} large /></div><span className="library35-hero-annotation">{t("CURATED READING")} <span>01 / 08</span></span></div>}
       </div>
 
       <div className="library35-connect" role="status">
         <span className={`library35-connect-icon ${connectedCount ? 'online' : ''}`}>{connectedCount ? <Check size={19} /> : <FolderOpen size={19} />}</span>
         <div><strong>{autoStatus === 'checking' ? 'Sedang mencari PDF pribadi…' : connectedCount ? `${connectedCount} PDF terhubung · Siap dibaca` : 'Hubungkan buku dari laptop'}</strong><p>{autoStatus === 'connected' ? 'PDF tersedia hanya dari server pengembangan lokal. Tidak masuk ke website publik.' : 'Jika belum otomatis, pilih folder private/chemistry-books milikmu. Buku tidak dikirim ke cloud.'}</p></div>
-        <button className="library35-connect-button" onClick={() => folderInput.current?.click()}><FolderOpen size={16}/> Pilih folder <ChevronDown size={15}/></button>
+        <button className="library35-connect-button" onClick={() => folderInput.current?.click()}><FolderOpen size={16}/> {t("Pilih folder")} <ChevronDown size={15}/></button>
       </div>
 
-      <div className="library35-discover-head"><div><span className="library35-overline">EXPLORE THE SHELVES</span><h3>Find something worth reading.</h3></div><span>{visibleBooks.length} dari {sourceBooks.length} referensi</span></div>
+      <div className="library35-discover-head"><div><span className="library35-overline">{t("EXPLORE THE SHELVES")}</span><h3>{t("Find something worth reading.")}</h3></div><span>{visibleBooks.length} {t("dari")} {sourceBooks.length} {t("referensi")}</span></div>
       <div className="library35-toolbar">
-        <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari judul, penulis, atau topik kimia..." aria-label="Cari buku" />{query && <button aria-label="Hapus pencarian" onClick={() => setQuery('')}><X size={16}/></button>}</label>
-        <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label="Urutkan buku" value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">Urutan katalog</option><option value="title">Judul A–Z</option><option value="length">Halaman paling sedikit</option></select></label>
+        <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari judul, penulis, atau topik kimia..." aria-label="Cari buku" />{query && <button aria-label={t("Hapus pencarian")} onClick={() => setQuery('')}><X size={16}/></button>}</label>
+        <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label="Urutkan buku" value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">{t("Urutan katalog")}</option><option value="title">{t("Judul A–Z")}</option><option value="length">{t("Halaman paling sedikit")}</option></select></label>
       </div>
       <div className="library35-filters" role="group" aria-label="Filter kategori buku">
-        {['All', ...Object.keys(roleLabels)].map(role => <button key={role} className={category === role ? 'active' : ''} onClick={() => setCategory(role)}>{role === 'All' ? 'Semua buku' : roleLabels[role as SourceBook['role']]}</button>)}
+        {['All', ...Object.keys(roleLabels)].map(role => <button key={role} className={category === role ? 'active' : ''} onClick={() => setCategory(role)}>{role === 'All' ? t('Semua buku') : t(roleLabels[role as SourceBook['role']])}</button>)}
       </div>
       <div className="library35-shelf-tabs" role="group" aria-label="Filter koleksi">
-        <button className={shelfMode === 'all' ? 'active' : ''} onClick={() => setShelfMode('all')}><LibraryBig size={15}/> Koleksi</button>
-        <button className={shelfMode === 'continue' ? 'active' : ''} onClick={() => setShelfMode('continue')}><Clock3 size={15}/> Sedang dibaca</button>
-        <button className={shelfMode === 'saved' ? 'active' : ''} onClick={() => setShelfMode('saved')}><Heart size={15}/> Favorit</button>
+        <button className={shelfMode === 'all' ? 'active' : ''} onClick={() => setShelfMode('all')}><LibraryBig size={15}/> {t("Koleksi")}</button>
+        <button className={shelfMode === 'continue' ? 'active' : ''} onClick={() => setShelfMode('continue')}><Clock3 size={15}/> {t("Sedang dibaca")}</button>
+        <button className={shelfMode === 'saved' ? 'active' : ''} onClick={() => setShelfMode('saved')}><Heart size={15}/> {t("Favorit")}</button>
       </div>
 
       {visibleBooks.length ? <div className="library35-grid">{visibleBooks.map((book, i) => {
@@ -313,25 +314,25 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
         return <article key={book.id} className="library35-card" style={{ animationDelay: `${Math.min(i, 7) * 45}ms` }}>
           <button className="library35-card-main" onClick={() => openBook(book.id)} title={ready ? 'Baca buku ini' : 'Hubungkan PDF untuk membaca'}>
             <span className="library35-card-cover"><BookCover book={book}/></span>
-            <span className="library35-card-body"><span className="library35-card-role">{roleLabels[book.role]}</span><strong className="library35-card-title">{book.title}</strong><span className="library35-card-author">{book.author}</span><span className="library35-card-meta"><span><BookOpen size={13}/> {book.pdfPages} halaman</span><span className={ready ? 'ready' : 'pending'}>{ready ? '● Siap dibaca' : '○ PDF belum ada'}</span></span>{remembered && <span className="library35-card-progress"><span><span style={{ width: `${Math.max(4, remembered / book.pdfPages * 100)}%` }} /></span><small>Penanda: halaman {remembered}</small></span>}<span className="library35-card-cta">{ready ? (remembered ? 'Lanjutkan membaca' : 'Baca sekarang') : 'Hubungkan PDF'} <ArrowRight size={16}/></span></span>
+            <span className="library35-card-body"><span className="library35-card-role">{t(roleLabels[book.role])}</span><strong className="library35-card-title">{book.title}</strong><span className="library35-card-author">{book.author}</span><span className="library35-card-meta"><span><BookOpen size={13}/> {book.pdfPages} {t("halaman")}</span><span className={ready ? 'ready' : 'pending'}>{t(ready ? '● Siap dibaca' : '○ PDF belum ada')}</span></span>{remembered && <span className="library35-card-progress"><span><span style={{ width: `${Math.max(4, remembered / book.pdfPages * 100)}%` }} /></span><small>{t("Penanda: halaman")} {remembered}</small></span>}<span className="library35-card-cta">{t(ready ? (remembered ? 'Lanjutkan membaca' : 'Baca sekarang') : 'Hubungkan PDF')} <ArrowRight size={16}/></span></span>
           </button>
           <button className={`library35-card-favorite ${isFavorite ? 'active' : ''}`} onClick={() => toggleFavorite(book.id)} aria-label={isFavorite ? `Hapus ${book.title} dari favorit` : `Tambahkan ${book.title} ke favorit`} title={isFavorite ? 'Hapus favorit' : 'Tambah favorit'}><Heart size={17} fill={isFavorite ? 'currentColor' : 'none'}/></button>
-          {!ready && <button className="library35-card-attach" onClick={() => chooseOwnPdf(book.id)}><Upload size={13}/> Buka PDF sendiri</button>}
+          {!ready && <button className="library35-card-attach" onClick={() => chooseOwnPdf(book.id)}><Upload size={13}/> {t("Buka PDF sendiri")}</button>}
         </article>;
-      })}</div> : <div className="library35-empty"><FileSearch size={34}/><h4>Belum ada buku yang cocok</h4><p>Coba kata kunci lain, ubah filter, atau tambahkan favorit untuk mengisi rak ini.</p><button onClick={() => { setQuery(''); setCategory('All'); setShelfMode('all'); }}>Tampilkan semua buku</button></div>}
+      })}</div> : <div className="library35-empty"><FileSearch size={34}/><h4>{t("Belum ada buku yang cocok")}</h4><p>{t("Coba kata kunci lain, ubah filter, atau tambahkan favorit untuk mengisi rak ini.")}</p><button onClick={() => { setQuery(''); setCategory('All'); setShelfMode('all'); }}>{t("Tampilkan semua buku")}</button></div>}
       {message && <div className="library35-toast" role="status"><Check size={16}/>{message}<button onClick={() => setMessage('')} aria-label="Tutup pesan"><X size={15}/></button></div>}
 
       <div className="library35-research">
-        <div><span className="library35-overline">FROM READING TO UNDERSTANDING</span><h3>Ask your books, not just the AI.</h3><p>Indeks teks PDF tersedia otomatis saat dibuat di laptop. Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.</p><span><ShieldCheck size={16}/> Pencarian di browser · kutipan berbasis halaman PDF</span></div>
+        <div><span className="library35-overline">{t("FROM READING TO UNDERSTANDING")}</span><h3>{t("Ask your books, not just the AI.")}</h3><p>{t("Indeks teks PDF tersedia otomatis saat dibuat di laptop. Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.")}</p><span><ShieldCheck size={16}/> {t("Pencarian di browser · kutipan berbasis halaman PDF")}</span></div>
         <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? 'Tutup pencarian' : 'Buka pencarian buku'}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
       </div>
       {showResearch && <section className="library35-research-panel" aria-label="Cari isi PDF dengan indeks privat">
-        <div className="library35-research-setup"><div><FileText size={22}/><div><strong>Indeks PDF pribadi</strong><p>Indeks otomatis dari folder private tersedia saat server lokal berjalan. Jika belum ada, buat dengan <code>python scripts/build_private_index.py</code>.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> Import JSON<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
-        <label className="library35-question">Tanyakan topik dari buku<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder="Misalnya: apa perbedaan ikatan ion dan kovalen?" /></label>
+        <div className="library35-research-setup"><div><FileText size={22}/><div><strong>{t("Indeks PDF pribadi")}</strong><p>{t("Indeks otomatis dari folder private tersedia saat server lokal berjalan. Jika belum ada, buat dengan")} <code>python scripts/build_private_index.py</code>.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> {t("Import JSON")}<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
+        <label className="library35-question">{t("Tanyakan topik dari buku")}<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder="Misalnya: apa perbedaan ikatan ion dan kovalen?" /></label>
         <p className="library35-index-status">{index ? `${index.pages.length} halaman terindeks · ${researchHits.length} cuplikan relevan` : 'Belum ada indeks pribadi yang dimuat.'}</p>
-        {index && <><div className="library35-hits">{researchHits.map(hit => <article key={`${hit.bookId}-${hit.pdfPage}`}><strong>{hit.title} · PDF halaman {hit.pdfPage}</strong><p>{hit.text.slice(0, 340)}{hit.text.length > 340 ? '…' : ''}</p></article>)}</div><label className="library35-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> Saya setuju cuplikan buku terpilih dapat dikirim ke layanan AI cloud untuk menjawab pertanyaan ini.</label><button className="library35-btn library35-btn--dark" disabled={!consent || !researchHits.length} onClick={prepareTutor}><BrainCircuit size={17}/> Siapkan pertanyaan bersumber <ArrowRight size={16}/></button><p className="library35-footnote">Periksa nomor halaman dan kebenaran kutipan pada PDF asli. Sumber dan tafsir bukan hal yang sama.</p></>}
+        {index && <><div className="library35-hits">{researchHits.map(hit => <article key={`${hit.bookId}-${hit.pdfPage}`}><strong>{hit.title} {t("· PDF halaman")} {hit.pdfPage}</strong><p>{hit.text.slice(0, 340)}{hit.text.length > 340 ? '…' : ''}</p></article>)}</div><label className="library35-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> {t("Saya setuju cuplikan buku terpilih dapat dikirim ke layanan AI cloud untuk menjawab pertanyaan ini.")}</label><button className="library35-btn library35-btn--dark" disabled={!consent || !researchHits.length} onClick={prepareTutor}><BrainCircuit size={17}/> {t("Siapkan pertanyaan bersumber")} <ArrowRight size={16}/></button><p className="library35-footnote">{t("Periksa nomor halaman dan kebenaran kutipan pada PDF asli. Sumber dan tafsir bukan hal yang sama.")}</p></>}
       </section>}
-      <p className="library35-rights"><ShieldCheck size={14}/> PDF tetap pribadi. Katalog ini bukan izin untuk mempublikasikan atau menjual buku berhak cipta.</p>
+      <p className="library35-rights"><ShieldCheck size={14}/> {t("PDF tetap pribadi. Katalog ini bukan izin untuk mempublikasikan atau menjual buku berhak cipta.")}</p>
 
 
     </section>

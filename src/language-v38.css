@@ -1,0 +1,29 @@
+/* V3.8 · Accessible compact bilingual toggle. Works in light/dark/landing modes. */
+.elk-language-switch {
+  display: inline-flex; align-items: center; flex-shrink: 0; gap: 3px;
+  padding: 3px; border: 1px solid rgba(124, 141, 160, .23);
+  border-radius: 999px; background: rgba(147, 163, 184, .10);
+  vertical-align: middle;
+}
+.elk-language-switch button {
+  border: 0; display: inline-grid; place-items: center; min-width: 35px;
+  height: 31px; padding: 0 7px; border-radius: 999px; background: transparent;
+  color: inherit; opacity: .68; cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; line-height: 1.1;
+  letter-spacing: .055em; transition: color .2s, background .2s, opacity .2s, transform .2s;
+}
+.elk-language-switch button:hover { opacity: 1; transform: translateY(-1px); }
+.elk-language-switch button.active { background: #143656; color: #fff; opacity: 1; box-shadow: 0 2px 8px rgba(9,34,59,.13); }
+.elk-language-switch button:focus-visible { outline: 3px solid #e1b967; outline-offset: 2px; }
+.dark .elk-language-switch { background: rgba(255,255,255,.09); border-color: rgba(226,232,240,.22); }
+.dark .elk-language-switch button.active { background: #e4c67f; color: #102638; }
+.landing-nav .elk-language-switch { margin-right: 7px; background: rgba(255,255,255,.55); }
+@media (max-width: 840px) {
+  .header-actions .elk-language-switch { order: -1; margin-inline-end: 2px; }
+  .landing-nav .elk-language-switch { margin-right: 3px; }
+}
+@media (max-width: 410px) {
+  .elk-language-switch button { min-width: 29px; height: 27px; padding-inline: 5px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .elk-language-switch button { transition: none; transform: none !important; }
+}
