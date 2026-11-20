@@ -18,3 +18,10 @@
 @media(max-width:1100px){.source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.source-research{padding:16px}.source-grid{grid-template-columns:1fr 1fr;gap:8px}.source-book{padding:13px;min-height:172px}.source-workspace{grid-template-columns:1fr}.source-research-head{display:block}.source-research-seal{margin-top:12px}.source-book h3{font-size:12px}.source-filter{overflow:auto;flex-wrap:nowrap;padding-bottom:8px}.source-filter button{white-space:nowrap}}
 @media(max-width:390px){.source-grid{grid-template-columns:1fr}}
 .input-source-citations{display:grid;gap:5px;margin-top:8px}.input-source-citations small{font-size:11px;color:inherit;line-height:1.5}
+
+/* EL-KIMIYA LOCAL BOOK FOLDER v1 — private PDFs never published */
+.source-local-import{margin-top:20px;padding:16px;border:1px solid #c8d9e2;border-radius:14px;background:#f0f6f7;display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.source-local-import>div{flex:1 1 310px}.source-local-import strong{color:#1e4056;font-size:15px}.source-local-import p{font-size:12px;line-height:1.6;color:#587282;margin-top:6px}
+.source-local-import code{font-size:11px;overflow-wrap:anywhere}.source-local-count{font-size:11px;font-weight:750;color:#326c68;white-space:nowrap}
+.source-book-connected{align-self:flex-start;font-size:10px;font-weight:800;color:#226965;background:#e3f4ee;border-radius:999px;padding:5px 9px;margin:8px 0 0}
+.app.dark .source-local-import{background:#253c4a;border-color:#466577}.app.dark .source-local-import strong{color:#f4faff}.app.dark .source-local-import p{color:#bfced5}

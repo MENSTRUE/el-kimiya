@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import fs from 'node:fs'
 import path from 'node:path'
+import { localPrivateBooksPlugin } from './scripts/local-private-books-plugin'
 
 import siteConfiguration from './.figma/make/site.json'
 
@@ -21,6 +22,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
 react(),
       tailwindcss(),
+      localPrivateBooksPlugin(),
       figmaSiteConfiguration(siteConfiguration),
       figmaErrorOverlayReplay(),
       figmaReactRefreshBoundaryFallback(),
@@ -33,7 +35,8 @@ react(),
       },
     },
     server: {
-      host: process.env.FIGMA_DEV_SERVER_HOST || '0.0.0.0',
+      // V3.3: bind to loopback so App Check dev tokens cannot be read over LAN.
+      host: '127.0.0.1',
       port: parseInt(process.env.PORT || '8443'),
       strictPort: true,
       watch: {

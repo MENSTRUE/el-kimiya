@@ -1,0 +1,13 @@
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const hybrid = readFileSync('src/lib/hybrid.ts','utf8');
+const app = readFileSync('src/App.tsx','utf8');
+const vite = readFileSync('vite.config.ts','utf8');
+assert(hybrid.includes('import.meta.env.DEV && env.VITE_APPCHECK_DEBUG'));
+assert(hybrid.includes('provider !== \'on_device\' && provider !== \'in_cloud\''));
+assert(hybrid.includes('await model.initializeDeviceModel'));
+assert(hybrid.includes('void model.initializeDeviceModel'));
+assert(vite.includes("host: '127.0.0.1'"));
+assert(app.includes('LIVE SDK VERIFICATION'));
+assert(app.includes('never claims cloud fallback as local success'));
+console.log('[PASS] V3.3 source invariants and labeling verified.');

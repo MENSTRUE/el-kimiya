@@ -1,53 +1,323 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, ExternalLink, FileSearch, FileText, ShieldCheck, Upload, X, BrainCircuit } from 'lucide-react';
-import { sourceBooks } from '../data/books';
+import {
+  ArrowDownUp, ArrowLeft, ArrowRight, BookMarked, BookOpen, Bookmark,
+  BookmarkCheck, BrainCircuit, Check, ChevronDown, ChevronLeft, ChevronRight,
+  Clock3, ExternalLink, FileSearch, FileText, FolderOpen, Heart, LibraryBig,
+  Search, ShieldCheck, Sparkles, Upload, X,
+} from 'lucide-react';
+import { sourceBooks, type SourceBook } from '../data/books';
+import { identifyLocalBook, expectedLocalBookCount } from '../lib/localBookFiles';
 import { contextForPrompt, parsePrivateIndex, searchIndex, type PrivateIndex } from '../lib/bookSearch';
+import '../library-v35.css';
 
-type Props={askAbout:(text:string)=>void; notify:(text:string)=>void};
-export function BookResearchPanel({askAbout,notify}:Props){
-  const [filter,setFilter]=useState('All');
-  const [selected,setSelected]=useState<string>('kuncoro-2021');
-  const [pdfs,setPdfs]=useState<Record<string,string>>({});
-  const [index,setIndex]=useState<PrivateIndex|null>(null);
-  const [question,setQuestion]=useState('What is the difference between ionic and covalent bonding?');
-  const [consent,setConsent]=useState(false);
-  const [message,setMessage]=useState('');
-  const [viewer,setViewer]=useState<string|null>(null);
-  // Never persist or upload PDF bytes. Revoke object URLs when component unmounts.
-  const localUrls=useRef<string[]>([]);
-  useEffect(()=>()=>{localUrls.current.forEach(url=>URL.revokeObjectURL(url))},[]);
-  const visible=useMemo(()=>sourceBooks.filter(b=>filter==='All'||b.role===filter),[filter]);
-  const hits=useMemo(()=>index?searchIndex(index,question,5):[],[index,question]);
-  const uploadPdf=(file?:File)=>{
-    if(!file)return;
-    if(file.type!=='application/pdf'&&!file.name.toLowerCase().endsWith('.pdf')){setMessage('Only PDF documents can be opened here.');return;}
-    if(file.size>80_000_000){setMessage('Maximum file size is 80 MB.');return;}
-    const url=URL.createObjectURL(file);localUrls.current.push(url);
-    setPdfs(prev=>({...prev,[selected]:url}));setMessage(`Opened ${file.name} locally — this app has not published or indexed its text.`);
-    setViewer(url);
+type Props = { askAbout: (text: string) => void; notify: (text: string) => void };
+type ReadingMap = Record<string, number>;
+type ShelfMode = 'all' | 'saved' | 'continue';
+type AutoStatus = 'checking' | 'connected' | 'manual';
+const STORE_PAGES = 'elk.v35.bookPages';
+const STORE_FAVORITES = 'elk.v35.favorites';
+const STORE_RECENT = 'elk.v35.recent';
+const roleLabels: Record<SourceBook['role'], string> = {
+  'Main chemistry course': 'Kimia dasar',
+  'Islamic integration': 'Sains & Islam',
+  'Chemistry applications': 'Kimia terapan',
+  'Supporting reference': 'Referensi ilmiah',
+};
+const palettes: Record<string, string> = {
+  'kuncoro-2021': 'ocean', 'kimia-dasar': 'pearl', 'yahdi-2020': 'copper',
+  'cucu-2022': 'sage', 'uii-2017': 'plum', 'kemenag-2013': 'sand',
+  'kusuma-2020': 'night', 'water-2024': 'aqua',
+};
+const getBook = (id: string) => sourceBooks.find(book => book.id === id);
+const boundPage = (page: number, max: number) => Math.min(max, Math.max(1, Number.isFinite(page) ? Math.round(page) : 1));
+
+function readPages(): ReadingMap {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(STORE_PAGES) || '{}');
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const pages: ReadingMap = {};
+    for (const book of sourceBooks) {
+      const value = (parsed as Record<string, unknown>)[book.id];
+      if (typeof value === 'number' && Number.isFinite(value)) pages[book.id] = boundPage(value, book.pdfPages);
+    }
+    return pages;
+  } catch { return {}; }
+}
+function readFavorites(): string[] {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(STORE_FAVORITES) || '[]');
+    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string' && !!getBook(id)) : [];
+  } catch { return []; }
+}
+function readRecent(): string | null {
+  try {
+    const id = localStorage.getItem(STORE_RECENT);
+    return id && getBook(id) ? id : null;
+  } catch { return null; }
+}
+function BookCover({ book, large = false }: { book: SourceBook; large?: boolean }) {
+  return (
+    <span className={`library35-cover library35-cover--${palettes[book.id] || 'ocean'} ${large ? 'library35-cover--large' : ''}`} aria-hidden="true">
+      <span className="library35-cover-spine" />
+      <span className="library35-cover-top">EL-KĪMIYĀ <span>·</span> REFERENCE LIBRARY</span>
+      <span className="library35-cover-emblem"><Sparkles size={large ? 26 : 19} strokeWidth={1.5} /></span>
+      <span className="library35-cover-name">{book.title}</span>
+      <span className="library35-cover-foot">CHEMISTRY <span>✦</span> KNOWLEDGE</span>
+    </span>
+  );
+}
+
+export function BookResearchPanel({ askAbout, notify }: Props) {
+  const [pdfs, setPdfs] = useState<Record<string, string>>({});
+  const [autoStatus, setAutoStatus] = useState<AutoStatus>('checking');
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('All');
+  const [shelfMode, setShelfMode] = useState<ShelfMode>('all');
+  const [sort, setSort] = useState('recommended');
+  const [pages, setPages] = useState<ReadingMap>(readPages);
+  const [favorites, setFavorites] = useState<string[]>(readFavorites);
+  const [recent, setRecent] = useState<string | null>(readRecent);
+  const [readerId, setReaderId] = useState<string | null>(null);
+  const [readerPage, setReaderPage] = useState(1);
+  const [manualPage, setManualPage] = useState('1');
+  const [message, setMessage] = useState('');
+  const [index, setIndex] = useState<PrivateIndex | null>(null);
+  const [showResearch, setShowResearch] = useState(false);
+  const [question, setQuestion] = useState('What is the difference between ionic and covalent bonding?');
+  const [consent, setConsent] = useState(false);
+  const folderInput = useRef<HTMLInputElement>(null);
+  const selectedInput = useRef<HTMLInputElement>(null);
+  const localUrls = useRef<Record<string, string>>({});
+  const [selectedForUpload, setSelectedForUpload] = useState(sourceBooks[0]?.id ?? 'kuncoro-2021');
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const host = window.location.hostname;
+    if (!import.meta.env.DEV || !['localhost', '127.0.0.1'].includes(host)) {
+      setAutoStatus('manual');
+      return;
+    }
+    void fetch('/__elkimiya_local_books__/manifest.json', {
+      signal: controller.signal, cache: 'no-store', credentials: 'same-origin',
+    }).then(async res => {
+      if (!res.ok) throw new Error('Private PDF bridge unavailable');
+      return res.json() as Promise<unknown>;
+    }).then(payload => {
+      if (controller.signal.aborted) return;
+      const data = payload && typeof payload === 'object' ? payload as Record<string, unknown> : null;
+      const rows = data?.schemaVersion === 1 && Array.isArray(data.books) ? data.books : [];
+      const knownIds = new Set(sourceBooks.map(book => book.id));
+      const found: Record<string, string> = {};
+      for (const row of rows) {
+        if (!row || typeof row !== 'object') continue;
+        const item = row as Record<string, unknown>;
+        if (typeof item.bookId !== 'string' || typeof item.url !== 'string') continue;
+        if (!knownIds.has(item.bookId) || item.url !== `/__elkimiya_local_books__/pdf/${item.bookId}`) continue;
+        found[item.bookId] = item.url;
+      }
+      if (Object.keys(found).length) {
+        setPdfs(previous => ({ ...found, ...previous }));
+        setAutoStatus('connected');
+      } else setAutoStatus('manual');
+    }).catch(() => { if (!controller.signal.aborted) setAutoStatus('manual'); });
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    folderInput.current?.setAttribute('webkitdirectory', '');
+    folderInput.current?.setAttribute('directory', '');
+    return () => Object.values(localUrls.current).forEach(url => URL.revokeObjectURL(url));
+  }, []);
+  useEffect(() => { try { localStorage.setItem(STORE_PAGES, JSON.stringify(pages)); } catch { /* storage unavailable */ } }, [pages]);
+  useEffect(() => { try { localStorage.setItem(STORE_FAVORITES, JSON.stringify(favorites)); } catch { /* storage unavailable */ } }, [favorites]);
+  useEffect(() => { try { recent ? localStorage.setItem(STORE_RECENT, recent) : localStorage.removeItem(STORE_RECENT); } catch { /* storage unavailable */ } }, [recent]);
+  useEffect(() => {
+    if (!readerId) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setReaderId(null);
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+      if (event.key === 'ArrowRight') setReaderPage(p => boundPage(p + 1, getBook(readerId)?.pdfPages || 1));
+      if (event.key === 'ArrowLeft') setReaderPage(p => boundPage(p - 1, getBook(readerId)?.pdfPages || 1));
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => { document.body.style.overflow = previous; window.removeEventListener('keydown', onKeyDown); };
+  }, [readerId]);
+  useEffect(() => { setManualPage(String(readerPage)); }, [readerPage]);
+
+  const connectedCount = sourceBooks.filter(book => !!pdfs[book.id]).length;
+  const lastBook = recent && pdfs[recent] ? getBook(recent) : undefined;
+  const featured = lastBook || sourceBooks.find(book => pdfs[book.id]) || sourceBooks[0];
+  const currentBook = readerId ? getBook(readerId) : null;
+  const currentUrl = readerId ? pdfs[readerId] : undefined;
+  const rememberedPage = currentBook ? pages[currentBook.id] || 1 : 1;
+  const researchHits = useMemo(() => index ? searchIndex(index, question, 5) : [], [index, question]);
+  const visibleBooks = useMemo(() => {
+    const lower = query.trim().toLocaleLowerCase('id');
+    const filtered = sourceBooks.filter(book => {
+      const matchCategory = category === 'All' || book.role === category;
+      const matchShelf = shelfMode === 'all' || (shelfMode === 'saved' ? favorites.includes(book.id) : !!pages[book.id]);
+      const matchQuery = !lower || `${book.title} ${book.author} ${book.role} ${book.topics.join(' ')}`.toLocaleLowerCase('id').includes(lower);
+      return matchCategory && matchShelf && matchQuery;
+    });
+    if (sort === 'title') return filtered.sort((a, b) => a.title.localeCompare(b.title, 'id'));
+    if (sort === 'length') return filtered.sort((a, b) => a.pdfPages - b.pdfPages);
+    return filtered;
+  }, [category, favorites, pages, query, shelfMode, sort]);
+
+  const attachFile = (bookId: string, file: File) => {
+    const current = localUrls.current[bookId];
+    if (current) URL.revokeObjectURL(current);
+    const url = URL.createObjectURL(file);
+    localUrls.current[bookId] = url;
+    setPdfs(previous => ({ ...previous, [bookId]: url }));
+    return url;
   };
-  const uploadIndex=async(file?:File)=>{
-    if(!file)return;
-    if(file.size>15_000_000){setMessage('Index file too large (15 MB maximum).');return;}
-    try{const data=parsePrivateIndex(JSON.parse(await file.text()));setIndex(data);setMessage(`Loaded a private text index of ${data.pages.length} PDF pages in memory. No cloud upload occurred.`);}
-    catch(err){setMessage(err instanceof Error?err.message:'Could not load the index.');}
+  const openBook = (bookId: string) => {
+    if (!pdfs[bookId]) {
+      setSelectedForUpload(bookId);
+      setMessage('PDF belum terhubung. Gunakan tombol “Buka PDF sendiri” pada kartu buku ini.');
+      return;
+    }
+    setReaderId(bookId);
+    setReaderPage(pages[bookId] || 1);
+    setRecent(bookId);
+    setMessage('');
   };
-  const askWithSources=()=>{
-    if(!consent){setMessage('Please confirm before sending excerpts to Firebase AI.');return;}
-    if(!hits.length){setMessage('No matching indexed passage. Choose another question.');return;}
-    askAbout(contextForPrompt(question,hits));
-    notify('Source context prepared; select a live Firebase inference path in Tutor.');
+  const toggleFavorite = (id: string) => setFavorites(previous => previous.includes(id) ? previous.filter(x => x !== id) : [...previous, id]);
+  const connectFolder = (files: FileList | null) => {
+    if (!files?.length) return;
+    const matched = new Map<string, File>();
+    for (const file of Array.from(files)) {
+      const id = identifyLocalBook(file.name);
+      if (id && file.size <= 80_000_000 && !matched.has(id)) matched.set(id, file);
+    }
+    for (const [id, file] of matched) attachFile(id, file);
+    setMessage(matched.size ? `${matched.size} PDF terhubung dari folder lokal. Tidak ada file yang diunggah ke cloud.` : 'Tidak ditemukan PDF yang cocok dengan katalog El-Kīmiyā.');
   };
-  return <section className="source-research" aria-label="Chemistry sources and local PDF study">
-    <header className="source-research-head"><div><p className="eyebrow">SOURCE LIBRARY · 8 VERIFIED FILES</p><h2>Study from real chemistry books.</h2><p>These are bibliographic entries from your PDFs—not copyrighted book files published online. You can open your own PDF locally or import a private searchable index.</p></div><span className="source-research-seal"><ShieldCheck size={18}/> Private by default</span></header>
-    <div className="source-filter" role="group" aria-label="Filter source type">{['All','Main chemistry course','Islamic integration','Chemistry applications','Supporting reference'].map(x=><button key={x} className={filter===x?'active':''} onClick={()=>setFilter(x)}>{x}</button>)}</div>
-    <div className="source-grid">{visible.map(b=><button key={b.id} className={`source-book ${selected===b.id?'selected':''}`} aria-pressed={selected===b.id} onClick={()=>setSelected(b.id)}><div><span className="source-book-code">{b.id.split('-')[0].toUpperCase()}</span><span className="source-book-pages">{b.pdfPages} PDF pages</span></div><h3>{b.title}</h3><p>{b.author}</p><small>{b.role}</small></button>)}</div>
-    <div className="source-workspace">
-      <div className="source-book-details"><p className="eyebrow">SELECTED REFERENCE</p><h3>{sourceBooks.find(x=>x.id===selected)?.title}</h3><p>{sourceBooks.find(x=>x.id===selected)?.sourceNote}</p><div className="source-topic-list">{sourceBooks.find(x=>x.id===selected)?.topics.map(t=><span key={t}>{t}</span>)}</div><p className="source-rights">{sourceBooks.find(x=>x.id===selected)?.rights==='restricted'?'Copyright restrictions apply. Do not commit the source PDF or extracted pages to GitHub.':'Noncommercial reproduction permitted per publisher’s statement; verify terms before deployment.'}</p><div className="source-actions"><label className="source-action primary"><Upload size={17}/> Open your PDF <input type="file" accept="application/pdf,.pdf" onChange={e=>{uploadPdf(e.target.files?.[0]);e.target.value='';}}/></label>{pdfs[selected]&&<button className="source-action" onClick={()=>setViewer(pdfs[selected])}><ExternalLink size={16}/> View PDF again</button>}</div></div>
-      <div className="source-index"><div><FileSearch size={22}/><h3>Private text search</h3></div><p>Create an index locally with <code>python scripts/build_private_index.py</code>, then import it here. It never needs to enter the public repo.</p><label className="source-action"><FileText size={17}/> Import private JSON index <input type="file" accept="application/json,.json" onChange={e=>{void uploadIndex(e.target.files?.[0]);e.target.value='';}}/></label><label className="source-question">Ask about the indexed chapters<textarea value={question} onChange={e=>setQuestion(e.target.value)} maxLength={500} rows={2}/></label><p className="source-index-status">{index?`${index.pages.length} pages indexed · ${hits.length} relevant passages`:'No private index loaded · metadata only'}</p></div>
-    </div>
-    {message&&<p className="source-message" role="status">{message}</p>}
-    {index&&<div className="source-hits"><h3>Matching pages</h3>{hits.length?hits.map((hit,i)=><article key={`${hit.bookId}-${hit.pdfPage}-${i}`}><strong>{hit.title} · PDF p. {hit.pdfPage}</strong><p>{hit.text.slice(0,340)}{hit.text.length>340?'…':''}</p><small>Local retrieval · not independently fact-checked</small></article>):<p>Nothing found in this index. Try another query.</p>}<label className="source-consent"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/> I understand the selected excerpts may be transmitted to cloud inference depending on the live model provider.</label><button className="source-action primary" disabled={!hits.length||!consent} onClick={askWithSources}><BrainCircuit size={17}/> Prepare grounded AI question</button><p className="source-note">Do not treat AI-generated citations as verified until you compare them against the original PDF page.</p></div>}
-    {viewer&&<div className="source-viewer-backdrop" role="presentation" onClick={()=>setViewer(null)}><section className="source-viewer" role="dialog" aria-modal="true" aria-label="Preview local PDF" onClick={e=>e.stopPropagation()}><div><span><BookOpen size={17}/> Your local PDF · not uploaded</span><button onClick={()=>setViewer(null)} aria-label="Close local PDF"><X size={20}/></button></div><iframe title="Local PDF book preview" src={viewer}/></section></div>}
-  </section>;
+  const uploadSelected = (file?: File) => {
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith('.pdf') || file.size > 80_000_000) {
+      setMessage('Pilih file .pdf dengan ukuran maksimal 80 MB.'); return;
+    }
+    const detected = identifyLocalBook(file.name);
+    if (detected && detected !== selectedForUpload) {
+      setMessage('File itu cocok dengan kartu buku lain. Pilih kartu yang sesuai.'); return;
+    }
+    attachFile(selectedForUpload, file);
+    setMessage('PDF berhasil dihubungkan, hanya di browser lokal.');
+    setReaderId(selectedForUpload);
+    setReaderPage(pages[selectedForUpload] || 1);
+    setRecent(selectedForUpload);
+  };
+  const loadIndex = async (file?: File) => {
+    if (!file) return;
+    if (file.size > 15_000_000) { setMessage('Indeks terlalu besar (maksimum 15 MB).'); return; }
+    try {
+      const data = parsePrivateIndex(JSON.parse(await file.text()));
+      setIndex(data);
+      setMessage(`Indeks privat terbaca: ${data.pages.length} halaman. Tidak diunggah ke cloud.`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Format indeks tidak didukung.'); }
+  };
+  const prepareTutor = () => {
+    if (!consent || !researchHits.length) return;
+    askAbout(contextForPrompt(question, researchHits));
+    notify('Kutipan disiapkan untuk AI Tutor. Periksa kembali nomor halaman pada PDF asli.');
+  };
+  const savePage = () => {
+    if (!currentBook) return;
+    const page = boundPage(readerPage, currentBook.pdfPages);
+    setPages(previous => ({ ...previous, [currentBook.id]: page }));
+    setMessage(`Halaman ${page} disimpan untuk ${currentBook.title}.`);
+  };
+  const navigatePage = (next: number) => currentBook && setReaderPage(boundPage(next, currentBook.pdfPages));
+  const applyManualPage = () => currentBook && setReaderPage(boundPage(Number(manualPage), currentBook.pdfPages));
+  const chooseOwnPdf = (id: string) => { setSelectedForUpload(id); selectedInput.current?.click(); };
+
+  return (
+    <section className="library35" aria-label="Perpustakaan kimia pribadi El-Kīmiyā">
+      <input ref={selectedInput} className="library35-file-input" type="file" accept=".pdf,application/pdf" onChange={event => { uploadSelected(event.target.files?.[0]); event.target.value = ''; }} aria-label="Pilih PDF dari laptop" />
+      <input ref={folderInput} className="library35-file-input" type="file" multiple onChange={event => { connectFolder(event.target.files); event.target.value = ''; }} aria-label="Pilih folder PDF pribadi" />
+
+      <div className="library35-heading">
+        <div><span className="library35-overline"><span /> THE KNOWLEDGE COLLECTION · EL-KĪMIYĀ</span><h2>Your chemistry, <em>beautifully organized.</em></h2><p>Delapan referensi yang kamu miliki, satu ruang belajar untuk menemukan dan memahami kimia.</p></div>
+        <span className="library35-private"><ShieldCheck size={16} /> Personal & private</span>
+      </div>
+
+      <div className="library35-hero">
+        <div className="library35-hero-copy">
+          <div className="library35-pill"><Sparkles size={14} /> YOUR PRIVATE READING STUDIO</div>
+          <h3>{lastBook ? 'Continue where curiosity took you.' : 'A new chapter of discovery awaits.'}</h3>
+          <p>Eksplorasi kimia dengan buku sungguhan. Buka, tandai halaman, dan temukan referensi tanpa meninggalkan El-Kīmiyā.</p>
+          <div className="library35-hero-actions">
+            <button className="library35-btn library35-btn--light" onClick={() => featured && openBook(featured.id)} disabled={!featured || !pdfs[featured.id]}><BookOpen size={17} /> {lastBook ? 'Lanjutkan membaca' : 'Mulai membaca'} <ArrowRight size={16} /></button>
+            <span className="library35-hero-hint">{lastBook ? `${lastBook.title} · halaman tersimpan ${pages[lastBook.id] || 1}` : 'Pilih buku untuk mulai membaca'}</span>
+          </div>
+          <div className="library35-metrics">
+            <div><strong>{connectedCount}<small>/{expectedLocalBookCount}</small></strong><span>Buku terhubung</span></div>
+            <div><strong>{Object.keys(pages).length}</strong><span>Progres tersimpan</span></div>
+            <div><strong>{favorites.length}</strong><span>Buku favorit</span></div>
+          </div>
+        </div>
+        {featured && <div className="library35-hero-art"><div className="library35-hero-orbit"/><div className="library35-hero-book"><BookCover book={featured} large /></div><span className="library35-hero-annotation">CURATED READING <span>01 / 08</span></span></div>}
+      </div>
+
+      <div className="library35-connect" role="status">
+        <span className={`library35-connect-icon ${connectedCount ? 'online' : ''}`}>{connectedCount ? <Check size={19} /> : <FolderOpen size={19} />}</span>
+        <div><strong>{autoStatus === 'checking' ? 'Sedang mencari PDF pribadi…' : connectedCount ? `${connectedCount} PDF terhubung · Siap dibaca` : 'Hubungkan buku dari laptop'}</strong><p>{autoStatus === 'connected' ? 'PDF tersedia hanya dari server pengembangan lokal. Tidak masuk ke website publik.' : 'Jika belum otomatis, pilih folder private/chemistry-books milikmu. Buku tidak dikirim ke cloud.'}</p></div>
+        <button className="library35-connect-button" onClick={() => folderInput.current?.click()}><FolderOpen size={16}/> Pilih folder <ChevronDown size={15}/></button>
+      </div>
+
+      <div className="library35-discover-head"><div><span className="library35-overline">EXPLORE THE SHELVES</span><h3>Find something worth reading.</h3></div><span>{visibleBooks.length} dari {sourceBooks.length} referensi</span></div>
+      <div className="library35-toolbar">
+        <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari judul, penulis, atau topik kimia..." aria-label="Cari buku" />{query && <button aria-label="Hapus pencarian" onClick={() => setQuery('')}><X size={16}/></button>}</label>
+        <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label="Urutkan buku" value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">Urutan katalog</option><option value="title">Judul A–Z</option><option value="length">Halaman paling sedikit</option></select></label>
+      </div>
+      <div className="library35-filters" role="group" aria-label="Filter kategori buku">
+        {['All', ...Object.keys(roleLabels)].map(role => <button key={role} className={category === role ? 'active' : ''} onClick={() => setCategory(role)}>{role === 'All' ? 'Semua buku' : roleLabels[role as SourceBook['role']]}</button>)}
+      </div>
+      <div className="library35-shelf-tabs" role="group" aria-label="Filter koleksi">
+        <button className={shelfMode === 'all' ? 'active' : ''} onClick={() => setShelfMode('all')}><LibraryBig size={15}/> Koleksi</button>
+        <button className={shelfMode === 'continue' ? 'active' : ''} onClick={() => setShelfMode('continue')}><Clock3 size={15}/> Sedang dibaca</button>
+        <button className={shelfMode === 'saved' ? 'active' : ''} onClick={() => setShelfMode('saved')}><Heart size={15}/> Favorit</button>
+      </div>
+
+      {visibleBooks.length ? <div className="library35-grid">{visibleBooks.map((book, i) => {
+        const ready = !!pdfs[book.id];
+        const remembered = pages[book.id];
+        const isFavorite = favorites.includes(book.id);
+        return <article key={book.id} className="library35-card" style={{ animationDelay: `${Math.min(i, 7) * 45}ms` }}>
+          <button className="library35-card-main" onClick={() => openBook(book.id)} title={ready ? 'Baca buku ini' : 'Hubungkan PDF untuk membaca'}>
+            <span className="library35-card-cover"><BookCover book={book}/></span>
+            <span className="library35-card-body"><span className="library35-card-role">{roleLabels[book.role]}</span><strong className="library35-card-title">{book.title}</strong><span className="library35-card-author">{book.author}</span><span className="library35-card-meta"><span><BookOpen size={13}/> {book.pdfPages} halaman</span><span className={ready ? 'ready' : 'pending'}>{ready ? '● Siap dibaca' : '○ PDF belum ada'}</span></span>{remembered && <span className="library35-card-progress"><span><span style={{ width: `${Math.max(4, remembered / book.pdfPages * 100)}%` }} /></span><small>Penanda: halaman {remembered}</small></span>}<span className="library35-card-cta">{ready ? (remembered ? 'Lanjutkan membaca' : 'Baca sekarang') : 'Hubungkan PDF'} <ArrowRight size={16}/></span></span>
+          </button>
+          <button className={`library35-card-favorite ${isFavorite ? 'active' : ''}`} onClick={() => toggleFavorite(book.id)} aria-label={isFavorite ? `Hapus ${book.title} dari favorit` : `Tambahkan ${book.title} ke favorit`} title={isFavorite ? 'Hapus favorit' : 'Tambah favorit'}><Heart size={17} fill={isFavorite ? 'currentColor' : 'none'}/></button>
+          {!ready && <button className="library35-card-attach" onClick={() => chooseOwnPdf(book.id)}><Upload size={13}/> Buka PDF sendiri</button>}
+        </article>;
+      })}</div> : <div className="library35-empty"><FileSearch size={34}/><h4>Belum ada buku yang cocok</h4><p>Coba kata kunci lain, ubah filter, atau tambahkan favorit untuk mengisi rak ini.</p><button onClick={() => { setQuery(''); setCategory('All'); setShelfMode('all'); }}>Tampilkan semua buku</button></div>}
+      {message && <div className="library35-toast" role="status"><Check size={16}/>{message}<button onClick={() => setMessage('')} aria-label="Tutup pesan"><X size={15}/></button></div>}
+
+      <div className="library35-research">
+        <div><span className="library35-overline">FROM READING TO UNDERSTANDING</span><h3>Ask your books, not just the AI.</h3><p>Punya indeks teks privat? Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.</p><span><ShieldCheck size={16}/> Pencarian di browser · kutipan berbasis halaman PDF</span></div>
+        <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? 'Tutup pencarian' : 'Buka pencarian buku'}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
+      </div>
+      {showResearch && <section className="library35-research-panel" aria-label="Cari isi PDF dengan indeks privat">
+        <div className="library35-research-setup"><div><FileText size={22}/><div><strong>Indeks PDF pribadi</strong><p>Jika belum ada, buat dengan <code>python scripts/build_private_index.py</code>, lalu pilih JSON di bawah.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> Import JSON<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
+        <label className="library35-question">Tanyakan topik dari buku<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder="Misalnya: apa perbedaan ikatan ion dan kovalen?" /></label>
+        <p className="library35-index-status">{index ? `${index.pages.length} halaman terindeks · ${researchHits.length} cuplikan relevan` : 'Belum ada indeks pribadi yang dimuat.'}</p>
+        {index && <><div className="library35-hits">{researchHits.map(hit => <article key={`${hit.bookId}-${hit.pdfPage}`}><strong>{hit.title} · PDF halaman {hit.pdfPage}</strong><p>{hit.text.slice(0, 340)}{hit.text.length > 340 ? '…' : ''}</p></article>)}</div><label className="library35-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> Saya setuju cuplikan buku terpilih dapat dikirim ke layanan AI cloud untuk menjawab pertanyaan ini.</label><button className="library35-btn library35-btn--dark" disabled={!consent || !researchHits.length} onClick={prepareTutor}><BrainCircuit size={17}/> Siapkan pertanyaan bersumber <ArrowRight size={16}/></button><p className="library35-footnote">Periksa nomor halaman dan kebenaran kutipan pada PDF asli. Sumber dan tafsir bukan hal yang sama.</p></>}
+      </section>}
+      <p className="library35-rights"><ShieldCheck size={14}/> PDF tetap pribadi. Katalog ini bukan izin untuk mempublikasikan atau menjual buku berhak cipta.</p>
+
+      {currentBook && currentUrl && <div className="library35-reader-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setReaderId(null); }}>
+        <section className="library35-reader" role="dialog" aria-modal="true" aria-label={`Membaca ${currentBook.title}`}>
+          <header className="library35-reader-header"><div><button className="library35-reader-back" onClick={() => setReaderId(null)} aria-label="Kembali ke katalog"><ArrowLeft size={19}/></button><span className="library35-reader-label">EL-KĪMIYĀ / PRIVATE READING ROOM</span><strong title={currentBook.title}>{currentBook.title}</strong></div><button className="library35-reader-close" onClick={() => setReaderId(null)} aria-label="Tutup pembaca PDF"><X size={20}/></button></header>
+          <div className="library35-reader-toolbar"><div className="library35-reader-pages"><button onClick={() => navigatePage(readerPage - 1)} disabled={readerPage <= 1} aria-label="Halaman sebelumnya"><ChevronLeft size={18}/></button><label>Halaman <input aria-label="Nomor halaman PDF" type="number" min={1} max={currentBook.pdfPages} value={manualPage} onChange={event => setManualPage(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') applyManualPage(); }}/><span>/ {currentBook.pdfPages}</span></label><button onClick={applyManualPage} title="Buka nomor halaman" aria-label="Buka nomor halaman"><ArrowRight size={16}/></button><button onClick={() => navigatePage(readerPage + 1)} disabled={readerPage >= currentBook.pdfPages} aria-label="Halaman berikutnya"><ChevronRight size={18}/></button></div><div className="library35-reader-tools"><button className="library35-reader-save" onClick={savePage}><BookmarkCheck size={17}/> Simpan halaman</button><button onClick={() => window.open(`${currentUrl}#page=${readerPage}`, '_blank', 'noopener,noreferrer')} title="Buka PDF di tab baru"><ExternalLink size={17}/><span>Tab baru</span></button><button onClick={() => toggleFavorite(currentBook.id)} title="Tambah atau hapus favorit">{favorites.includes(currentBook.id) ? <BookmarkCheck size={17}/> : <Bookmark size={17}/>}</button></div></div>
+          <div className="library35-reader-body"><aside className="library35-reader-side"><BookCover book={currentBook}/><span className="library35-reader-side-label">{roleLabels[currentBook.role]}</span><p>{currentBook.sourceNote}</p><div className="library35-reader-tags">{currentBook.topics.slice(0, 5).map(topic => <span key={topic}>{topic}</span>)}</div><p className="library35-reader-side-note"><ShieldCheck size={15}/> Materi hanya dibaca dari perangkatmu.</p></aside><div className="library35-reader-canvas"><iframe key={`${currentBook.id}-${readerPage}`} title={`PDF ${currentBook.title}, halaman ${readerPage}`} src={`${currentUrl}#page=${readerPage}&view=FitH`} /><div className="library35-reader-help"><BookMarked size={15}/> Navigasikan halaman dengan kontrol di atas, lalu klik “Simpan halaman” untuk melanjutkan nanti. Guliran dalam PDF tidak tersinkron otomatis.</div></div></div>
+          <footer className="library35-reader-footer"><span><ShieldCheck size={14}/> Private reading · No cloud PDF upload</span><span>Penanda terakhir: halaman {rememberedPage}</span></footer>
+        </section>
+      </div>}
+    </section>
+  );
 }

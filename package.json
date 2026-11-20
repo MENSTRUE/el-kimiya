@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "test:source": "node scripts/check-source.mjs",
     "firebase:check": "node scripts/firebase-preflight.mjs",
-    "verify": "npm run test:source && npm run typecheck && npm run build"
+    "verify": "npm run test:source && npm run typecheck && npm run build",
+    "v33:check": "node scripts/check-v33.mjs",
+    "release:build": "node scripts/release-preflight.mjs && npm run verify && node scripts/check-v33.mjs && node scripts/release-preflight.mjs --dist"
   },
   "dependencies": {
     "firebase": "^13.0.0",

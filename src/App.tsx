@@ -978,8 +978,8 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
           to your device.
         </h2>
         <p>
-          El-Kīmiyā chooses a suitable available path while keeping you informed. This prototype
-          simulates routing and does not execute a real model.
+          The cards below simulate routing for learning. Scroll to LIVE SDK VERIFICATION
+          for real Firebase requests and verified cloud/on-device inference results.
         </p>
       </section>
       <section className="engine-map">
@@ -1148,6 +1148,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
       <section className="live-hybrid-check" aria-label="Firebase live inference test">
         <div><Badge variant="gold">LIVE SDK VERIFICATION</Badge><h3>Verify the real inference provider</h3><p>{firebaseConfigured?'Firebase settings detected. Run this short request to see the provider reported by the SDK.':'No Firebase configuration detected. The scenario cards above are visual simulations, not actual AI responses.'}</p></div>
         <button className="primary-button" disabled={!firebaseConfigured||running} onClick={()=>void runLive()}><BrainCircuit size={17}/>{running?'Running on Firebase...':'Run real inference test'}</button>
+        {preference === 'On-device only' && <p>On-device mode needs compatible Chrome Desktop (139+), Prompt API enabled, and local model download. This mode never claims cloud fallback as local success.</p>}
         {running&&<p role="status">{progress===null?'Preparing or requesting a response...':`Local model download: ${Math.round(progress*100)}%`}</p>}
         {liveResult&&<div className="live-result" role="status"><strong>Verified provider: {liveProvider}</strong><p>{liveResult}</p></div>}
         {liveError&&<div className="inline-alert" role="alert"><CircleHelp size={17}/>{liveError}</div>}
