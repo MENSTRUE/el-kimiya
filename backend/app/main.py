@@ -17,6 +17,7 @@ from .agent import local_grounded_answer, gemini_tool_agent
 from .chemistry import describe_smiles, RDKIT_READY, ChemistryUnavailable
 from .repository import MoleculeRepository
 from .similarity import FingerprintIndex
+from .learning_api import make_learning_router
 
 ROOT = Path(__file__).resolve().parents[2]
 # This backend/.env never goes to frontend or Firebase Hosting.
@@ -50,17 +51,26 @@ class AgentRequest(StrictModel):
     use_llm: bool = False
 
 
-def create_app(db_path: Path | None = None, fps_path: Path | None = None) -> FastAPI:
+def create_app(db_path: Path | None = None, fps_path: Path | None = None, learning_progress_path: Path | None = None, learning_bank_path: Path | None = None) -> FastAPI:
     app = FastAPI(title="El-Kīmiyā Molecular Agent API", version="4.2.0",
                   description="Local read-only ChEMBL 37 + RDKit + optional Gemini tool-calling")
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_origins=['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:8443', 'http://127.0.0.1:8443'],
         allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
         allow_credentials=False,
     )
     app.state.repo = MoleculeRepository(Path(db_path or os.getenv("CHEMBL_DB", DEFAULT_DB)))
     app.state.fps = FingerprintIndex(Path(fps_path or os.getenv("FINGERPRINT_DB", DEFAULT_FPS)))
+    app.include_router(
+        make_learning_router(
+            bank_path=Path(learning_bank_path or os.getenv(
+                "ELK_LEARNING_BANK", ROOT / "backend" / "data" / "chemistry_learning_bank_v1.json")),
+            progress_path=Path(learning_progress_path or os.getenv(
+                "ELK_LEARNING_PROGRESS_DB", ROOT / "private" / "learning" / "progress.sqlite")),
+        ),
+        prefix="/api/v1/learning", tags=["learning"],
+    )
 
     @app.get("/api/v1/health")
     def health():

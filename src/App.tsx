@@ -49,6 +49,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import { StudyLearningV44, StudyFlashcardsV44, ChemistryExplorerV44 } from './components/StudyExperienceV44'; // ELKIMIYA_V44_STUDY_UI
 import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
@@ -1181,6 +1182,13 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
 }
 
 function PracticePage({ setPage, onAnswer }: {setPage:(page:Page)=>void; onAnswer:(correct:boolean)=>void}) {
+  const { language } = useLanguage();
+  const [view, setView] = useState<'bank'|'lab'>('bank');
+  if (view === 'bank') return <StudyLearningV44 onOpenLab={() => setView('lab')} onOpenFlashcards={() => setPage('flashcards')} />;
+  return <><div className="v44-view-switch"><button onClick={() => setView('bank')}>{language === 'en' ? '← V4.3 question bank' : '← Bank soal V4.3'}</button><span>{language === 'en' ? 'Interactive lab · sample exercises' : 'Laboratorium interaktif · latihan contoh'}</span></div><LegacyPracticePage setPage={setPage} onAnswer={onAnswer}/></>;
+}
+
+function LegacyPracticePage({ setPage, onAnswer }: {setPage:(page:Page)=>void; onAnswer:(correct:boolean)=>void}) {
   const [index,setIndex] = useState(0);
   const [answer,setAnswer] = useState<number|null>(null);
   const [checked,setChecked] = useState(false);
@@ -1220,6 +1228,13 @@ function PracticePage({ setPage, onAnswer }: {setPage:(page:Page)=>void; onAnswe
 }
 
 function ExplorerPage({ setPage, addNote, askAbout }: {setPage:(page:Page)=>void; addNote:(title:string,content:string,source:string)=>void; askAbout:(prompt:string)=>void}) {
+  const { language } = useLanguage();
+  const [view, setView] = useState<'cards'|'classic'>('cards');
+  return <><div className="v44-view-switch"><button className={view === 'cards' ? 'is-active' : ''} onClick={() => setView('cards')}>{language === 'en' ? 'Card view' : 'Tampilan kartu'}</button><button className={view === 'classic' ? 'is-active' : ''} onClick={() => setView('classic')}>{language === 'en' ? 'Classic view' : 'Visual klasik'}</button></div>
+    {view === 'cards' ? <ChemistryExplorerV44 onSave={addNote} onAsk={askAbout} onOpenMolecules={() => setPage('molecules')}/> : <LegacyExplorerPage setPage={setPage} addNote={addNote} askAbout={askAbout}/>}</>;
+}
+
+function LegacyExplorerPage({ setPage, addNote, askAbout }: {setPage:(page:Page)=>void; addNote:(title:string,content:string,source:string)=>void; askAbout:(prompt:string)=>void}) {
   const [element,setElement] = useState('O');
   const [compound,setCompound] = useState<'water'|'carbon'|'salt'>('water');
   const active = elements.find(e=>e.symbol===element)!;
@@ -1244,6 +1259,13 @@ function ExplorerPage({ setPage, addNote, askAbout }: {setPage:(page:Page)=>void
 }
 
 function FlashcardsPage({ cards, onReview }: {cards:StudyCard[]; onReview:()=>void}) {
+  // The six old starterCards are demos, not the real 52-card V4.3 bank.
+  // Personal cards from the reader/tutor remain available.
+  const customCards = cards.filter(card => !starterCards.some(starter => starter.id === card.id));
+  return <StudyFlashcardsV44 customCards={customCards} onReview={onReview}/>;
+}
+
+function LegacyFlashcardsPage({ cards, onReview }: {cards:StudyCard[]; onReview:()=>void}) {
   const [flipped,setFlipped] = useState(false);
   const [index,setIndex] = useState(0);
   const [ratings,setRatings] = useStoredState<Record<string,'again'|'difficult'|'easy'>>('elk.cardRatings',{});

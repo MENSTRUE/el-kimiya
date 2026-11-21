@@ -38,3 +38,6 @@ __pycache__/
 backend/.venv/
 backend/.env
 backend/.pytest_cache/
+
+# Local pre-V4.4 source backups
+scripts/.v44-backups/

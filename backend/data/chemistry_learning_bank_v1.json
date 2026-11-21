@@ -1,0 +1,4410 @@
+{
+  "schema_version": 1,
+  "revision": "v4.3.0",
+  "created_on": "2026-11-21",
+  "editorial_status": "original_draft_needs_subject_expert_review",
+  "copyright_note": "AI-assisted original El-Kimiya educational questions and explanations. External references support general concepts; publisher textbook questions and private PDFs have not been copied. Expert review required.",
+  "sources": [
+    {
+      "id": "openstax-1",
+      "title": "OpenStax Chemistry 2e — Essential Ideas",
+      "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-2",
+      "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-3",
+      "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-4",
+      "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-5",
+      "title": "OpenStax Chemistry 2e — Thermochemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-6",
+      "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+      "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-7",
+      "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-9",
+      "title": "OpenStax Chemistry 2e — Gases",
+      "url": "https://openstax.org/books/chemistry-2e/pages/9-gases",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-11",
+      "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+      "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-12",
+      "title": "OpenStax Chemistry 2e — Kinetics",
+      "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-13",
+      "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+      "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-14",
+      "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+      "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-17",
+      "title": "OpenStax Chemistry 2e — Electrochemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "openstax-20",
+      "title": "OpenStax Chemistry 2e — Organic Chemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "iupac-atom",
+      "title": "IUPAC Gold Book — Atom",
+      "url": "https://goldbook.iupac.org/terms/view/A00493",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "iupac-mole",
+      "title": "IUPAC Gold Book — Mole",
+      "url": "https://goldbook.iupac.org/terms/view/M03980",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    },
+    {
+      "id": "iupac-bond",
+      "title": "IUPAC Gold Book — Chemical Bond",
+      "url": "https://goldbook.iupac.org/terms/view/CT07009",
+      "usage": "concept_reference",
+      "accessed_on": "2026-11-21"
+    }
+  ],
+  "topics": [
+    {
+      "id": "matter",
+      "order": 1,
+      "title": {
+        "id": "Materi & Pengukuran",
+        "en": "Matter & Measurement"
+      },
+      "intro": {
+        "id": "Mulai dengan sifat zat, perubahan fisika dan kimia, serta besaran yang dapat diukur.",
+        "en": "Start by examining material properties, physical and chemical changes, and measurable quantities."
+      },
+      "key_points": [
+        {
+          "id": "Materi mempunyai massa dan menempati ruang.",
+          "en": "Matter has mass and occupies space."
+        },
+        {
+          "id": "Perubahan fisika tidak harus menghasilkan zat baru.",
+          "en": "A physical change does not necessarily produce a new substance."
+        },
+        {
+          "id": "Massa jenis dihitung dari massa dibagi volume.",
+          "en": "Density is mass divided by volume."
+        }
+      ],
+      "source_ids": [
+        "openstax-1"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "atoms",
+      "order": 2,
+      "title": {
+        "id": "Atom, Ion & Isotop",
+        "en": "Atoms, Ions & Isotopes"
+      },
+      "intro": {
+        "id": "Kenali proton, neutron, elektron, ion, dan isotop melalui nomor atom serta nomor massa.",
+        "en": "Understand protons, neutrons, electrons, ions, and isotopes via atomic and mass numbers."
+      },
+      "key_points": [
+        {
+          "id": "Nomor atom sama dengan jumlah proton.",
+          "en": "Atomic number equals the number of protons."
+        },
+        {
+          "id": "Isotop satu unsur memiliki jumlah neutron berbeda.",
+          "en": "Isotopes of one element differ in neutron number."
+        },
+        {
+          "id": "Ion terbentuk ketika jumlah elektron berubah.",
+          "en": "Ions form when the electron count changes."
+        }
+      ],
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "periodic",
+      "order": 3,
+      "title": {
+        "id": "Tabel Periodik & Elektron",
+        "en": "Periodic Table & Electrons"
+      },
+      "intro": {
+        "id": "Gunakan kelompok dan periode untuk memprediksi tren sederhana sifat unsur.",
+        "en": "Use groups and periods to predict simple trends in element properties."
+      },
+      "key_points": [
+        {
+          "id": "Unsur satu golongan sering memiliki kemiripan elektron valensi.",
+          "en": "Elements in the same group often have similar valence configurations."
+        },
+        {
+          "id": "Elektron valensi berperan dalam reaksi dan ikatan.",
+          "en": "Valence electrons influence reactions and bonding."
+        },
+        {
+          "id": "Tren periodik memiliki pengecualian; hindari generalisasi mutlak.",
+          "en": "Periodic trends have exceptions; avoid absolute generalizations."
+        }
+      ],
+      "source_ids": [
+        "openstax-6"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "bonding",
+      "order": 4,
+      "title": {
+        "id": "Ikatan & Bentuk Molekul",
+        "en": "Bonding & Molecular Shape"
+      },
+      "intro": {
+        "id": "Pelajari ikatan ionik, kovalen, serta kaitan bentuk molekul dengan kepolaran.",
+        "en": "Study ionic and covalent bonding and how molecular geometry affects polarity."
+      },
+      "key_points": [
+        {
+          "id": "Ikatan ionik melibatkan gaya tarik muatan berlawanan.",
+          "en": "Ionic bonding involves attraction between oppositely charged ions."
+        },
+        {
+          "id": "Ikatan kovalen melibatkan pasangan elektron bersama.",
+          "en": "Covalent bonds involve shared electron pairs."
+        },
+        {
+          "id": "Kepolaran molekul dipengaruhi ikatan dan geometri.",
+          "en": "Molecular polarity depends on bond dipoles and geometry."
+        }
+      ],
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "stoich",
+      "order": 5,
+      "title": {
+        "id": "Mol & Stoikiometri",
+        "en": "Moles & Stoichiometry"
+      },
+      "intro": {
+        "id": "Hubungkan jumlah zat, massa molar, dan koefisien reaksi yang setara.",
+        "en": "Connect amount of substance, molar mass, and balanced equation coefficients."
+      },
+      "key_points": [
+        {
+          "id": "Satu mol berisi tepat 6,02214076 × 10²³ entitas.",
+          "en": "One mole contains exactly 6.02214076 × 10²³ specified entities."
+        },
+        {
+          "id": "Koefisien menyatakan perbandingan mol dalam persamaan setara.",
+          "en": "Coefficients represent mole ratios in a balanced equation."
+        },
+        {
+          "id": "Gunakan massa molar untuk mengubah massa menjadi mol.",
+          "en": "Use molar mass to convert mass to moles."
+        }
+      ],
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "solutions",
+      "order": 6,
+      "title": {
+        "id": "Larutan & Konsentrasi",
+        "en": "Solutions & Concentration"
+      },
+      "intro": {
+        "id": "Pahami larutan, pelarut, zat terlarut, molaritas, dan pengenceran.",
+        "en": "Understand solutions, solvents, solutes, molarity, and dilution."
+      },
+      "key_points": [
+        {
+          "id": "Molaritas adalah mol zat terlarut per liter larutan.",
+          "en": "Molarity is moles of solute per litre of solution."
+        },
+        {
+          "id": "Pengenceran tidak mengubah mol zat terlarut jika tidak bereaksi.",
+          "en": "Dilution preserves solute moles in the absence of reaction."
+        },
+        {
+          "id": "Senyawa ionik tidak selalu larut dengan baik dalam air.",
+          "en": "Ionic compounds are not always highly water-soluble."
+        }
+      ],
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "acids",
+      "order": 7,
+      "title": {
+        "id": "Asam, Basa & pH",
+        "en": "Acids, Bases & pH"
+      },
+      "intro": {
+        "id": "Bedakan sifat asam dan basa serta makna logaritmik pH pada larutan air.",
+        "en": "Differentiate acids and bases and understand logarithmic pH in aqueous solutions."
+      },
+      "key_points": [
+        {
+          "id": "pH terkait aktivitas ion hidrogen dalam air.",
+          "en": "pH relates to hydrogen-ion activity in water."
+        },
+        {
+          "id": "Air murni netral pada 25°C memiliki pH mendekati 7.",
+          "en": "Pure neutral water at 25°C has pH near 7."
+        },
+        {
+          "id": "Satu unit pH berkaitan dengan faktor sepuluh dalam aktivitas H⁺.",
+          "en": "One pH unit corresponds to a tenfold factor in H⁺ activity."
+        }
+      ],
+      "source_ids": [
+        "openstax-14"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "gases",
+      "order": 8,
+      "title": {
+        "id": "Gas & Hukum Gas",
+        "en": "Gases & Gas Laws"
+      },
+      "intro": {
+        "id": "Terapkan hubungan tekanan, volume, suhu mutlak, dan jumlah gas dalam kasus sederhana.",
+        "en": "Apply pressure, volume, absolute temperature, and gas amount relations to simple cases."
+      },
+      "key_points": [
+        {
+          "id": "Gunakan kelvin, bukan Celsius, dalam persamaan gas ideal.",
+          "en": "Use kelvin, not Celsius, in the ideal gas equation."
+        },
+        {
+          "id": "Hukum Boyle berlaku pada suhu dan mol yang tetap.",
+          "en": "Boyle’s law applies with fixed temperature and amount of gas."
+        },
+        {
+          "id": "Model gas ideal adalah pendekatan yang memiliki keterbatasan.",
+          "en": "The ideal gas model is an approximation with limitations."
+        }
+      ],
+      "source_ids": [
+        "openstax-9"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "energy",
+      "order": 9,
+      "title": {
+        "id": "Termokimia & Energi",
+        "en": "Thermochemistry & Energy"
+      },
+      "intro": {
+        "id": "Kenali pertukaran kalor, sistem-lingkungan, dan tanda perubahan entalpi.",
+        "en": "Understand heat exchange, system/surroundings, and enthalpy change signs."
+      },
+      "key_points": [
+        {
+          "id": "Reaksi eksotermik melepaskan kalor ke lingkungan.",
+          "en": "Exothermic processes release heat to the surroundings."
+        },
+        {
+          "id": "Pada tekanan tetap, kalor reaksi sering dinyatakan sebagai ΔH.",
+          "en": "At constant pressure, reaction heat is often expressed as ΔH."
+        },
+        {
+          "id": "Energi tidak diciptakan atau dimusnahkan.",
+          "en": "Energy is conserved rather than created or destroyed."
+        }
+      ],
+      "source_ids": [
+        "openstax-5"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "kinetics",
+      "order": 10,
+      "title": {
+        "id": "Kinetika & Kesetimbangan",
+        "en": "Kinetics & Equilibrium"
+      },
+      "intro": {
+        "id": "Pisahkan laju reaksi dari posisi kesetimbangan dan pahami fungsi katalis.",
+        "en": "Separate reaction rate from equilibrium position and understand catalysts."
+      },
+      "key_points": [
+        {
+          "id": "Katalis dapat mempercepat tercapainya kesetimbangan tanpa mengubah K.",
+          "en": "A catalyst can speed reaching equilibrium without changing K."
+        },
+        {
+          "id": "Kesetimbangan bersifat dinamis, bukan berhenti bereaksi.",
+          "en": "Equilibrium is dynamic, not a cessation of reaction."
+        },
+        {
+          "id": "Suhu memengaruhi konstanta kesetimbangan.",
+          "en": "Temperature affects the equilibrium constant."
+        }
+      ],
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "redox",
+      "order": 11,
+      "title": {
+        "id": "Redoks & Elektrokimia",
+        "en": "Redox & Electrochemistry"
+      },
+      "intro": {
+        "id": "Lacak perpindahan elektron, bilangan oksidasi, serta reaksi pada sel elektrokimia.",
+        "en": "Track electron transfer, oxidation states, and electrochemical cell reactions."
+      },
+      "key_points": [
+        {
+          "id": "Oksidasi adalah kehilangan elektron; reduksi adalah penerimaan elektron.",
+          "en": "Oxidation is loss of electrons; reduction is gain."
+        },
+        {
+          "id": "Elektron mengalir dari anode ke katode melalui rangkaian luar sel galvanik.",
+          "en": "Electrons travel from anode to cathode in an external galvanic circuit."
+        },
+        {
+          "id": "Tanda potensial sel bergantung pada kondisi dan reaksi.",
+          "en": "Cell potential signs depend on reaction and conditions."
+        }
+      ],
+      "source_ids": [
+        "openstax-17"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "organic",
+      "order": 12,
+      "title": {
+        "id": "Kimia Organik Dasar",
+        "en": "Introduction to Organic Chemistry"
+      },
+      "intro": {
+        "id": "Kenali gugus fungsi umum dan bagaimana struktur memengaruhi sifat molekul.",
+        "en": "Recognize common functional groups and how molecular structure affects properties."
+      },
+      "key_points": [
+        {
+          "id": "Gugus fungsi membantu mengelompokkan reaktivitas senyawa organik.",
+          "en": "Functional groups help classify organic reactivity."
+        },
+        {
+          "id": "Alkohol memiliki gugus hidroksil yang terikat pada karbon jenuh.",
+          "en": "Alcohols have hydroxyl groups attached to saturated carbon."
+        },
+        {
+          "id": "Isomer dapat memiliki rumus sama tetapi susunan berbeda.",
+          "en": "Isomers can share a formula while differing in arrangement."
+        }
+      ],
+      "source_ids": [
+        "openstax-20"
+      ],
+      "estimated_minutes": 12
+    },
+    {
+      "id": "safety",
+      "order": 13,
+      "title": {
+        "id": "Keselamatan & Etika Sains",
+        "en": "Laboratory Safety & Scientific Ethics"
+      },
+      "intro": {
+        "id": "Terapkan prinsip keselamatan, pelabelan zat, kejujuran data, dan tanggung jawab lingkungan.",
+        "en": "Apply safety, chemical labeling, data honesty, and environmental responsibility."
+      },
+      "key_points": [
+        {
+          "id": "Baca label, SDS, dan prosedur institusi sebelum bekerja.",
+          "en": "Read the label, SDS and local lab procedures before work."
+        },
+        {
+          "id": "Jangan mencium atau mencicipi bahan kimia secara langsung.",
+          "en": "Never directly sniff or taste laboratory chemicals."
+        },
+        {
+          "id": "Data eksperimen harus dicatat tanpa dimanipulasi.",
+          "en": "Record experimental results without fabrication."
+        }
+      ],
+      "source_ids": [
+        "openstax-1"
+      ],
+      "estimated_minutes": 12
+    }
+  ],
+  "questions": [
+    {
+      "id": "matter-q01",
+      "topic_id": "matter",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Manakah yang termasuk perubahan kimia?",
+        "en": "Which event is a chemical change?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "Besi berkarat",
+            "en": "Iron rusts"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Gula larut",
+            "en": "Sugar dissolves"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Es mencair",
+            "en": "Ice melts"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Air menguap",
+            "en": "Water evaporates"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Perkaratan menghasilkan senyawa oksida baru.",
+        "en": "Rusting forms new oxide compounds."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-q02",
+      "topic_id": "matter",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Benda bermassa 24 g dan bervolume 8 mL memiliki massa jenis berapa?",
+        "en": "An object has mass 24 g and volume 8 mL. What is its density?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "2 g/mL",
+            "en": "2 g/mL"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "8 g/mL",
+            "en": "8 g/mL"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "3 g/mL",
+            "en": "3 g/mL"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "32 g/mL",
+            "en": "32 g/mL"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Massa jenis = 24/8 = 3 g/mL.",
+        "en": "Density = 24/8 = 3 g/mL."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-q03",
+      "topic_id": "matter",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Manakah contoh sifat intensif?",
+        "en": "Which is an intensive property?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "Massa jenis",
+            "en": "Density"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Massa",
+            "en": "Mass"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Volume",
+            "en": "Volume"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Jumlah mol",
+            "en": "Amount in moles"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Massa jenis tidak bergantung pada ukuran sampel homogen.",
+        "en": "Density does not depend on the size of a homogeneous sample."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-q04",
+      "topic_id": "matter",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Campuran homogen memiliki ciri utama apa?",
+        "en": "What best describes a homogeneous mixture?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "Selalu terdiri dari satu unsur",
+            "en": "It always has one element"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Tidak dapat dipisahkan",
+            "en": "It cannot be separated"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Selalu padat",
+            "en": "It is always solid"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Komposisinya seragam pada skala pengamatan",
+            "en": "Its composition is uniform at the observed scale"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Larutan adalah contoh campuran homogen.",
+        "en": "A solution is a homogeneous mixture."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-q05",
+      "topic_id": "matter",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Angka 0,00450 memiliki berapa angka penting?",
+        "en": "How many significant figures are in 0.00450?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "2",
+            "en": "2"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "3",
+            "en": "3"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "5",
+            "en": "5"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "1",
+            "en": "1"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Nol depan tidak penting; 4, 5, dan nol akhir sesudah desimal penting.",
+        "en": "Leading zeros are not significant; 4, 5 and the trailing decimal zero are significant."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "atoms-q01",
+      "topic_id": "atoms",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Nomor atom unsur menunjukkan jumlah apa?",
+        "en": "What does the atomic number of an element count?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "Proton dan neutron",
+            "en": "Protons plus neutrons"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Neutron",
+            "en": "Neutrons"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Proton",
+            "en": "Protons"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Elektron valensi",
+            "en": "Valence electrons"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Identitas unsur ditentukan oleh jumlah proton.",
+        "en": "Element identity is determined by proton count."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-q02",
+      "topic_id": "atoms",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Atom netral dengan Z=8 memiliki berapa elektron?",
+        "en": "How many electrons does a neutral atom with Z=8 have?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "6",
+            "en": "6"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "8",
+            "en": "8"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "10",
+            "en": "10"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "16",
+            "en": "16"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Atom netral memiliki elektron sebanyak proton, yaitu 8.",
+        "en": "A neutral atom has 8 electrons, equal to its 8 protons."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-q03",
+      "topic_id": "atoms",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Isotop karbon-14 memiliki 6 proton. Berapa neutronnya?",
+        "en": "Carbon-14 has 6 protons. How many neutrons does it have?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "20",
+            "en": "20"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "6",
+            "en": "6"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "14",
+            "en": "14"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "8",
+            "en": "8"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Neutron = nomor massa 14 − proton 6 = 8.",
+        "en": "Neutrons = mass number 14 − 6 protons = 8."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-q04",
+      "topic_id": "atoms",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Na⁺ terbentuk ketika atom natrium ...",
+        "en": "Na⁺ forms when a sodium atom ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "menerima satu neutron",
+            "en": "gains one neutron"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "kehilangan satu proton",
+            "en": "loses one proton"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "menerima satu elektron",
+            "en": "gains one electron"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "kehilangan satu elektron",
+            "en": "loses one electron"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Muatan +1 berarti satu elektron lebih sedikit daripada proton.",
+        "en": "A +1 charge means one fewer electron than protons."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-q05",
+      "topic_id": "atoms",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Manakah pasangan yang merupakan isotop?",
+        "en": "Which pair represents isotopes?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "¹²C dan ¹⁴N",
+            "en": "¹²C and ¹⁴N"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "O²⁻ dan Ne",
+            "en": "O²⁻ and Ne"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Na dan Mg",
+            "en": "Na and Mg"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "¹²C dan ¹⁴C",
+            "en": "¹²C and ¹⁴C"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Isotop memiliki Z sama tetapi nomor massa berbeda.",
+        "en": "Isotopes share atomic number but have different mass numbers."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "periodic-q01",
+      "topic_id": "periodic",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Satu periode pada tabel periodik berjalan ke arah ...",
+        "en": "A period in the periodic table runs ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "diagonal",
+            "en": "diagonally"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "acak",
+            "en": "randomly"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "vertikal",
+            "en": "vertically"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "horizontal",
+            "en": "horizontally"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Periode adalah baris mendatar.",
+        "en": "A period is a horizontal row."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-q02",
+      "topic_id": "periodic",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Unsur golongan 18 umumnya disebut ...",
+        "en": "Group 18 elements are commonly called ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "lantanida",
+            "en": "lanthanides"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "logam alkali",
+            "en": "alkali metals"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "halogen",
+            "en": "halogens"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "gas mulia",
+            "en": "noble gases"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Helium, neon, dan argon termasuk gas mulia.",
+        "en": "Helium, neon, and argon are noble gases."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-q03",
+      "topic_id": "periodic",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Dalam satu periode, jari-jari atom unsur golongan utama secara umum ... ke kanan.",
+        "en": "Across a period, main-group atomic radii generally ... to the right."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "menjadi nol",
+            "en": "become zero"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "selalu tetap",
+            "en": "remain constant"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "meningkat",
+            "en": "increase"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menurun",
+            "en": "decrease"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Muatan inti efektif cenderung meningkat sehingga elektron lebih tertarik.",
+        "en": "Effective nuclear charge generally increases, pulling electrons closer."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-q04",
+      "topic_id": "periodic",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Elektron yang paling langsung terlibat dalam pembentukan ikatan disebut ...",
+        "en": "Electrons most directly involved in chemical bonding are called ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "elektron inti",
+            "en": "core electrons"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "neutron",
+            "en": "neutrons"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "elektron valensi",
+            "en": "valence electrons"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "proton",
+            "en": "protons"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Elektron valensi berada pada kulit atau orbital terluar yang relevan.",
+        "en": "Valence electrons occupy outer chemically active orbitals."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-q05",
+      "topic_id": "periodic",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Unsur manakah termasuk logam alkali?",
+        "en": "Which element is an alkali metal?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "O",
+            "en": "O"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Ne",
+            "en": "Ne"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Na",
+            "en": "Na"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Cl",
+            "en": "Cl"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Natrium (Na) adalah unsur golongan 1.",
+        "en": "Sodium (Na) belongs to group 1."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "bonding-q01",
+      "topic_id": "bonding",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Pada ikatan kovalen, atom ...",
+        "en": "In a covalent bond, atoms ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "berbagi elektron",
+            "en": "share electrons"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "melepaskan neutron",
+            "en": "release neutrons"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "selalu menjadi ion",
+            "en": "always become ions"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "berbagi proton",
+            "en": "share protons"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Dua inti tertarik kepada pasangan elektron bersama.",
+        "en": "Both nuclei attract the shared electrons."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-q02",
+      "topic_id": "bonding",
+      "difficulty": 1,
+      "prompt": {
+        "id": "NaCl padat disusun terutama oleh ...",
+        "en": "Solid NaCl is primarily built from ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "molekul NaCl terpisah",
+            "en": "isolated NaCl molecules"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "proton bebas",
+            "en": "free protons"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "ion Na⁺ dan Cl⁻ dalam kisi",
+            "en": "Na⁺ and Cl⁻ ions in a lattice"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "atom netral acak",
+            "en": "random neutral atoms"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Kristal NaCl adalah kisi ionik.",
+        "en": "NaCl crystals form an ionic lattice."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-q03",
+      "topic_id": "bonding",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Mengapa H₂O merupakan molekul polar?",
+        "en": "Why is H₂O a polar molecule?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "Bentuk linear membatalkan dipol",
+            "en": "Its linear shape cancels dipoles"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "Bentuk bengkok tidak membatalkan dipol O–H",
+            "en": "Its bent shape does not cancel O–H dipoles"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "Tidak ada perbedaan keelektronegatifan",
+            "en": "There is no electronegativity difference"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "Semua molekul triatomik polar",
+            "en": "All triatomic molecules are polar"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "H₂O bengkok; vektor dipol ikatan tidak saling meniadakan.",
+        "en": "Water is bent; bond dipoles do not cancel."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-q04",
+      "topic_id": "bonding",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Bentuk molekul CO₂ pada keadaan gas adalah ...",
+        "en": "The molecular shape of gaseous CO₂ is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "segitiga planar",
+            "en": "trigonal planar"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "linear",
+            "en": "linear"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "tetrahedral",
+            "en": "tetrahedral"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "bengkok",
+            "en": "bent"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Dua daerah ikatan sekitar karbon tersusun linear.",
+        "en": "Two bonding regions around carbon lead to linear geometry."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-q05",
+      "topic_id": "bonding",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Ikatan hidrogen antarmolekul air terutama melibatkan ...",
+        "en": "Hydrogen bonding between water molecules primarily involves ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "dua kation Na⁺",
+            "en": "two Na⁺ cations"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "ikatan logam",
+            "en": "metallic bonding"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "H pada O dan pasangan elektron O lain",
+            "en": "H attached to O and a lone pair on another O"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "inti H dan neutron",
+            "en": "a hydrogen nucleus and a neutron"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "H terikat pada O dapat berinteraksi kuat dengan O molekul lain.",
+        "en": "Hydrogen bonded to O interacts with oxygen on neighboring molecules."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "stoich-q01",
+      "topic_id": "stoich",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Koefisien setara untuk H₂ + O₂ → H₂O adalah ...",
+        "en": "Balanced coefficients for H₂ + O₂ → H₂O are ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "2,1,2",
+            "en": "2,1,2"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "2,2,1",
+            "en": "2,2,1"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "1,1,1",
+            "en": "1,1,1"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "1,2,1",
+            "en": "1,2,1"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "2H₂ + O₂ → 2H₂O mempertahankan jumlah atom.",
+        "en": "2H₂ + O₂ → 2H₂O conserves atom counts."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-q02",
+      "topic_id": "stoich",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Berapa mol dalam 18 g air jika M(H₂O) ≈ 18 g/mol?",
+        "en": "How many moles are in 18 g of water if M(H₂O) ≈ 18 g/mol?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "2 mol",
+            "en": "2 mol"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "0,5 mol",
+            "en": "0.5 mol"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "1 mol",
+            "en": "1 mol"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "18 mol",
+            "en": "18 mol"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "n = m/M = 18/18 = 1 mol.",
+        "en": "n = m/M = 18/18 = 1 mol."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-q03",
+      "topic_id": "stoich",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Satu mol merupakan satuan ...",
+        "en": "The mole is the SI unit of ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "suhu",
+            "en": "temperature"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "volume",
+            "en": "volume"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "jumlah zat",
+            "en": "amount of substance"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "massa",
+            "en": "mass"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Mol adalah satuan SI jumlah zat.",
+        "en": "The mole is the SI unit of amount of substance."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-q04",
+      "topic_id": "stoich",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Pada N₂ + 3H₂ → 2NH₃, 3 mol H₂ bereaksi dengan ... mol N₂.",
+        "en": "In N₂ + 3H₂ → 2NH₃, 3 mol H₂ reacts with ... mol N₂."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "1",
+            "en": "1"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "2",
+            "en": "2"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "3",
+            "en": "3"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "6",
+            "en": "6"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Perbandingan mol N₂ : H₂ adalah 1 : 3.",
+        "en": "The N₂:H₂ mole ratio is 1:3."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-q05",
+      "topic_id": "stoich",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Jika salah satu reaktan habis lebih dulu, reaktan itu disebut ...",
+        "en": "The reactant that is completely used first is the ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "produk utama",
+            "en": "main product"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "katalis",
+            "en": "catalyst"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "pereaksi pembatas",
+            "en": "limiting reactant"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "pelarut",
+            "en": "solvent"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Pereaksi pembatas menentukan hasil maksimum teoritis.",
+        "en": "The limiting reactant sets the theoretical maximum yield."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "solutions-q01",
+      "topic_id": "solutions",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Molaritas didefinisikan sebagai ...",
+        "en": "Molarity is defined as ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "gram/liter pelarut",
+            "en": "grams/litre solvent"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "mol zat terlarut/liter larutan",
+            "en": "moles solute/litre solution"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "mol pelarut/liter larutan",
+            "en": "moles solvent/litre solution"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "mol/gram larutan",
+            "en": "moles/gram solution"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "M = n zat terlarut/V larutan (L).",
+        "en": "M = solute moles/solution volume (L)."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-q02",
+      "topic_id": "solutions",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Larutan 0,5 mol dalam 2 L memiliki molaritas ...",
+        "en": "A solution with 0.5 mol solute in 2 L has molarity ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "4 M",
+            "en": "4 M"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "2 M",
+            "en": "2 M"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "1 M",
+            "en": "1 M"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "0,25 M",
+            "en": "0.25 M"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "M = 0,5/2 = 0,25 M.",
+        "en": "M = 0.5/2 = 0.25 M."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-q03",
+      "topic_id": "solutions",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Ketika 100 mL larutan 2 M diencerkan sampai 200 mL, konsentrasi akhirnya ...",
+        "en": "Diluting 100 mL of 2 M solution to 200 mL gives ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "4 M",
+            "en": "4 M"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "1 M",
+            "en": "1 M"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "0,5 M",
+            "en": "0.5 M"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "2 M",
+            "en": "2 M"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "M₁V₁ = M₂V₂ sehingga M₂ = 1 M.",
+        "en": "M₁V₁ = M₂V₂, so M₂ = 1 M."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-q04",
+      "topic_id": "solutions",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Elektrolit kuat dalam air umumnya ...",
+        "en": "A strong electrolyte in water generally ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "selalu tidak berwarna",
+            "en": "is always colorless"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "terdisosiasi hampir sempurna",
+            "en": "dissociates essentially completely"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "hanya berbentuk gas",
+            "en": "exists only as gas"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "tidak membentuk ion",
+            "en": "forms no ions"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Ion bergerak memungkinkan konduksi listrik.",
+        "en": "Mobile ions enable electrical conduction."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-q05",
+      "topic_id": "solutions",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Dalam air garam, air berperan sebagai ...",
+        "en": "In salt water, water acts as the ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "produk",
+            "en": "product"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "katalis",
+            "en": "catalyst"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "endapan",
+            "en": "precipitate"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "pelarut",
+            "en": "solvent"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Air adalah komponen pelarut utama.",
+        "en": "Water is the main solvent."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "acids-q01",
+      "topic_id": "acids",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Pada 25°C, pH air murni netral kira-kira ...",
+        "en": "At 25°C, neutral pure water has pH approximately ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "0",
+            "en": "0"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "10",
+            "en": "10"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "14",
+            "en": "14"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "7",
+            "en": "7"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Pada 25°C aktivitas H⁺ dan OH⁻ seimbang; pH sekitar 7.",
+        "en": "At 25°C, H⁺ and OH⁻ activities are balanced; pH is about 7."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-q02",
+      "topic_id": "acids",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Larutan pH 3 dibanding pH 4 memiliki aktivitas H⁺ sekitar ...",
+        "en": "Compared with pH 4, pH 3 has H⁺ activity about ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "100 kali lebih rendah",
+            "en": "100 times lower"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "sama",
+            "en": "equal"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "10 kali lebih rendah",
+            "en": "10 times lower"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "10 kali lebih tinggi",
+            "en": "10 times higher"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Penurunan pH satu unit berarti peningkatan aktivitas H⁺ sepuluh kali.",
+        "en": "A one-unit pH decrease corresponds to tenfold higher H⁺ activity."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-q03",
+      "topic_id": "acids",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Menurut Brønsted–Lowry, asam adalah zat yang ...",
+        "en": "By Brønsted–Lowry, an acid ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "mendonorkan proton",
+            "en": "donates a proton"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "selalu logam",
+            "en": "is always a metal"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "selalu menghasilkan O₂",
+            "en": "always produces O₂"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menerima proton",
+            "en": "accepts a proton"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Asam Brønsted–Lowry mendonorkan proton H⁺.",
+        "en": "A Brønsted–Lowry acid donates H⁺."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-q04",
+      "topic_id": "acids",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Pasangan konjugasi NH₄⁺ setelah melepaskan H⁺ adalah ...",
+        "en": "After NH₄⁺ loses H⁺, its conjugate partner is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "NH₂⁻",
+            "en": "NH₂⁻"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "NO₃⁻",
+            "en": "NO₃⁻"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "N₂",
+            "en": "N₂"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "NH₃",
+            "en": "NH₃"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "NH₄⁺ ⇌ NH₃ + H⁺.",
+        "en": "NH₄⁺ ⇌ NH₃ + H⁺."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-q05",
+      "topic_id": "acids",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Penggunaan indikator pH bertujuan utama untuk ...",
+        "en": "A pH indicator is mainly used to ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "menghitung neutron",
+            "en": "count neutrons"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "mengukur massa reaksi",
+            "en": "measure reaction mass"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "memisahkan isotop",
+            "en": "separate isotopes"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "memperkirakan keasaman berdasarkan perubahan warna",
+            "en": "estimate acidity by color change"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Indikator berubah warna pada rentang pH tertentu.",
+        "en": "Indicators change color over a characteristic pH range."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "gases-q01",
+      "topic_id": "gases",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Persamaan gas ideal adalah ...",
+        "en": "The ideal gas equation is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "PV = nRT",
+            "en": "PV = nRT"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "P = VnRT",
+            "en": "P = VnRT"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "PV = RT/n",
+            "en": "PV = RT/n"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "P + V = nRT",
+            "en": "P + V = nRT"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Gas ideal mengikuti PV = nRT dengan satuan konsisten.",
+        "en": "An ideal gas follows PV = nRT with consistent units."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-q02",
+      "topic_id": "gases",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Suhu 27°C kira-kira setara dengan ... K.",
+        "en": "27°C corresponds approximately to ... K."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "27",
+            "en": "27"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "100",
+            "en": "100"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "300",
+            "en": "300"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "373",
+            "en": "373"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "T(K) = T(°C) + 273,15 ≈ 300 K.",
+        "en": "T(K) = T(°C) + 273.15 ≈ 300 K."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-q03",
+      "topic_id": "gases",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Pada suhu tetap, tekanan gas meningkat ketika volumenya ...",
+        "en": "At constant temperature, gas pressure increases as volume ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "tetap",
+            "en": "stays fixed"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "menurun",
+            "en": "decreases"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "meningkat",
+            "en": "increases"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menjadi nol",
+            "en": "becomes zero"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Hukum Boyle: P berbanding terbalik dengan V.",
+        "en": "Boyle’s law: P is inversely proportional to V."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-q04",
+      "topic_id": "gases",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Tekanan total campuran gas ideal sama dengan ...",
+        "en": "Total pressure of an ideal gas mixture equals ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "nol",
+            "en": "zero"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "tekanan paling tinggi saja",
+            "en": "only the largest pressure"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "rata-rata tekanan parsial",
+            "en": "mean partial pressure"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "jumlah tekanan parsial",
+            "en": "sum of partial pressures"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Hukum Dalton menjumlahkan tekanan parsial.",
+        "en": "Dalton’s law sums partial pressures."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-q05",
+      "topic_id": "gases",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Untuk dua sampel gas ideal pada T, V, dan n sama, tekanannya ...",
+        "en": "Two ideal gas samples with equal T, V, and n have pressures that are ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "selalu nol",
+            "en": "always zero"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "bergantung warna gas",
+            "en": "dependent on gas color"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "selalu berbeda menurut massa molekul",
+            "en": "always different by molecular mass"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "sama",
+            "en": "equal"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "PV=nRT tidak memasukkan identitas spesies pada model ideal.",
+        "en": "PV=nRT does not depend on species identity in the ideal model."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "energy-q01",
+      "topic_id": "energy",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Reaksi eksotermik memiliki ΔH umumnya ...",
+        "en": "An exothermic reaction generally has ΔH ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "negatif",
+            "en": "negative"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "tak terdefinisi",
+            "en": "undefined"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "positif",
+            "en": "positive"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "selalu nol",
+            "en": "always zero"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Eksotermik melepaskan energi dari sistem sehingga ΔH < 0.",
+        "en": "Heat release from the system makes ΔH < 0."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-q02",
+      "topic_id": "energy",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Jika 100 g air naik suhu 2°C dan c≈4,18 J g⁻¹ °C⁻¹, kalor yang diserap kira-kira ...",
+        "en": "If 100 g water warms by 2°C with c≈4.18 J g⁻¹ °C⁻¹, absorbed heat is about ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "8360 J",
+            "en": "8360 J"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "8,36 J",
+            "en": "8.36 J"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "836 J",
+            "en": "836 J"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "209 J",
+            "en": "209 J"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "q=mcΔT=100×4,18×2=836 J.",
+        "en": "q=mcΔT=100×4.18×2=836 J."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-q03",
+      "topic_id": "energy",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Dalam kalorimetri, sistem yang dipelajari umumnya ...",
+        "en": "In calorimetry, the system under study is generally ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "reaksi atau proses yang diamati",
+            "en": "the observed reaction or process"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "termometer saja",
+            "en": "only the thermometer"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "udara bebas saja",
+            "en": "only open air"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "seluruh alam semesta",
+            "en": "the entire universe"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Sistem dibedakan dari lingkungan tempat kalor berpindah.",
+        "en": "The system is distinguished from surroundings receiving or supplying heat."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-q04",
+      "topic_id": "energy",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Perubahan fase mencair biasanya ... kalor.",
+        "en": "Melting typically ... heat."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "memusnahkan",
+            "en": "destroys"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "melepaskan",
+            "en": "releases"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "tidak melibatkan",
+            "en": "does not involve"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menyerap",
+            "en": "absorbs"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Meleleh memerlukan kalor untuk mengatasi sebagian interaksi antarmolekul.",
+        "en": "Melting absorbs heat to overcome some intermolecular attractions."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-q05",
+      "topic_id": "energy",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Hukum Hess menyatakan ΔH total reaksi ...",
+        "en": "Hess’s law says the total ΔH ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "tidak bergantung pada jalur reaksi",
+            "en": "is independent of reaction pathway"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "sama dengan suhu",
+            "en": "equals temperature"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "selalu positif",
+            "en": "is always positive"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "bergantung urutan tahap",
+            "en": "depends on reaction steps"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Entalpi adalah fungsi keadaan.",
+        "en": "Enthalpy is a state function."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "kinetics-q01",
+      "topic_id": "kinetics",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Katalis umumnya bekerja dengan ...",
+        "en": "A catalyst generally works by ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "memberikan jalur berenergi aktivasi lebih rendah",
+            "en": "providing a lower-activation-energy pathway"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "menghabiskan reaktan",
+            "en": "consuming reactants"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "menaikkan energi aktivasi",
+            "en": "increasing activation energy"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "mengubah kesetimbangan K pada suhu tetap",
+            "en": "changing K at constant temperature"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Katalis mengubah jalur kinetik, bukan termodinamika K pada suhu tetap.",
+        "en": "A catalyst changes the kinetic pathway, not K at fixed temperature."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-q02",
+      "topic_id": "kinetics",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Pada kesetimbangan dinamis, laju reaksi maju dan balik ...",
+        "en": "At dynamic equilibrium, forward and reverse rates are ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "nol",
+            "en": "zero"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "selalu berbeda",
+            "en": "always different"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "sama",
+            "en": "equal"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "selalu meningkat",
+            "en": "always increasing"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Keduanya tetap berlangsung dengan laju yang sama.",
+        "en": "Both directions continue at equal rates."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-q03",
+      "topic_id": "kinetics",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Meningkatkan konsentrasi reaktan dapat ... laju reaksi jika faktor lain tetap.",
+        "en": "Increasing reactant concentration may ... reaction rate if other factors are fixed."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "tidak mungkin memengaruhi",
+            "en": "never affect"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "meningkatkan",
+            "en": "increase"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "selalu menurunkan",
+            "en": "always decrease"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menghilangkan",
+            "en": "eliminate"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Lebih banyak tumbukan efektif dapat terjadi, tergantung mekanisme.",
+        "en": "More effective collisions can occur, depending on mechanism."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-q04",
+      "topic_id": "kinetics",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Pada kesetimbangan, nilai hasil bagi reaksi Q adalah ...",
+        "en": "At equilibrium, the reaction quotient Q is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "selalu 1",
+            "en": "always 1"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "selalu 0",
+            "en": "always 0"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "tak ada",
+            "en": "undefined"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "sama dengan K",
+            "en": "equal to K"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Definisi kesetimbangan kimia memberi Q=K.",
+        "en": "At chemical equilibrium, Q=K."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-q05",
+      "topic_id": "kinetics",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Jika Q < K, reaksi bersih cenderung bergerak ke ...",
+        "en": "If Q < K, the net reaction tends to move ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "tidak bergerak",
+            "en": "neither direction"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "arah reaktan",
+            "en": "reactants"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "arah produk",
+            "en": "products"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "berhenti total",
+            "en": "stop completely"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Nilai Q yang terlalu kecil membuat reaksi maju disukai menuju K.",
+        "en": "A Q below K favors net forward reaction toward K."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "redox-q01",
+      "topic_id": "redox",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Oksidasi secara sederhana berarti ...",
+        "en": "Oxidation, in electron terms, is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "menerima neutron",
+            "en": "gaining neutrons"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "menerima elektron",
+            "en": "gaining electrons"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "kehilangan elektron",
+            "en": "losing electrons"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "kehilangan massa",
+            "en": "losing mass"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Oksidasi ialah pelepasan elektron.",
+        "en": "Oxidation is the loss of electrons."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-q02",
+      "topic_id": "redox",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Pada reaksi Zn → Zn²⁺ + 2e⁻, Zn mengalami ...",
+        "en": "In Zn → Zn²⁺ + 2e⁻, Zn undergoes ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "oksidasi",
+            "en": "oxidation"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "reduksi",
+            "en": "reduction"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "netralisasi",
+            "en": "neutralization"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "pengendapan",
+            "en": "precipitation"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Zn melepaskan dua elektron.",
+        "en": "Zinc loses two electrons."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-q03",
+      "topic_id": "redox",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Pada sel galvanik, proses reduksi terjadi di ...",
+        "en": "In a galvanic cell, reduction occurs at the ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "anode",
+            "en": "anode"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "jembatan garam",
+            "en": "salt bridge"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "katode",
+            "en": "cathode"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "larutan elektrolit saja",
+            "en": "electrolyte only"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Katode adalah tempat reduksi.",
+        "en": "The cathode is the site of reduction."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-q04",
+      "topic_id": "redox",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Bilangan oksidasi O pada kebanyakan senyawa biasa adalah ...",
+        "en": "The oxidation number of O in most ordinary compounds is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "−2",
+            "en": "−2"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "+2",
+            "en": "+2"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "0",
+            "en": "0"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "+1",
+            "en": "+1"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "O biasanya −2, tetapi peroksida dan senyawa tertentu menjadi pengecualian.",
+        "en": "O is usually −2, with exceptions such as peroxides."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-q05",
+      "topic_id": "redox",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Pada sel galvanik, jembatan garam terutama menjaga ...",
+        "en": "In a galvanic cell, a salt bridge primarily maintains ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "suhu tetap",
+            "en": "constant temperature"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "beda warna",
+            "en": "color difference"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "netralitas muatan larutan",
+            "en": "charge balance in solutions"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "laju cahaya",
+            "en": "speed of light"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Perpindahan ion mencegah penumpukan muatan.",
+        "en": "Ion motion prevents charge buildup."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "organic-q01",
+      "topic_id": "organic",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Gugus fungsi khas alkohol sederhana adalah ...",
+        "en": "The typical functional group of a simple alcohol is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "–COOH",
+            "en": "–COOH"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "–NH₂",
+            "en": "–NH₂"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "–OH",
+            "en": "–OH"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "–CHO",
+            "en": "–CHO"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Alkohol memiliki gugus hidroksil –OH terikat pada karbon.",
+        "en": "Alcohols have a hydroxyl –OH bonded to carbon."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-q02",
+      "topic_id": "organic",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Asam karboksilat dikenali dari gugus ...",
+        "en": "A carboxylic acid is identified by the ... group."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "–O–",
+            "en": "–O–"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "–Cl",
+            "en": "–Cl"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "–SH",
+            "en": "–SH"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "–COOH",
+            "en": "–COOH"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Gugus karboksil adalah –C(=O)OH.",
+        "en": "The carboxyl group is –C(=O)OH."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-q03",
+      "topic_id": "organic",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Alkana jenuh rantai terbuka sederhana memiliki rumus umum ...",
+        "en": "A simple open-chain saturated alkane has formula ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "CₙH₂ₙ",
+            "en": "CₙH₂ₙ"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "CₙH₂ₙ₊₂",
+            "en": "CₙH₂ₙ₊₂"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "CₙHₙ",
+            "en": "CₙHₙ"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "CₙH₂ₙ₋₂",
+            "en": "CₙH₂ₙ₋₂"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Alkana asiklik jenuh mengikuti CₙH₂ₙ₊₂.",
+        "en": "Saturated acyclic alkanes follow CₙH₂ₙ₊₂."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-q04",
+      "topic_id": "organic",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Senyawa dengan rumus sama tetapi konektivitas atom berbeda disebut ...",
+        "en": "Compounds with the same formula but different atom connectivity are ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "isotop",
+            "en": "isotopes"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "alotrop unsur",
+            "en": "element allotropes"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "ion",
+            "en": "ions"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "isomer konstitusional",
+            "en": "constitutional isomers"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Isomer konstitusional berbeda urutan ikatan atom.",
+        "en": "Constitutional isomers differ in atom connectivity."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-q05",
+      "topic_id": "organic",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Etena (C₂H₄) mengandung ikatan karbon-karbon ...",
+        "en": "Ethene (C₂H₄) contains a carbon–carbon ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "ionik",
+            "en": "ionic bond"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "tunggal",
+            "en": "single bond"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "rangkap tiga",
+            "en": "triple bond"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "rangkap dua",
+            "en": "double bond"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "Etena adalah alkena dengan C=C.",
+        "en": "Ethene is an alkene containing C=C."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "safety-q01",
+      "topic_id": "safety",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Sebelum menggunakan zat kimia yang tidak dikenal, tindakan pertama yang tepat adalah ...",
+        "en": "Before using an unfamiliar chemical, the best first step is ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "memanaskan langsung",
+            "en": "heat it immediately"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "mencampur dengan asam",
+            "en": "mix it with acid"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "mencicipinya",
+            "en": "taste it"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "membaca label dan SDS",
+            "en": "read the label and SDS"
+          }
+        }
+      ],
+      "correct_choice_id": "D",
+      "explanation": {
+        "id": "SDS merinci bahaya, penanganan, dan pertolongan pertama.",
+        "en": "An SDS provides hazard, handling, and first-aid information."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-q02",
+      "topic_id": "safety",
+      "difficulty": 1,
+      "prompt": {
+        "id": "Pelindung mata di laboratorium terutama bertujuan untuk ...",
+        "en": "Safety goggles are primarily intended to ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "mengukur pH",
+            "en": "measure pH"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "melindungi mata dari percikan",
+            "en": "protect eyes from splashes"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "memperindah pakaian",
+            "en": "improve appearance"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menggantikan lemari asam",
+            "en": "replace a fume hood"
+          }
+        }
+      ],
+      "correct_choice_id": "B",
+      "explanation": {
+        "id": "Percikan dapat menyebabkan cedera mata.",
+        "en": "Chemical splashes can injure eyes."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-q03",
+      "topic_id": "safety",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Ketika hasil eksperimen tidak sesuai hipotesis, sikap ilmiah tepat adalah ...",
+        "en": "When results contradict a hypothesis, appropriate scientific conduct is to ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "mengubah data",
+            "en": "alter data"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "menerbitkan angka buatan",
+            "en": "publish invented values"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "mencatat hasil dan menilai prosedur",
+            "en": "record results and examine the method"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "menghapus hasil",
+            "en": "delete observations"
+          }
+        }
+      ],
+      "correct_choice_id": "C",
+      "explanation": {
+        "id": "Kejujuran ilmiah mewajibkan pencatatan sesuai pengamatan.",
+        "en": "Scientific integrity requires reporting observations faithfully."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-q04",
+      "topic_id": "safety",
+      "difficulty": 2,
+      "prompt": {
+        "id": "Limbah kimia laboratorium sebaiknya ...",
+        "en": "Laboratory chemical waste should be ..."
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "dikelola sesuai jenis bahan dan prosedur institusi",
+            "en": "handled by waste type and institutional protocol"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "selalu dicampur semua",
+            "en": "always mixed together"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "dibakar di meja",
+            "en": "burned on a bench"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "dituang ke saluran air tanpa cek",
+            "en": "poured down a drain unchecked"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Prosedur limbah tergantung bahaya zat dan aturan setempat.",
+        "en": "Waste handling depends on hazard class and local requirements."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-q05",
+      "topic_id": "safety",
+      "difficulty": 3,
+      "prompt": {
+        "id": "Apa yang sebaiknya dilakukan saat kaca laboratorium pecah?",
+        "en": "What should be done if laboratory glassware breaks?"
+      },
+      "choices": [
+        {
+          "id": "A",
+          "text": {
+            "id": "ikuti prosedur dan gunakan alat penanganan kaca",
+            "en": "follow procedure and use designated glass cleanup tools"
+          }
+        },
+        {
+          "id": "B",
+          "text": {
+            "id": "disapu ke wastafel",
+            "en": "sweep into a sink"
+          }
+        },
+        {
+          "id": "C",
+          "text": {
+            "id": "ambil serpihan dengan tangan",
+            "en": "pick it up barehanded"
+          }
+        },
+        {
+          "id": "D",
+          "text": {
+            "id": "tetap digunakan",
+            "en": "keep using it"
+          }
+        }
+      ],
+      "correct_choice_id": "A",
+      "explanation": {
+        "id": "Serpihan tajam ditangani dengan alat khusus dan wadah yang sesuai.",
+        "en": "Sharp fragments require suitable tools and disposal containers."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "matter-f01",
+      "topic_id": "matter",
+      "front": {
+        "id": "Materi",
+        "en": "Matter"
+      },
+      "back": {
+        "id": "Segala sesuatu yang memiliki massa dan menempati ruang.",
+        "en": "Anything that has mass and occupies space."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-f02",
+      "topic_id": "matter",
+      "front": {
+        "id": "Massa jenis",
+        "en": "Density"
+      },
+      "back": {
+        "id": "ρ = massa/volume.",
+        "en": "ρ = mass/volume."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-f03",
+      "topic_id": "matter",
+      "front": {
+        "id": "Sifat intensif",
+        "en": "Intensive property"
+      },
+      "back": {
+        "id": "Tidak bergantung pada jumlah zat dalam sampel homogen.",
+        "en": "Does not depend on sample amount for a homogeneous material."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "matter-f04",
+      "topic_id": "matter",
+      "front": {
+        "id": "Perubahan kimia",
+        "en": "Chemical change"
+      },
+      "back": {
+        "id": "Menghasilkan zat dengan komposisi atau struktur kimia berbeda.",
+        "en": "Produces substances with different chemical composition or structure."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "atoms-f01",
+      "topic_id": "atoms",
+      "front": {
+        "id": "Nomor atom Z",
+        "en": "Atomic number Z"
+      },
+      "back": {
+        "id": "Jumlah proton di inti atom.",
+        "en": "Number of protons in the nucleus."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-f02",
+      "topic_id": "atoms",
+      "front": {
+        "id": "Nomor massa A",
+        "en": "Mass number A"
+      },
+      "back": {
+        "id": "Jumlah proton + neutron.",
+        "en": "Number of protons + neutrons."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-f03",
+      "topic_id": "atoms",
+      "front": {
+        "id": "Isotop",
+        "en": "Isotope"
+      },
+      "back": {
+        "id": "Atom unsur sama dengan jumlah neutron berbeda.",
+        "en": "Atoms of the same element with different neutron counts."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "atoms-f04",
+      "topic_id": "atoms",
+      "front": {
+        "id": "Ion",
+        "en": "Ion"
+      },
+      "back": {
+        "id": "Atom atau gugus atom bermuatan listrik.",
+        "en": "Atom or group of atoms carrying electric charge."
+      },
+      "source_ids": [
+        "openstax-2",
+        "iupac-atom"
+      ]
+    },
+    {
+      "id": "periodic-f01",
+      "topic_id": "periodic",
+      "front": {
+        "id": "Golongan",
+        "en": "Group"
+      },
+      "back": {
+        "id": "Kolom vertikal pada tabel periodik.",
+        "en": "Vertical column in the periodic table."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-f02",
+      "topic_id": "periodic",
+      "front": {
+        "id": "Periode",
+        "en": "Period"
+      },
+      "back": {
+        "id": "Baris horizontal pada tabel periodik.",
+        "en": "Horizontal row in the periodic table."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-f03",
+      "topic_id": "periodic",
+      "front": {
+        "id": "Elektron valensi",
+        "en": "Valence electron"
+      },
+      "back": {
+        "id": "Elektron yang dominan terlibat dalam ikatan kimia.",
+        "en": "Electron that primarily participates in chemical bonding."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "periodic-f04",
+      "topic_id": "periodic",
+      "front": {
+        "id": "Keelektronegatifan",
+        "en": "Electronegativity"
+      },
+      "back": {
+        "id": "Kecenderungan atom menarik elektron ikatan.",
+        "en": "The tendency of an atom to attract shared bonding electrons."
+      },
+      "source_ids": [
+        "openstax-6"
+      ]
+    },
+    {
+      "id": "bonding-f01",
+      "topic_id": "bonding",
+      "front": {
+        "id": "Ikatan ionik",
+        "en": "Ionic bonding"
+      },
+      "back": {
+        "id": "Gaya tarik elektrostatik antara ion dengan muatan berlawanan.",
+        "en": "Electrostatic attraction between oppositely charged ions."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-f02",
+      "topic_id": "bonding",
+      "front": {
+        "id": "Ikatan kovalen",
+        "en": "Covalent bonding"
+      },
+      "back": {
+        "id": "Pasangan elektron dipakai bersama dua atom.",
+        "en": "An electron pair is shared between atoms."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-f03",
+      "topic_id": "bonding",
+      "front": {
+        "id": "Bentuk H₂O",
+        "en": "H₂O shape"
+      },
+      "back": {
+        "id": "Bengkok dengan sudut H–O–H sekitar 104,5°.",
+        "en": "Bent, with an H–O–H angle of about 104.5°."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "bonding-f04",
+      "topic_id": "bonding",
+      "front": {
+        "id": "Kepolaran",
+        "en": "Polarity"
+      },
+      "back": {
+        "id": "Dipol ikatan dan bentuk keseluruhan menentukan dipol molekul.",
+        "en": "Bond dipoles and overall geometry determine molecular dipole."
+      },
+      "source_ids": [
+        "openstax-7",
+        "iupac-bond"
+      ]
+    },
+    {
+      "id": "stoich-f01",
+      "topic_id": "stoich",
+      "front": {
+        "id": "Bilangan Avogadro",
+        "en": "Avogadro constant"
+      },
+      "back": {
+        "id": "6,02214076 × 10²³ mol⁻¹ (tepat).",
+        "en": "6.02214076 × 10²³ mol⁻¹ (exact)."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-f02",
+      "topic_id": "stoich",
+      "front": {
+        "id": "Massa molar",
+        "en": "Molar mass"
+      },
+      "back": {
+        "id": "Massa per satu mol zat, umumnya g/mol.",
+        "en": "Mass per mole of substance, often g/mol."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-f03",
+      "topic_id": "stoich",
+      "front": {
+        "id": "Reaksi setara",
+        "en": "Balanced equation"
+      },
+      "back": {
+        "id": "Jumlah atom tiap unsur sama di kedua sisi.",
+        "en": "Each element has equal atom counts on both sides."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "stoich-f04",
+      "topic_id": "stoich",
+      "front": {
+        "id": "Pereaksi pembatas",
+        "en": "Limiting reactant"
+      },
+      "back": {
+        "id": "Reaktan yang membatasi jumlah produk yang dapat terbentuk.",
+        "en": "Reactant that constrains the amount of product formed."
+      },
+      "source_ids": [
+        "openstax-4",
+        "iupac-mole"
+      ]
+    },
+    {
+      "id": "solutions-f01",
+      "topic_id": "solutions",
+      "front": {
+        "id": "Zat terlarut",
+        "en": "Solute"
+      },
+      "back": {
+        "id": "Zat yang terdispersi dalam pelarut.",
+        "en": "Substance dispersed in a solvent."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-f02",
+      "topic_id": "solutions",
+      "front": {
+        "id": "Pelarut",
+        "en": "Solvent"
+      },
+      "back": {
+        "id": "Medium utama tempat zat terlarut dilarutkan.",
+        "en": "Major component that dissolves solutes."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-f03",
+      "topic_id": "solutions",
+      "front": {
+        "id": "Molaritas",
+        "en": "Molarity"
+      },
+      "back": {
+        "id": "M = mol zat terlarut per liter larutan.",
+        "en": "M = moles solute per litre solution."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "solutions-f04",
+      "topic_id": "solutions",
+      "front": {
+        "id": "Pengenceran",
+        "en": "Dilution"
+      },
+      "back": {
+        "id": "Penambahan pelarut menurunkan konsentrasi tanpa mengubah jumlah mol zat terlarut.",
+        "en": "Adding solvent lowers concentration without changing solute moles."
+      },
+      "source_ids": [
+        "openstax-3",
+        "openstax-11"
+      ]
+    },
+    {
+      "id": "acids-f01",
+      "topic_id": "acids",
+      "front": {
+        "id": "pH",
+        "en": "pH"
+      },
+      "back": {
+        "id": "Ukuran logaritmik terkait aktivitas ion hidrogen pada larutan.",
+        "en": "Logarithmic measure related to hydrogen-ion activity."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-f02",
+      "topic_id": "acids",
+      "front": {
+        "id": "Asam Brønsted",
+        "en": "Brønsted acid"
+      },
+      "back": {
+        "id": "Donor proton H⁺.",
+        "en": "H⁺ proton donor."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-f03",
+      "topic_id": "acids",
+      "front": {
+        "id": "Basa Brønsted",
+        "en": "Brønsted base"
+      },
+      "back": {
+        "id": "Akseptor proton H⁺.",
+        "en": "H⁺ proton acceptor."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "acids-f04",
+      "topic_id": "acids",
+      "front": {
+        "id": "Pasangan konjugasi",
+        "en": "Conjugate pair"
+      },
+      "back": {
+        "id": "Dua spesies berbeda satu proton H⁺.",
+        "en": "Two species that differ by one H⁺ proton."
+      },
+      "source_ids": [
+        "openstax-14"
+      ]
+    },
+    {
+      "id": "gases-f01",
+      "topic_id": "gases",
+      "front": {
+        "id": "Tekanan",
+        "en": "Pressure"
+      },
+      "back": {
+        "id": "Gaya per luas permukaan.",
+        "en": "Force per unit area."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-f02",
+      "topic_id": "gases",
+      "front": {
+        "id": "Kelvin",
+        "en": "Kelvin"
+      },
+      "back": {
+        "id": "Skala suhu termodinamik dengan 0 K sebagai nol mutlak.",
+        "en": "Thermodynamic temperature scale with 0 K at absolute zero."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-f03",
+      "topic_id": "gases",
+      "front": {
+        "id": "Hukum Boyle",
+        "en": "Boyle’s law"
+      },
+      "back": {
+        "id": "PV konstan ketika T dan n tetap untuk gas ideal.",
+        "en": "PV is constant for an ideal gas at fixed T and n."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "gases-f04",
+      "topic_id": "gases",
+      "front": {
+        "id": "Tekanan parsial",
+        "en": "Partial pressure"
+      },
+      "back": {
+        "id": "Kontribusi suatu komponen gas terhadap tekanan total.",
+        "en": "A gas component’s contribution to total pressure."
+      },
+      "source_ids": [
+        "openstax-9"
+      ]
+    },
+    {
+      "id": "energy-f01",
+      "topic_id": "energy",
+      "front": {
+        "id": "Eksotermik",
+        "en": "Exothermic"
+      },
+      "back": {
+        "id": "Proses yang melepaskan kalor dari sistem ke lingkungan.",
+        "en": "Process releasing heat from system to surroundings."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-f02",
+      "topic_id": "energy",
+      "front": {
+        "id": "Endotermik",
+        "en": "Endothermic"
+      },
+      "back": {
+        "id": "Proses yang menyerap kalor ke sistem.",
+        "en": "Process absorbing heat into the system."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-f03",
+      "topic_id": "energy",
+      "front": {
+        "id": "Kalor jenis",
+        "en": "Specific heat"
+      },
+      "back": {
+        "id": "Kalor per massa per kenaikan suhu satu derajat.",
+        "en": "Heat per mass per degree temperature increase."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "energy-f04",
+      "topic_id": "energy",
+      "front": {
+        "id": "Entalpi",
+        "en": "Enthalpy"
+      },
+      "back": {
+        "id": "Besaran keadaan dengan ΔH terkait kalor pada tekanan tetap.",
+        "en": "State property with ΔH related to heat at constant pressure."
+      },
+      "source_ids": [
+        "openstax-5"
+      ]
+    },
+    {
+      "id": "kinetics-f01",
+      "topic_id": "kinetics",
+      "front": {
+        "id": "Laju reaksi",
+        "en": "Reaction rate"
+      },
+      "back": {
+        "id": "Perubahan konsentrasi terhadap waktu.",
+        "en": "Change in concentration over time."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-f02",
+      "topic_id": "kinetics",
+      "front": {
+        "id": "Energi aktivasi",
+        "en": "Activation energy"
+      },
+      "back": {
+        "id": "Hambatan energi untuk mencapai keadaan transisi.",
+        "en": "Energy barrier to reach the transition state."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-f03",
+      "topic_id": "kinetics",
+      "front": {
+        "id": "Katalis",
+        "en": "Catalyst"
+      },
+      "back": {
+        "id": "Mempercepat proses tanpa habis secara netto.",
+        "en": "Speeds a process without being consumed overall."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "kinetics-f04",
+      "topic_id": "kinetics",
+      "front": {
+        "id": "Kesetimbangan dinamis",
+        "en": "Dynamic equilibrium"
+      },
+      "back": {
+        "id": "Laju maju dan balik sama meski reaksi tetap berlangsung.",
+        "en": "Forward and reverse rates match while reactions continue."
+      },
+      "source_ids": [
+        "openstax-12",
+        "openstax-13"
+      ]
+    },
+    {
+      "id": "redox-f01",
+      "topic_id": "redox",
+      "front": {
+        "id": "Oksidasi",
+        "en": "Oxidation"
+      },
+      "back": {
+        "id": "Kehilangan elektron.",
+        "en": "Loss of electrons."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-f02",
+      "topic_id": "redox",
+      "front": {
+        "id": "Reduksi",
+        "en": "Reduction"
+      },
+      "back": {
+        "id": "Penerimaan elektron.",
+        "en": "Gain of electrons."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-f03",
+      "topic_id": "redox",
+      "front": {
+        "id": "Anode",
+        "en": "Anode"
+      },
+      "back": {
+        "id": "Elektrode tempat oksidasi berlangsung.",
+        "en": "Electrode where oxidation occurs."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "redox-f04",
+      "topic_id": "redox",
+      "front": {
+        "id": "Katode",
+        "en": "Cathode"
+      },
+      "back": {
+        "id": "Elektrode tempat reduksi berlangsung.",
+        "en": "Electrode where reduction occurs."
+      },
+      "source_ids": [
+        "openstax-17"
+      ]
+    },
+    {
+      "id": "organic-f01",
+      "topic_id": "organic",
+      "front": {
+        "id": "Alkana",
+        "en": "Alkane"
+      },
+      "back": {
+        "id": "Hidrokarbon jenuh dengan ikatan C–C tunggal.",
+        "en": "Saturated hydrocarbon with C–C single bonds."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-f02",
+      "topic_id": "organic",
+      "front": {
+        "id": "Alkena",
+        "en": "Alkene"
+      },
+      "back": {
+        "id": "Hidrokarbon dengan sedikitnya satu ikatan C=C.",
+        "en": "Hydrocarbon containing at least one C=C bond."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-f03",
+      "topic_id": "organic",
+      "front": {
+        "id": "Alkohol",
+        "en": "Alcohol"
+      },
+      "back": {
+        "id": "Senyawa dengan –OH pada karbon jenuh yang sesuai.",
+        "en": "Compound with –OH on a suitable saturated carbon."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "organic-f04",
+      "topic_id": "organic",
+      "front": {
+        "id": "Asam karboksilat",
+        "en": "Carboxylic acid"
+      },
+      "back": {
+        "id": "Senyawa dengan gugus –COOH.",
+        "en": "Compound containing –COOH."
+      },
+      "source_ids": [
+        "openstax-20"
+      ]
+    },
+    {
+      "id": "safety-f01",
+      "topic_id": "safety",
+      "front": {
+        "id": "SDS",
+        "en": "Safety Data Sheet"
+      },
+      "back": {
+        "id": "Dokumen informasi bahaya dan penanganan bahan kimia.",
+        "en": "Document detailing chemical hazards and safe handling."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-f02",
+      "topic_id": "safety",
+      "front": {
+        "id": "APD",
+        "en": "PPE"
+      },
+      "back": {
+        "id": "Alat pelindung diri sesuai bahaya kegiatan.",
+        "en": "Personal protective equipment chosen for task hazards."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-f03",
+      "topic_id": "safety",
+      "front": {
+        "id": "Integritas data",
+        "en": "Data integrity"
+      },
+      "back": {
+        "id": "Catat data asli tanpa fabrikasi atau manipulasi.",
+        "en": "Record raw data without fabrication or manipulation."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    },
+    {
+      "id": "safety-f04",
+      "topic_id": "safety",
+      "front": {
+        "id": "Pengelolaan limbah",
+        "en": "Waste handling"
+      },
+      "back": {
+        "id": "Pisahkan dan kelola limbah sesuai kategori serta aturan.",
+        "en": "Segregate and handle waste by hazard type and rules."
+      },
+      "source_ids": [
+        "openstax-1"
+      ]
+    }
+  ],
+  "authorship": "AI-assisted original draft for El-Kimiya; not human subject-matter reviewed"
+}
