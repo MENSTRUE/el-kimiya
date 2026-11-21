@@ -8,6 +8,7 @@ export const languagePairs: Record<string,string> = {
   "Kimia & Keimanan": "Chemistry & Faith",
   "AI Chemistry Tutor": "Tutor Kimia AI",
   "Chemistry Explorer": "Eksplorasi Kimia",
+  "Molecular Intelligence Lab": "Laboratorium AI Molekul",
   "Practice Lab": "Laboratorium Latihan",
   "Flashcards": "Kartu Hafalan",
   "Learning Progress": "Progres Belajar",

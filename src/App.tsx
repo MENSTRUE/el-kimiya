@@ -53,6 +53,7 @@ import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
 import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
+import { MolecularIntelligenceLab } from "./components/MolecularIntelligenceLab";
 import { getDemoAnswer, starterCards, quizzes, elements, type StudyCard } from "./data/learning";
 import { useStoredState, createNote, type SavedNote, type StudyProgress } from "./lib/storage";
 import { firebaseConfigured, runHybridInference, type InferencePreference } from "./lib/hybrid";
@@ -67,6 +68,7 @@ type Page =
   | "hybrid"
   | "practice"
   | "explorer"
+  | "molecules"
   | "flashcards"
   | "progress"
   | "notes"
@@ -80,6 +82,7 @@ const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "faith", label: "Kimia & Keimanan", icon: Sparkles },
   { id: "tutor", label: "AI Chemistry Tutor", icon: BrainCircuit },
   { id: "explorer", label: "Chemistry Explorer", icon: Atom },
+  { id: "molecules", label: "Molecular Intelligence Lab", icon: FlaskConical },
   { id: "practice", label: "Practice Lab", icon: FlaskConical },
   { id: "flashcards", label: "Flashcards", icon: Layers3 },
   { id: "progress", label: "Learning Progress", icon: Trophy },
@@ -217,6 +220,7 @@ function Header({
     {label:"Hybrid AI status",meta:"Inference preferences",to:"hybrid"},
     {label:"Practice equations",meta:"Practice lab",to:"practice"},
     {label:"Molecular explorer",meta:"Chemistry explorer",to:"explorer"},
+    {label:"Molecular Intelligence Lab",meta:"PubChem and Firebase AI",to:"molecules"},
   ];
   const searchResults = searchTerm.trim()
     ? searchRoutes.filter((entry) => `${entry.label} ${entry.meta}`.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 5)
@@ -229,6 +233,7 @@ function Header({
     hybrid: "Hybrid AI engine",
     practice: "Practice lab",
     explorer: "Chemistry explorer",
+    molecules: "Molecular Intelligence Lab",
     flashcards: "Flashcards",
     progress: "Learning progress",
     settings: "Settings",
@@ -1445,7 +1450,7 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 export default function App() {
   const { language } = useLanguage();
   void language;
-  const validPages: Page[] = ['landing','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','flashcards','progress','notes','settings','scan','profile'];
+  const validPages: Page[] = ['landing','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const [page,setCurrentPage] = useState<Page>(hashPage);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
@@ -1478,6 +1483,7 @@ export default function App() {
     if(page==='hybrid')return <HybridPage offline={offline} setOffline={setOffline} preference={preference} setPreference={setPreference}/>;
     if(page==='practice')return <PracticePage setPage={setPage} onAnswer={onAnswer}/>;
     if(page==='explorer')return <ExplorerPage setPage={setPage} addNote={addNote} askAbout={askAbout}/>;
+    if(page==='molecules')return <MolecularIntelligenceLab/>;
     if(page==='flashcards')return <FlashcardsPage cards={[...starterCards,...customCards]} onReview={()=>setStatistics(prev=>({...prev,reviewed:prev.reviewed+1}))}/>;
     if(page==='progress')return <ProgressPage stats={statistics} setPage={setPage}/>;
     if(page==='settings')return <SettingsPage dark={dark} setDark={setDark} setPage={setPage} reducedMotion={reducedMotion} setReducedMotion={setReducedMotion}/>;

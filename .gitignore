@@ -33,3 +33,8 @@ android/.idea/
 android/*.iml
 __pycache__/
 *.pyc
+
+# El-Kimiya local agent
+backend/.venv/
+backend/.env
+backend/.pytest_cache/
