@@ -1,0 +1,1499 @@
+{
+  "questions": [
+    {
+      "id": "matter-q01",
+      "topic_id": "matter",
+      "prompt": "Which event is a chemical change?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Iron rusts"
+        },
+        {
+          "id": "B",
+          "text": "Sugar dissolves"
+        },
+        {
+          "id": "C",
+          "text": "Ice melts"
+        },
+        {
+          "id": "D",
+          "text": "Water evaporates"
+        }
+      ]
+    },
+    {
+      "id": "matter-q02",
+      "topic_id": "matter",
+      "prompt": "An object has mass 24 g and volume 8 mL. What is its density?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2 g/mL"
+        },
+        {
+          "id": "B",
+          "text": "8 g/mL"
+        },
+        {
+          "id": "C",
+          "text": "3 g/mL"
+        },
+        {
+          "id": "D",
+          "text": "32 g/mL"
+        }
+      ]
+    },
+    {
+      "id": "matter-q03",
+      "topic_id": "matter",
+      "prompt": "Which is an intensive property?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Density"
+        },
+        {
+          "id": "B",
+          "text": "Mass"
+        },
+        {
+          "id": "C",
+          "text": "Volume"
+        },
+        {
+          "id": "D",
+          "text": "Amount in moles"
+        }
+      ]
+    },
+    {
+      "id": "matter-q04",
+      "topic_id": "matter",
+      "prompt": "What best describes a homogeneous mixture?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "It always has one element"
+        },
+        {
+          "id": "B",
+          "text": "It cannot be separated"
+        },
+        {
+          "id": "C",
+          "text": "It is always solid"
+        },
+        {
+          "id": "D",
+          "text": "Its composition is uniform at the observed scale"
+        }
+      ]
+    },
+    {
+      "id": "matter-q05",
+      "topic_id": "matter",
+      "prompt": "How many significant figures are in 0.00450?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "5"
+        },
+        {
+          "id": "D",
+          "text": "1"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q01",
+      "topic_id": "atoms",
+      "prompt": "What does the atomic number of an element count?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Protons plus neutrons"
+        },
+        {
+          "id": "B",
+          "text": "Neutrons"
+        },
+        {
+          "id": "C",
+          "text": "Protons"
+        },
+        {
+          "id": "D",
+          "text": "Valence electrons"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q02",
+      "topic_id": "atoms",
+      "prompt": "How many electrons does a neutral atom with Z=8 have?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "6"
+        },
+        {
+          "id": "B",
+          "text": "8"
+        },
+        {
+          "id": "C",
+          "text": "10"
+        },
+        {
+          "id": "D",
+          "text": "16"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q03",
+      "topic_id": "atoms",
+      "prompt": "Carbon-14 has 6 protons. How many neutrons does it have?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "20"
+        },
+        {
+          "id": "B",
+          "text": "6"
+        },
+        {
+          "id": "C",
+          "text": "14"
+        },
+        {
+          "id": "D",
+          "text": "8"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q04",
+      "topic_id": "atoms",
+      "prompt": "Na⁺ forms when a sodium atom ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "gains one neutron"
+        },
+        {
+          "id": "B",
+          "text": "loses one proton"
+        },
+        {
+          "id": "C",
+          "text": "gains one electron"
+        },
+        {
+          "id": "D",
+          "text": "loses one electron"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q05",
+      "topic_id": "atoms",
+      "prompt": "Which pair represents isotopes?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "¹²C and ¹⁴N"
+        },
+        {
+          "id": "B",
+          "text": "O²⁻ and Ne"
+        },
+        {
+          "id": "C",
+          "text": "Na and Mg"
+        },
+        {
+          "id": "D",
+          "text": "¹²C and ¹⁴C"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q01",
+      "topic_id": "periodic",
+      "prompt": "A period in the periodic table runs ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "diagonally"
+        },
+        {
+          "id": "B",
+          "text": "randomly"
+        },
+        {
+          "id": "C",
+          "text": "vertically"
+        },
+        {
+          "id": "D",
+          "text": "horizontally"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q02",
+      "topic_id": "periodic",
+      "prompt": "Group 18 elements are commonly called ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "lanthanides"
+        },
+        {
+          "id": "B",
+          "text": "alkali metals"
+        },
+        {
+          "id": "C",
+          "text": "halogens"
+        },
+        {
+          "id": "D",
+          "text": "noble gases"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q03",
+      "topic_id": "periodic",
+      "prompt": "Across a period, main-group atomic radii generally ... to the right.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "become zero"
+        },
+        {
+          "id": "B",
+          "text": "remain constant"
+        },
+        {
+          "id": "C",
+          "text": "increase"
+        },
+        {
+          "id": "D",
+          "text": "decrease"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q04",
+      "topic_id": "periodic",
+      "prompt": "Electrons most directly involved in chemical bonding are called ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "core electrons"
+        },
+        {
+          "id": "B",
+          "text": "neutrons"
+        },
+        {
+          "id": "C",
+          "text": "valence electrons"
+        },
+        {
+          "id": "D",
+          "text": "protons"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q05",
+      "topic_id": "periodic",
+      "prompt": "Which element is an alkali metal?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "O"
+        },
+        {
+          "id": "B",
+          "text": "Ne"
+        },
+        {
+          "id": "C",
+          "text": "Na"
+        },
+        {
+          "id": "D",
+          "text": "Cl"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q01",
+      "topic_id": "bonding",
+      "prompt": "In a covalent bond, atoms ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "share electrons"
+        },
+        {
+          "id": "B",
+          "text": "release neutrons"
+        },
+        {
+          "id": "C",
+          "text": "always become ions"
+        },
+        {
+          "id": "D",
+          "text": "share protons"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q02",
+      "topic_id": "bonding",
+      "prompt": "Solid NaCl is primarily built from ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "isolated NaCl molecules"
+        },
+        {
+          "id": "B",
+          "text": "free protons"
+        },
+        {
+          "id": "C",
+          "text": "Na⁺ and Cl⁻ ions in a lattice"
+        },
+        {
+          "id": "D",
+          "text": "random neutral atoms"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q03",
+      "topic_id": "bonding",
+      "prompt": "Why is H₂O a polar molecule?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Its linear shape cancels dipoles"
+        },
+        {
+          "id": "B",
+          "text": "Its bent shape does not cancel O–H dipoles"
+        },
+        {
+          "id": "C",
+          "text": "There is no electronegativity difference"
+        },
+        {
+          "id": "D",
+          "text": "All triatomic molecules are polar"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q04",
+      "topic_id": "bonding",
+      "prompt": "The molecular shape of gaseous CO₂ is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "trigonal planar"
+        },
+        {
+          "id": "B",
+          "text": "linear"
+        },
+        {
+          "id": "C",
+          "text": "tetrahedral"
+        },
+        {
+          "id": "D",
+          "text": "bent"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q05",
+      "topic_id": "bonding",
+      "prompt": "Hydrogen bonding between water molecules primarily involves ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "two Na⁺ cations"
+        },
+        {
+          "id": "B",
+          "text": "metallic bonding"
+        },
+        {
+          "id": "C",
+          "text": "H attached to O and a lone pair on another O"
+        },
+        {
+          "id": "D",
+          "text": "a hydrogen nucleus and a neutron"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q01",
+      "topic_id": "stoich",
+      "prompt": "Balanced coefficients for H₂ + O₂ → H₂O are ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2,1,2"
+        },
+        {
+          "id": "B",
+          "text": "2,2,1"
+        },
+        {
+          "id": "C",
+          "text": "1,1,1"
+        },
+        {
+          "id": "D",
+          "text": "1,2,1"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q02",
+      "topic_id": "stoich",
+      "prompt": "How many moles are in 18 g of water if M(H₂O) ≈ 18 g/mol?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2 mol"
+        },
+        {
+          "id": "B",
+          "text": "0.5 mol"
+        },
+        {
+          "id": "C",
+          "text": "1 mol"
+        },
+        {
+          "id": "D",
+          "text": "18 mol"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q03",
+      "topic_id": "stoich",
+      "prompt": "The mole is the SI unit of ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "temperature"
+        },
+        {
+          "id": "B",
+          "text": "volume"
+        },
+        {
+          "id": "C",
+          "text": "amount of substance"
+        },
+        {
+          "id": "D",
+          "text": "mass"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q04",
+      "topic_id": "stoich",
+      "prompt": "In N₂ + 3H₂ → 2NH₃, 3 mol H₂ reacts with ... mol N₂.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "6"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q05",
+      "topic_id": "stoich",
+      "prompt": "The reactant that is completely used first is the ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "main product"
+        },
+        {
+          "id": "B",
+          "text": "catalyst"
+        },
+        {
+          "id": "C",
+          "text": "limiting reactant"
+        },
+        {
+          "id": "D",
+          "text": "solvent"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q01",
+      "topic_id": "solutions",
+      "prompt": "Molarity is defined as ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "grams/litre solvent"
+        },
+        {
+          "id": "B",
+          "text": "moles solute/litre solution"
+        },
+        {
+          "id": "C",
+          "text": "moles solvent/litre solution"
+        },
+        {
+          "id": "D",
+          "text": "moles/gram solution"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q02",
+      "topic_id": "solutions",
+      "prompt": "A solution with 0.5 mol solute in 2 L has molarity ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "4 M"
+        },
+        {
+          "id": "B",
+          "text": "2 M"
+        },
+        {
+          "id": "C",
+          "text": "1 M"
+        },
+        {
+          "id": "D",
+          "text": "0.25 M"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q03",
+      "topic_id": "solutions",
+      "prompt": "Diluting 100 mL of 2 M solution to 200 mL gives ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "4 M"
+        },
+        {
+          "id": "B",
+          "text": "1 M"
+        },
+        {
+          "id": "C",
+          "text": "0.5 M"
+        },
+        {
+          "id": "D",
+          "text": "2 M"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q04",
+      "topic_id": "solutions",
+      "prompt": "A strong electrolyte in water generally ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "is always colorless"
+        },
+        {
+          "id": "B",
+          "text": "dissociates essentially completely"
+        },
+        {
+          "id": "C",
+          "text": "exists only as gas"
+        },
+        {
+          "id": "D",
+          "text": "forms no ions"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q05",
+      "topic_id": "solutions",
+      "prompt": "In salt water, water acts as the ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "product"
+        },
+        {
+          "id": "B",
+          "text": "catalyst"
+        },
+        {
+          "id": "C",
+          "text": "precipitate"
+        },
+        {
+          "id": "D",
+          "text": "solvent"
+        }
+      ]
+    },
+    {
+      "id": "acids-q01",
+      "topic_id": "acids",
+      "prompt": "At 25°C, neutral pure water has pH approximately ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "0"
+        },
+        {
+          "id": "B",
+          "text": "10"
+        },
+        {
+          "id": "C",
+          "text": "14"
+        },
+        {
+          "id": "D",
+          "text": "7"
+        }
+      ]
+    },
+    {
+      "id": "acids-q02",
+      "topic_id": "acids",
+      "prompt": "Compared with pH 4, pH 3 has H⁺ activity about ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "100 times lower"
+        },
+        {
+          "id": "B",
+          "text": "equal"
+        },
+        {
+          "id": "C",
+          "text": "10 times lower"
+        },
+        {
+          "id": "D",
+          "text": "10 times higher"
+        }
+      ]
+    },
+    {
+      "id": "acids-q03",
+      "topic_id": "acids",
+      "prompt": "By Brønsted–Lowry, an acid ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "donates a proton"
+        },
+        {
+          "id": "B",
+          "text": "is always a metal"
+        },
+        {
+          "id": "C",
+          "text": "always produces O₂"
+        },
+        {
+          "id": "D",
+          "text": "accepts a proton"
+        }
+      ]
+    },
+    {
+      "id": "acids-q04",
+      "topic_id": "acids",
+      "prompt": "After NH₄⁺ loses H⁺, its conjugate partner is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "NH₂⁻"
+        },
+        {
+          "id": "B",
+          "text": "NO₃⁻"
+        },
+        {
+          "id": "C",
+          "text": "N₂"
+        },
+        {
+          "id": "D",
+          "text": "NH₃"
+        }
+      ]
+    },
+    {
+      "id": "acids-q05",
+      "topic_id": "acids",
+      "prompt": "A pH indicator is mainly used to ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "count neutrons"
+        },
+        {
+          "id": "B",
+          "text": "measure reaction mass"
+        },
+        {
+          "id": "C",
+          "text": "separate isotopes"
+        },
+        {
+          "id": "D",
+          "text": "estimate acidity by color change"
+        }
+      ]
+    },
+    {
+      "id": "gases-q01",
+      "topic_id": "gases",
+      "prompt": "The ideal gas equation is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "PV = nRT"
+        },
+        {
+          "id": "B",
+          "text": "P = VnRT"
+        },
+        {
+          "id": "C",
+          "text": "PV = RT/n"
+        },
+        {
+          "id": "D",
+          "text": "P + V = nRT"
+        }
+      ]
+    },
+    {
+      "id": "gases-q02",
+      "topic_id": "gases",
+      "prompt": "27°C corresponds approximately to ... K.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "27"
+        },
+        {
+          "id": "B",
+          "text": "100"
+        },
+        {
+          "id": "C",
+          "text": "300"
+        },
+        {
+          "id": "D",
+          "text": "373"
+        }
+      ]
+    },
+    {
+      "id": "gases-q03",
+      "topic_id": "gases",
+      "prompt": "At constant temperature, gas pressure increases as volume ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "stays fixed"
+        },
+        {
+          "id": "B",
+          "text": "decreases"
+        },
+        {
+          "id": "C",
+          "text": "increases"
+        },
+        {
+          "id": "D",
+          "text": "becomes zero"
+        }
+      ]
+    },
+    {
+      "id": "gases-q04",
+      "topic_id": "gases",
+      "prompt": "Total pressure of an ideal gas mixture equals ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "zero"
+        },
+        {
+          "id": "B",
+          "text": "only the largest pressure"
+        },
+        {
+          "id": "C",
+          "text": "mean partial pressure"
+        },
+        {
+          "id": "D",
+          "text": "sum of partial pressures"
+        }
+      ]
+    },
+    {
+      "id": "gases-q05",
+      "topic_id": "gases",
+      "prompt": "Two ideal gas samples with equal T, V, and n have pressures that are ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "always zero"
+        },
+        {
+          "id": "B",
+          "text": "dependent on gas color"
+        },
+        {
+          "id": "C",
+          "text": "always different by molecular mass"
+        },
+        {
+          "id": "D",
+          "text": "equal"
+        }
+      ]
+    },
+    {
+      "id": "energy-q01",
+      "topic_id": "energy",
+      "prompt": "An exothermic reaction generally has ΔH ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "negative"
+        },
+        {
+          "id": "B",
+          "text": "undefined"
+        },
+        {
+          "id": "C",
+          "text": "positive"
+        },
+        {
+          "id": "D",
+          "text": "always zero"
+        }
+      ]
+    },
+    {
+      "id": "energy-q02",
+      "topic_id": "energy",
+      "prompt": "If 100 g water warms by 2°C with c≈4.18 J g⁻¹ °C⁻¹, absorbed heat is about ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "8360 J"
+        },
+        {
+          "id": "B",
+          "text": "8.36 J"
+        },
+        {
+          "id": "C",
+          "text": "836 J"
+        },
+        {
+          "id": "D",
+          "text": "209 J"
+        }
+      ]
+    },
+    {
+      "id": "energy-q03",
+      "topic_id": "energy",
+      "prompt": "In calorimetry, the system under study is generally ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "the observed reaction or process"
+        },
+        {
+          "id": "B",
+          "text": "only the thermometer"
+        },
+        {
+          "id": "C",
+          "text": "only open air"
+        },
+        {
+          "id": "D",
+          "text": "the entire universe"
+        }
+      ]
+    },
+    {
+      "id": "energy-q04",
+      "topic_id": "energy",
+      "prompt": "Melting typically ... heat.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "destroys"
+        },
+        {
+          "id": "B",
+          "text": "releases"
+        },
+        {
+          "id": "C",
+          "text": "does not involve"
+        },
+        {
+          "id": "D",
+          "text": "absorbs"
+        }
+      ]
+    },
+    {
+      "id": "energy-q05",
+      "topic_id": "energy",
+      "prompt": "Hess’s law says the total ΔH ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "is independent of reaction pathway"
+        },
+        {
+          "id": "B",
+          "text": "equals temperature"
+        },
+        {
+          "id": "C",
+          "text": "is always positive"
+        },
+        {
+          "id": "D",
+          "text": "depends on reaction steps"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q01",
+      "topic_id": "kinetics",
+      "prompt": "A catalyst generally works by ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "providing a lower-activation-energy pathway"
+        },
+        {
+          "id": "B",
+          "text": "consuming reactants"
+        },
+        {
+          "id": "C",
+          "text": "increasing activation energy"
+        },
+        {
+          "id": "D",
+          "text": "changing K at constant temperature"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q02",
+      "topic_id": "kinetics",
+      "prompt": "At dynamic equilibrium, forward and reverse rates are ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "zero"
+        },
+        {
+          "id": "B",
+          "text": "always different"
+        },
+        {
+          "id": "C",
+          "text": "equal"
+        },
+        {
+          "id": "D",
+          "text": "always increasing"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q03",
+      "topic_id": "kinetics",
+      "prompt": "Increasing reactant concentration may ... reaction rate if other factors are fixed.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "never affect"
+        },
+        {
+          "id": "B",
+          "text": "increase"
+        },
+        {
+          "id": "C",
+          "text": "always decrease"
+        },
+        {
+          "id": "D",
+          "text": "eliminate"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q04",
+      "topic_id": "kinetics",
+      "prompt": "At equilibrium, the reaction quotient Q is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "always 1"
+        },
+        {
+          "id": "B",
+          "text": "always 0"
+        },
+        {
+          "id": "C",
+          "text": "undefined"
+        },
+        {
+          "id": "D",
+          "text": "equal to K"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q05",
+      "topic_id": "kinetics",
+      "prompt": "If Q < K, the net reaction tends to move ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "neither direction"
+        },
+        {
+          "id": "B",
+          "text": "reactants"
+        },
+        {
+          "id": "C",
+          "text": "products"
+        },
+        {
+          "id": "D",
+          "text": "stop completely"
+        }
+      ]
+    },
+    {
+      "id": "redox-q01",
+      "topic_id": "redox",
+      "prompt": "Oxidation, in electron terms, is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "gaining neutrons"
+        },
+        {
+          "id": "B",
+          "text": "gaining electrons"
+        },
+        {
+          "id": "C",
+          "text": "losing electrons"
+        },
+        {
+          "id": "D",
+          "text": "losing mass"
+        }
+      ]
+    },
+    {
+      "id": "redox-q02",
+      "topic_id": "redox",
+      "prompt": "In Zn → Zn²⁺ + 2e⁻, Zn undergoes ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "oxidation"
+        },
+        {
+          "id": "B",
+          "text": "reduction"
+        },
+        {
+          "id": "C",
+          "text": "neutralization"
+        },
+        {
+          "id": "D",
+          "text": "precipitation"
+        }
+      ]
+    },
+    {
+      "id": "redox-q03",
+      "topic_id": "redox",
+      "prompt": "In a galvanic cell, reduction occurs at the ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "anode"
+        },
+        {
+          "id": "B",
+          "text": "salt bridge"
+        },
+        {
+          "id": "C",
+          "text": "cathode"
+        },
+        {
+          "id": "D",
+          "text": "electrolyte only"
+        }
+      ]
+    },
+    {
+      "id": "redox-q04",
+      "topic_id": "redox",
+      "prompt": "The oxidation number of O in most ordinary compounds is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "−2"
+        },
+        {
+          "id": "B",
+          "text": "+2"
+        },
+        {
+          "id": "C",
+          "text": "0"
+        },
+        {
+          "id": "D",
+          "text": "+1"
+        }
+      ]
+    },
+    {
+      "id": "redox-q05",
+      "topic_id": "redox",
+      "prompt": "In a galvanic cell, a salt bridge primarily maintains ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "constant temperature"
+        },
+        {
+          "id": "B",
+          "text": "color difference"
+        },
+        {
+          "id": "C",
+          "text": "charge balance in solutions"
+        },
+        {
+          "id": "D",
+          "text": "speed of light"
+        }
+      ]
+    },
+    {
+      "id": "organic-q01",
+      "topic_id": "organic",
+      "prompt": "The typical functional group of a simple alcohol is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "–COOH"
+        },
+        {
+          "id": "B",
+          "text": "–NH₂"
+        },
+        {
+          "id": "C",
+          "text": "–OH"
+        },
+        {
+          "id": "D",
+          "text": "–CHO"
+        }
+      ]
+    },
+    {
+      "id": "organic-q02",
+      "topic_id": "organic",
+      "prompt": "A carboxylic acid is identified by the ... group.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "–O–"
+        },
+        {
+          "id": "B",
+          "text": "–Cl"
+        },
+        {
+          "id": "C",
+          "text": "–SH"
+        },
+        {
+          "id": "D",
+          "text": "–COOH"
+        }
+      ]
+    },
+    {
+      "id": "organic-q03",
+      "topic_id": "organic",
+      "prompt": "A simple open-chain saturated alkane has formula ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "CₙH₂ₙ"
+        },
+        {
+          "id": "B",
+          "text": "CₙH₂ₙ₊₂"
+        },
+        {
+          "id": "C",
+          "text": "CₙHₙ"
+        },
+        {
+          "id": "D",
+          "text": "CₙH₂ₙ₋₂"
+        }
+      ]
+    },
+    {
+      "id": "organic-q04",
+      "topic_id": "organic",
+      "prompt": "Compounds with the same formula but different atom connectivity are ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "isotopes"
+        },
+        {
+          "id": "B",
+          "text": "element allotropes"
+        },
+        {
+          "id": "C",
+          "text": "ions"
+        },
+        {
+          "id": "D",
+          "text": "constitutional isomers"
+        }
+      ]
+    },
+    {
+      "id": "organic-q05",
+      "topic_id": "organic",
+      "prompt": "Ethene (C₂H₄) contains a carbon–carbon ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "ionic bond"
+        },
+        {
+          "id": "B",
+          "text": "single bond"
+        },
+        {
+          "id": "C",
+          "text": "triple bond"
+        },
+        {
+          "id": "D",
+          "text": "double bond"
+        }
+      ]
+    },
+    {
+      "id": "safety-q01",
+      "topic_id": "safety",
+      "prompt": "Before using an unfamiliar chemical, the best first step is ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "heat it immediately"
+        },
+        {
+          "id": "B",
+          "text": "mix it with acid"
+        },
+        {
+          "id": "C",
+          "text": "taste it"
+        },
+        {
+          "id": "D",
+          "text": "read the label and SDS"
+        }
+      ]
+    },
+    {
+      "id": "safety-q02",
+      "topic_id": "safety",
+      "prompt": "Safety goggles are primarily intended to ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "measure pH"
+        },
+        {
+          "id": "B",
+          "text": "protect eyes from splashes"
+        },
+        {
+          "id": "C",
+          "text": "improve appearance"
+        },
+        {
+          "id": "D",
+          "text": "replace a fume hood"
+        }
+      ]
+    },
+    {
+      "id": "safety-q03",
+      "topic_id": "safety",
+      "prompt": "When results contradict a hypothesis, appropriate scientific conduct is to ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "alter data"
+        },
+        {
+          "id": "B",
+          "text": "publish invented values"
+        },
+        {
+          "id": "C",
+          "text": "record results and examine the method"
+        },
+        {
+          "id": "D",
+          "text": "delete observations"
+        }
+      ]
+    },
+    {
+      "id": "safety-q04",
+      "topic_id": "safety",
+      "prompt": "Laboratory chemical waste should be ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "handled by waste type and institutional protocol"
+        },
+        {
+          "id": "B",
+          "text": "always mixed together"
+        },
+        {
+          "id": "C",
+          "text": "burned on a bench"
+        },
+        {
+          "id": "D",
+          "text": "poured down a drain unchecked"
+        }
+      ]
+    },
+    {
+      "id": "safety-q05",
+      "topic_id": "safety",
+      "prompt": "What should be done if laboratory glassware breaks?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "follow procedure and use designated glass cleanup tools"
+        },
+        {
+          "id": "B",
+          "text": "sweep into a sink"
+        },
+        {
+          "id": "C",
+          "text": "pick it up barehanded"
+        },
+        {
+          "id": "D",
+          "text": "keep using it"
+        }
+      ]
+    }
+  ]
+}

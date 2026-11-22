@@ -1,0 +1,14 @@
+/* El-Kimiya V4.7 public-safe molecule lab, scoped to new component only. */
+.v47-molecules{margin:28px 0 60px;font-family:inherit;color:var(--navy,#16364d)}
+.v47-mol-intro{display:flex;gap:25px;justify-content:space-between;align-items:center;padding:clamp(22px,4vw,37px);border-radius:23px;background:linear-gradient(125deg,#0b2d45,#214f65);color:#f8fafb}
+.v47-tag{font-size:11px;font-weight:750;letter-spacing:.075em;display:flex;align-items:center;gap:8px;color:#85bdca}
+.v47-mol-intro h2{font-size:clamp(25px,3vw,35px);line-height:1.18;letter-spacing:-.03em;margin:13px 0}
+.v47-mol-intro p{color:#d6e5e9;font-size:13px;line-height:1.7;max-width:600px;margin:0}
+.v47-mol-mark{display:grid;justify-items:center;gap:5px;min-width:135px;color:#dceef2}.v47-mol-mark b{font-size:30px}.v47-mol-mark small{font-size:11px}
+.v47-mol-layout{margin-top:19px;display:grid;grid-template-columns:minmax(230px,1fr) minmax(0,1.7fr);gap:18px}
+.v47-mol-list,.v47-mol-detail{min-width:0;background:var(--card-bg,#fff);border:1px solid #e1e8e8;border-radius:17px;padding:22px}
+.v47-mol-list{max-height:540px;overflow:auto}.v47-mol-list label{display:flex;align-items:center;gap:9px;border:1px solid #ccd9dc;border-radius:10px;padding:10px 13px}.v47-mol-list input{min-width:0;width:100%;border:0;background:transparent;outline:0;font-size:13px}
+.v47-mol-list button{display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;border:1px solid #dce7e9;border-radius:11px;padding:12px;margin-top:10px;text-align:left;background:#fcfdfd}.v47-mol-list button.is-selected{background:#eaf3f4;border-color:#87abb8}.v47-mol-list button span{font-size:11px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#5d7889}.v47-mol-list button strong{font-size:13px;color:#21475b}
+.v47-mol-detail h3{margin:14px 0;font-size:26px}.v47-mol-detail code{display:block;padding:14px;border-radius:10px;white-space:normal;overflow-wrap:anywhere;background:#eef4f4;font-size:12px}.v47-mol-label{color:#6b8087;font-weight:700;font-size:11px;letter-spacing:.08em}.v47-mol-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 0}.v47-mol-metrics>div{background:#f6f9f9;border:1px solid #e5eeee;border-radius:12px;padding:14px;display:grid;gap:7px}.v47-mol-metrics span{font-size:11px;color:#70838d}.v47-mol-metrics b{font-size:17px;overflow-wrap:anywhere}.v47-mol-detail a{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:#2c6680}.v47-mol-error{margin:18px 0;background:#fff3e7;border:1px solid #e6ccb4;padding:20px;border-radius:12px;color:#7b5235}.v47-mol-footer{display:flex;gap:9px;align-items:center;color:#6c7c80;font-size:12px;line-height:1.7;margin-top:18px}
+@media(max-width:820px){.v47-mol-layout{grid-template-columns:1fr}.v47-mol-mark{display:none}.v47-mol-list{max-height:260px}}
+@media(max-width:420px){.v47-mol-metrics{grid-template-columns:1fr}}

@@ -44,3 +44,9 @@ scripts/.v44-backups/
 
 # Private V4.5 local patch backups
 scripts/.v45-backups/
+
+# El-Kimiya local V4.6 installer backups
+scripts/.v46-backups/
+
+# Local V4.7 patch backups
+scripts/.v47-backups/

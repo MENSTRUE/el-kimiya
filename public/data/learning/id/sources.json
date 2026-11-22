@@ -1,0 +1,89 @@
+{
+  "sources": [
+    {
+      "id": "openstax-1",
+      "title": "OpenStax Chemistry 2e — Essential Ideas",
+      "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+    },
+    {
+      "id": "openstax-2",
+      "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions"
+    },
+    {
+      "id": "openstax-3",
+      "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions"
+    },
+    {
+      "id": "openstax-4",
+      "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+      "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions"
+    },
+    {
+      "id": "openstax-5",
+      "title": "OpenStax Chemistry 2e — Thermochemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry"
+    },
+    {
+      "id": "openstax-6",
+      "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+      "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements"
+    },
+    {
+      "id": "openstax-7",
+      "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry"
+    },
+    {
+      "id": "openstax-9",
+      "title": "OpenStax Chemistry 2e — Gases",
+      "url": "https://openstax.org/books/chemistry-2e/pages/9-gases"
+    },
+    {
+      "id": "openstax-11",
+      "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+      "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids"
+    },
+    {
+      "id": "openstax-12",
+      "title": "OpenStax Chemistry 2e — Kinetics",
+      "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics"
+    },
+    {
+      "id": "openstax-13",
+      "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+      "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts"
+    },
+    {
+      "id": "openstax-14",
+      "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+      "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria"
+    },
+    {
+      "id": "openstax-17",
+      "title": "OpenStax Chemistry 2e — Electrochemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry"
+    },
+    {
+      "id": "openstax-20",
+      "title": "OpenStax Chemistry 2e — Organic Chemistry",
+      "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry"
+    },
+    {
+      "id": "iupac-atom",
+      "title": "IUPAC Gold Book — Atom",
+      "url": "https://goldbook.iupac.org/terms/view/A00493"
+    },
+    {
+      "id": "iupac-mole",
+      "title": "IUPAC Gold Book — Mole",
+      "url": "https://goldbook.iupac.org/terms/view/M03980"
+    },
+    {
+      "id": "iupac-bond",
+      "title": "IUPAC Gold Book — Chemical Bond",
+      "url": "https://goldbook.iupac.org/terms/view/CT07009"
+    }
+  ]
+}

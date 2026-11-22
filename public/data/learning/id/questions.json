@@ -1,0 +1,1499 @@
+{
+  "questions": [
+    {
+      "id": "matter-q01",
+      "topic_id": "matter",
+      "prompt": "Manakah yang termasuk perubahan kimia?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Besi berkarat"
+        },
+        {
+          "id": "B",
+          "text": "Gula larut"
+        },
+        {
+          "id": "C",
+          "text": "Es mencair"
+        },
+        {
+          "id": "D",
+          "text": "Air menguap"
+        }
+      ]
+    },
+    {
+      "id": "matter-q02",
+      "topic_id": "matter",
+      "prompt": "Benda bermassa 24 g dan bervolume 8 mL memiliki massa jenis berapa?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2 g/mL"
+        },
+        {
+          "id": "B",
+          "text": "8 g/mL"
+        },
+        {
+          "id": "C",
+          "text": "3 g/mL"
+        },
+        {
+          "id": "D",
+          "text": "32 g/mL"
+        }
+      ]
+    },
+    {
+      "id": "matter-q03",
+      "topic_id": "matter",
+      "prompt": "Manakah contoh sifat intensif?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Massa jenis"
+        },
+        {
+          "id": "B",
+          "text": "Massa"
+        },
+        {
+          "id": "C",
+          "text": "Volume"
+        },
+        {
+          "id": "D",
+          "text": "Jumlah mol"
+        }
+      ]
+    },
+    {
+      "id": "matter-q04",
+      "topic_id": "matter",
+      "prompt": "Campuran homogen memiliki ciri utama apa?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Selalu terdiri dari satu unsur"
+        },
+        {
+          "id": "B",
+          "text": "Tidak dapat dipisahkan"
+        },
+        {
+          "id": "C",
+          "text": "Selalu padat"
+        },
+        {
+          "id": "D",
+          "text": "Komposisinya seragam pada skala pengamatan"
+        }
+      ]
+    },
+    {
+      "id": "matter-q05",
+      "topic_id": "matter",
+      "prompt": "Angka 0,00450 memiliki berapa angka penting?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "5"
+        },
+        {
+          "id": "D",
+          "text": "1"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q01",
+      "topic_id": "atoms",
+      "prompt": "Nomor atom unsur menunjukkan jumlah apa?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Proton dan neutron"
+        },
+        {
+          "id": "B",
+          "text": "Neutron"
+        },
+        {
+          "id": "C",
+          "text": "Proton"
+        },
+        {
+          "id": "D",
+          "text": "Elektron valensi"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q02",
+      "topic_id": "atoms",
+      "prompt": "Atom netral dengan Z=8 memiliki berapa elektron?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "6"
+        },
+        {
+          "id": "B",
+          "text": "8"
+        },
+        {
+          "id": "C",
+          "text": "10"
+        },
+        {
+          "id": "D",
+          "text": "16"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q03",
+      "topic_id": "atoms",
+      "prompt": "Isotop karbon-14 memiliki 6 proton. Berapa neutronnya?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "20"
+        },
+        {
+          "id": "B",
+          "text": "6"
+        },
+        {
+          "id": "C",
+          "text": "14"
+        },
+        {
+          "id": "D",
+          "text": "8"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q04",
+      "topic_id": "atoms",
+      "prompt": "Na⁺ terbentuk ketika atom natrium ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "menerima satu neutron"
+        },
+        {
+          "id": "B",
+          "text": "kehilangan satu proton"
+        },
+        {
+          "id": "C",
+          "text": "menerima satu elektron"
+        },
+        {
+          "id": "D",
+          "text": "kehilangan satu elektron"
+        }
+      ]
+    },
+    {
+      "id": "atoms-q05",
+      "topic_id": "atoms",
+      "prompt": "Manakah pasangan yang merupakan isotop?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "¹²C dan ¹⁴N"
+        },
+        {
+          "id": "B",
+          "text": "O²⁻ dan Ne"
+        },
+        {
+          "id": "C",
+          "text": "Na dan Mg"
+        },
+        {
+          "id": "D",
+          "text": "¹²C dan ¹⁴C"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q01",
+      "topic_id": "periodic",
+      "prompt": "Satu periode pada tabel periodik berjalan ke arah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "diagonal"
+        },
+        {
+          "id": "B",
+          "text": "acak"
+        },
+        {
+          "id": "C",
+          "text": "vertikal"
+        },
+        {
+          "id": "D",
+          "text": "horizontal"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q02",
+      "topic_id": "periodic",
+      "prompt": "Unsur golongan 18 umumnya disebut ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "lantanida"
+        },
+        {
+          "id": "B",
+          "text": "logam alkali"
+        },
+        {
+          "id": "C",
+          "text": "halogen"
+        },
+        {
+          "id": "D",
+          "text": "gas mulia"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q03",
+      "topic_id": "periodic",
+      "prompt": "Dalam satu periode, jari-jari atom unsur golongan utama secara umum ... ke kanan.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "menjadi nol"
+        },
+        {
+          "id": "B",
+          "text": "selalu tetap"
+        },
+        {
+          "id": "C",
+          "text": "meningkat"
+        },
+        {
+          "id": "D",
+          "text": "menurun"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q04",
+      "topic_id": "periodic",
+      "prompt": "Elektron yang paling langsung terlibat dalam pembentukan ikatan disebut ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "elektron inti"
+        },
+        {
+          "id": "B",
+          "text": "neutron"
+        },
+        {
+          "id": "C",
+          "text": "elektron valensi"
+        },
+        {
+          "id": "D",
+          "text": "proton"
+        }
+      ]
+    },
+    {
+      "id": "periodic-q05",
+      "topic_id": "periodic",
+      "prompt": "Unsur manakah termasuk logam alkali?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "O"
+        },
+        {
+          "id": "B",
+          "text": "Ne"
+        },
+        {
+          "id": "C",
+          "text": "Na"
+        },
+        {
+          "id": "D",
+          "text": "Cl"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q01",
+      "topic_id": "bonding",
+      "prompt": "Pada ikatan kovalen, atom ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "berbagi elektron"
+        },
+        {
+          "id": "B",
+          "text": "melepaskan neutron"
+        },
+        {
+          "id": "C",
+          "text": "selalu menjadi ion"
+        },
+        {
+          "id": "D",
+          "text": "berbagi proton"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q02",
+      "topic_id": "bonding",
+      "prompt": "NaCl padat disusun terutama oleh ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "molekul NaCl terpisah"
+        },
+        {
+          "id": "B",
+          "text": "proton bebas"
+        },
+        {
+          "id": "C",
+          "text": "ion Na⁺ dan Cl⁻ dalam kisi"
+        },
+        {
+          "id": "D",
+          "text": "atom netral acak"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q03",
+      "topic_id": "bonding",
+      "prompt": "Mengapa H₂O merupakan molekul polar?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "Bentuk linear membatalkan dipol"
+        },
+        {
+          "id": "B",
+          "text": "Bentuk bengkok tidak membatalkan dipol O–H"
+        },
+        {
+          "id": "C",
+          "text": "Tidak ada perbedaan keelektronegatifan"
+        },
+        {
+          "id": "D",
+          "text": "Semua molekul triatomik polar"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q04",
+      "topic_id": "bonding",
+      "prompt": "Bentuk molekul CO₂ pada keadaan gas adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "segitiga planar"
+        },
+        {
+          "id": "B",
+          "text": "linear"
+        },
+        {
+          "id": "C",
+          "text": "tetrahedral"
+        },
+        {
+          "id": "D",
+          "text": "bengkok"
+        }
+      ]
+    },
+    {
+      "id": "bonding-q05",
+      "topic_id": "bonding",
+      "prompt": "Ikatan hidrogen antarmolekul air terutama melibatkan ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "dua kation Na⁺"
+        },
+        {
+          "id": "B",
+          "text": "ikatan logam"
+        },
+        {
+          "id": "C",
+          "text": "H pada O dan pasangan elektron O lain"
+        },
+        {
+          "id": "D",
+          "text": "inti H dan neutron"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q01",
+      "topic_id": "stoich",
+      "prompt": "Koefisien setara untuk H₂ + O₂ → H₂O adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2,1,2"
+        },
+        {
+          "id": "B",
+          "text": "2,2,1"
+        },
+        {
+          "id": "C",
+          "text": "1,1,1"
+        },
+        {
+          "id": "D",
+          "text": "1,2,1"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q02",
+      "topic_id": "stoich",
+      "prompt": "Berapa mol dalam 18 g air jika M(H₂O) ≈ 18 g/mol?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2 mol"
+        },
+        {
+          "id": "B",
+          "text": "0,5 mol"
+        },
+        {
+          "id": "C",
+          "text": "1 mol"
+        },
+        {
+          "id": "D",
+          "text": "18 mol"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q03",
+      "topic_id": "stoich",
+      "prompt": "Satu mol merupakan satuan ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "suhu"
+        },
+        {
+          "id": "B",
+          "text": "volume"
+        },
+        {
+          "id": "C",
+          "text": "jumlah zat"
+        },
+        {
+          "id": "D",
+          "text": "massa"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q04",
+      "topic_id": "stoich",
+      "prompt": "Pada N₂ + 3H₂ → 2NH₃, 3 mol H₂ bereaksi dengan ... mol N₂.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "1"
+        },
+        {
+          "id": "B",
+          "text": "2"
+        },
+        {
+          "id": "C",
+          "text": "3"
+        },
+        {
+          "id": "D",
+          "text": "6"
+        }
+      ]
+    },
+    {
+      "id": "stoich-q05",
+      "topic_id": "stoich",
+      "prompt": "Jika salah satu reaktan habis lebih dulu, reaktan itu disebut ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "produk utama"
+        },
+        {
+          "id": "B",
+          "text": "katalis"
+        },
+        {
+          "id": "C",
+          "text": "pereaksi pembatas"
+        },
+        {
+          "id": "D",
+          "text": "pelarut"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q01",
+      "topic_id": "solutions",
+      "prompt": "Molaritas didefinisikan sebagai ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "gram/liter pelarut"
+        },
+        {
+          "id": "B",
+          "text": "mol zat terlarut/liter larutan"
+        },
+        {
+          "id": "C",
+          "text": "mol pelarut/liter larutan"
+        },
+        {
+          "id": "D",
+          "text": "mol/gram larutan"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q02",
+      "topic_id": "solutions",
+      "prompt": "Larutan 0,5 mol dalam 2 L memiliki molaritas ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "4 M"
+        },
+        {
+          "id": "B",
+          "text": "2 M"
+        },
+        {
+          "id": "C",
+          "text": "1 M"
+        },
+        {
+          "id": "D",
+          "text": "0,25 M"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q03",
+      "topic_id": "solutions",
+      "prompt": "Ketika 100 mL larutan 2 M diencerkan sampai 200 mL, konsentrasi akhirnya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "4 M"
+        },
+        {
+          "id": "B",
+          "text": "1 M"
+        },
+        {
+          "id": "C",
+          "text": "0,5 M"
+        },
+        {
+          "id": "D",
+          "text": "2 M"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q04",
+      "topic_id": "solutions",
+      "prompt": "Elektrolit kuat dalam air umumnya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "selalu tidak berwarna"
+        },
+        {
+          "id": "B",
+          "text": "terdisosiasi hampir sempurna"
+        },
+        {
+          "id": "C",
+          "text": "hanya berbentuk gas"
+        },
+        {
+          "id": "D",
+          "text": "tidak membentuk ion"
+        }
+      ]
+    },
+    {
+      "id": "solutions-q05",
+      "topic_id": "solutions",
+      "prompt": "Dalam air garam, air berperan sebagai ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "produk"
+        },
+        {
+          "id": "B",
+          "text": "katalis"
+        },
+        {
+          "id": "C",
+          "text": "endapan"
+        },
+        {
+          "id": "D",
+          "text": "pelarut"
+        }
+      ]
+    },
+    {
+      "id": "acids-q01",
+      "topic_id": "acids",
+      "prompt": "Pada 25°C, pH air murni netral kira-kira ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "0"
+        },
+        {
+          "id": "B",
+          "text": "10"
+        },
+        {
+          "id": "C",
+          "text": "14"
+        },
+        {
+          "id": "D",
+          "text": "7"
+        }
+      ]
+    },
+    {
+      "id": "acids-q02",
+      "topic_id": "acids",
+      "prompt": "Larutan pH 3 dibanding pH 4 memiliki aktivitas H⁺ sekitar ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "100 kali lebih rendah"
+        },
+        {
+          "id": "B",
+          "text": "sama"
+        },
+        {
+          "id": "C",
+          "text": "10 kali lebih rendah"
+        },
+        {
+          "id": "D",
+          "text": "10 kali lebih tinggi"
+        }
+      ]
+    },
+    {
+      "id": "acids-q03",
+      "topic_id": "acids",
+      "prompt": "Menurut Brønsted–Lowry, asam adalah zat yang ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "mendonorkan proton"
+        },
+        {
+          "id": "B",
+          "text": "selalu logam"
+        },
+        {
+          "id": "C",
+          "text": "selalu menghasilkan O₂"
+        },
+        {
+          "id": "D",
+          "text": "menerima proton"
+        }
+      ]
+    },
+    {
+      "id": "acids-q04",
+      "topic_id": "acids",
+      "prompt": "Pasangan konjugasi NH₄⁺ setelah melepaskan H⁺ adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "NH₂⁻"
+        },
+        {
+          "id": "B",
+          "text": "NO₃⁻"
+        },
+        {
+          "id": "C",
+          "text": "N₂"
+        },
+        {
+          "id": "D",
+          "text": "NH₃"
+        }
+      ]
+    },
+    {
+      "id": "acids-q05",
+      "topic_id": "acids",
+      "prompt": "Penggunaan indikator pH bertujuan utama untuk ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "menghitung neutron"
+        },
+        {
+          "id": "B",
+          "text": "mengukur massa reaksi"
+        },
+        {
+          "id": "C",
+          "text": "memisahkan isotop"
+        },
+        {
+          "id": "D",
+          "text": "memperkirakan keasaman berdasarkan perubahan warna"
+        }
+      ]
+    },
+    {
+      "id": "gases-q01",
+      "topic_id": "gases",
+      "prompt": "Persamaan gas ideal adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "PV = nRT"
+        },
+        {
+          "id": "B",
+          "text": "P = VnRT"
+        },
+        {
+          "id": "C",
+          "text": "PV = RT/n"
+        },
+        {
+          "id": "D",
+          "text": "P + V = nRT"
+        }
+      ]
+    },
+    {
+      "id": "gases-q02",
+      "topic_id": "gases",
+      "prompt": "Suhu 27°C kira-kira setara dengan ... K.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "27"
+        },
+        {
+          "id": "B",
+          "text": "100"
+        },
+        {
+          "id": "C",
+          "text": "300"
+        },
+        {
+          "id": "D",
+          "text": "373"
+        }
+      ]
+    },
+    {
+      "id": "gases-q03",
+      "topic_id": "gases",
+      "prompt": "Pada suhu tetap, tekanan gas meningkat ketika volumenya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "tetap"
+        },
+        {
+          "id": "B",
+          "text": "menurun"
+        },
+        {
+          "id": "C",
+          "text": "meningkat"
+        },
+        {
+          "id": "D",
+          "text": "menjadi nol"
+        }
+      ]
+    },
+    {
+      "id": "gases-q04",
+      "topic_id": "gases",
+      "prompt": "Tekanan total campuran gas ideal sama dengan ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "nol"
+        },
+        {
+          "id": "B",
+          "text": "tekanan paling tinggi saja"
+        },
+        {
+          "id": "C",
+          "text": "rata-rata tekanan parsial"
+        },
+        {
+          "id": "D",
+          "text": "jumlah tekanan parsial"
+        }
+      ]
+    },
+    {
+      "id": "gases-q05",
+      "topic_id": "gases",
+      "prompt": "Untuk dua sampel gas ideal pada T, V, dan n sama, tekanannya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "selalu nol"
+        },
+        {
+          "id": "B",
+          "text": "bergantung warna gas"
+        },
+        {
+          "id": "C",
+          "text": "selalu berbeda menurut massa molekul"
+        },
+        {
+          "id": "D",
+          "text": "sama"
+        }
+      ]
+    },
+    {
+      "id": "energy-q01",
+      "topic_id": "energy",
+      "prompt": "Reaksi eksotermik memiliki ΔH umumnya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "negatif"
+        },
+        {
+          "id": "B",
+          "text": "tak terdefinisi"
+        },
+        {
+          "id": "C",
+          "text": "positif"
+        },
+        {
+          "id": "D",
+          "text": "selalu nol"
+        }
+      ]
+    },
+    {
+      "id": "energy-q02",
+      "topic_id": "energy",
+      "prompt": "Jika 100 g air naik suhu 2°C dan c≈4,18 J g⁻¹ °C⁻¹, kalor yang diserap kira-kira ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "8360 J"
+        },
+        {
+          "id": "B",
+          "text": "8,36 J"
+        },
+        {
+          "id": "C",
+          "text": "836 J"
+        },
+        {
+          "id": "D",
+          "text": "209 J"
+        }
+      ]
+    },
+    {
+      "id": "energy-q03",
+      "topic_id": "energy",
+      "prompt": "Dalam kalorimetri, sistem yang dipelajari umumnya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "reaksi atau proses yang diamati"
+        },
+        {
+          "id": "B",
+          "text": "termometer saja"
+        },
+        {
+          "id": "C",
+          "text": "udara bebas saja"
+        },
+        {
+          "id": "D",
+          "text": "seluruh alam semesta"
+        }
+      ]
+    },
+    {
+      "id": "energy-q04",
+      "topic_id": "energy",
+      "prompt": "Perubahan fase mencair biasanya ... kalor.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "memusnahkan"
+        },
+        {
+          "id": "B",
+          "text": "melepaskan"
+        },
+        {
+          "id": "C",
+          "text": "tidak melibatkan"
+        },
+        {
+          "id": "D",
+          "text": "menyerap"
+        }
+      ]
+    },
+    {
+      "id": "energy-q05",
+      "topic_id": "energy",
+      "prompt": "Hukum Hess menyatakan ΔH total reaksi ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "tidak bergantung pada jalur reaksi"
+        },
+        {
+          "id": "B",
+          "text": "sama dengan suhu"
+        },
+        {
+          "id": "C",
+          "text": "selalu positif"
+        },
+        {
+          "id": "D",
+          "text": "bergantung urutan tahap"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q01",
+      "topic_id": "kinetics",
+      "prompt": "Katalis umumnya bekerja dengan ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "memberikan jalur berenergi aktivasi lebih rendah"
+        },
+        {
+          "id": "B",
+          "text": "menghabiskan reaktan"
+        },
+        {
+          "id": "C",
+          "text": "menaikkan energi aktivasi"
+        },
+        {
+          "id": "D",
+          "text": "mengubah kesetimbangan K pada suhu tetap"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q02",
+      "topic_id": "kinetics",
+      "prompt": "Pada kesetimbangan dinamis, laju reaksi maju dan balik ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "nol"
+        },
+        {
+          "id": "B",
+          "text": "selalu berbeda"
+        },
+        {
+          "id": "C",
+          "text": "sama"
+        },
+        {
+          "id": "D",
+          "text": "selalu meningkat"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q03",
+      "topic_id": "kinetics",
+      "prompt": "Meningkatkan konsentrasi reaktan dapat ... laju reaksi jika faktor lain tetap.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "tidak mungkin memengaruhi"
+        },
+        {
+          "id": "B",
+          "text": "meningkatkan"
+        },
+        {
+          "id": "C",
+          "text": "selalu menurunkan"
+        },
+        {
+          "id": "D",
+          "text": "menghilangkan"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q04",
+      "topic_id": "kinetics",
+      "prompt": "Pada kesetimbangan, nilai hasil bagi reaksi Q adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "selalu 1"
+        },
+        {
+          "id": "B",
+          "text": "selalu 0"
+        },
+        {
+          "id": "C",
+          "text": "tak ada"
+        },
+        {
+          "id": "D",
+          "text": "sama dengan K"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-q05",
+      "topic_id": "kinetics",
+      "prompt": "Jika Q < K, reaksi bersih cenderung bergerak ke ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "tidak bergerak"
+        },
+        {
+          "id": "B",
+          "text": "arah reaktan"
+        },
+        {
+          "id": "C",
+          "text": "arah produk"
+        },
+        {
+          "id": "D",
+          "text": "berhenti total"
+        }
+      ]
+    },
+    {
+      "id": "redox-q01",
+      "topic_id": "redox",
+      "prompt": "Oksidasi secara sederhana berarti ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "menerima neutron"
+        },
+        {
+          "id": "B",
+          "text": "menerima elektron"
+        },
+        {
+          "id": "C",
+          "text": "kehilangan elektron"
+        },
+        {
+          "id": "D",
+          "text": "kehilangan massa"
+        }
+      ]
+    },
+    {
+      "id": "redox-q02",
+      "topic_id": "redox",
+      "prompt": "Pada reaksi Zn → Zn²⁺ + 2e⁻, Zn mengalami ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "oksidasi"
+        },
+        {
+          "id": "B",
+          "text": "reduksi"
+        },
+        {
+          "id": "C",
+          "text": "netralisasi"
+        },
+        {
+          "id": "D",
+          "text": "pengendapan"
+        }
+      ]
+    },
+    {
+      "id": "redox-q03",
+      "topic_id": "redox",
+      "prompt": "Pada sel galvanik, proses reduksi terjadi di ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "anode"
+        },
+        {
+          "id": "B",
+          "text": "jembatan garam"
+        },
+        {
+          "id": "C",
+          "text": "katode"
+        },
+        {
+          "id": "D",
+          "text": "larutan elektrolit saja"
+        }
+      ]
+    },
+    {
+      "id": "redox-q04",
+      "topic_id": "redox",
+      "prompt": "Bilangan oksidasi O pada kebanyakan senyawa biasa adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "−2"
+        },
+        {
+          "id": "B",
+          "text": "+2"
+        },
+        {
+          "id": "C",
+          "text": "0"
+        },
+        {
+          "id": "D",
+          "text": "+1"
+        }
+      ]
+    },
+    {
+      "id": "redox-q05",
+      "topic_id": "redox",
+      "prompt": "Pada sel galvanik, jembatan garam terutama menjaga ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "suhu tetap"
+        },
+        {
+          "id": "B",
+          "text": "beda warna"
+        },
+        {
+          "id": "C",
+          "text": "netralitas muatan larutan"
+        },
+        {
+          "id": "D",
+          "text": "laju cahaya"
+        }
+      ]
+    },
+    {
+      "id": "organic-q01",
+      "topic_id": "organic",
+      "prompt": "Gugus fungsi khas alkohol sederhana adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "–COOH"
+        },
+        {
+          "id": "B",
+          "text": "–NH₂"
+        },
+        {
+          "id": "C",
+          "text": "–OH"
+        },
+        {
+          "id": "D",
+          "text": "–CHO"
+        }
+      ]
+    },
+    {
+      "id": "organic-q02",
+      "topic_id": "organic",
+      "prompt": "Asam karboksilat dikenali dari gugus ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "–O–"
+        },
+        {
+          "id": "B",
+          "text": "–Cl"
+        },
+        {
+          "id": "C",
+          "text": "–SH"
+        },
+        {
+          "id": "D",
+          "text": "–COOH"
+        }
+      ]
+    },
+    {
+      "id": "organic-q03",
+      "topic_id": "organic",
+      "prompt": "Alkana jenuh rantai terbuka sederhana memiliki rumus umum ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "CₙH₂ₙ"
+        },
+        {
+          "id": "B",
+          "text": "CₙH₂ₙ₊₂"
+        },
+        {
+          "id": "C",
+          "text": "CₙHₙ"
+        },
+        {
+          "id": "D",
+          "text": "CₙH₂ₙ₋₂"
+        }
+      ]
+    },
+    {
+      "id": "organic-q04",
+      "topic_id": "organic",
+      "prompt": "Senyawa dengan rumus sama tetapi konektivitas atom berbeda disebut ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "isotop"
+        },
+        {
+          "id": "B",
+          "text": "alotrop unsur"
+        },
+        {
+          "id": "C",
+          "text": "ion"
+        },
+        {
+          "id": "D",
+          "text": "isomer konstitusional"
+        }
+      ]
+    },
+    {
+      "id": "organic-q05",
+      "topic_id": "organic",
+      "prompt": "Etena (C₂H₄) mengandung ikatan karbon-karbon ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "ionik"
+        },
+        {
+          "id": "B",
+          "text": "tunggal"
+        },
+        {
+          "id": "C",
+          "text": "rangkap tiga"
+        },
+        {
+          "id": "D",
+          "text": "rangkap dua"
+        }
+      ]
+    },
+    {
+      "id": "safety-q01",
+      "topic_id": "safety",
+      "prompt": "Sebelum menggunakan zat kimia yang tidak dikenal, tindakan pertama yang tepat adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "memanaskan langsung"
+        },
+        {
+          "id": "B",
+          "text": "mencampur dengan asam"
+        },
+        {
+          "id": "C",
+          "text": "mencicipinya"
+        },
+        {
+          "id": "D",
+          "text": "membaca label dan SDS"
+        }
+      ]
+    },
+    {
+      "id": "safety-q02",
+      "topic_id": "safety",
+      "prompt": "Pelindung mata di laboratorium terutama bertujuan untuk ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "mengukur pH"
+        },
+        {
+          "id": "B",
+          "text": "melindungi mata dari percikan"
+        },
+        {
+          "id": "C",
+          "text": "memperindah pakaian"
+        },
+        {
+          "id": "D",
+          "text": "menggantikan lemari asam"
+        }
+      ]
+    },
+    {
+      "id": "safety-q03",
+      "topic_id": "safety",
+      "prompt": "Ketika hasil eksperimen tidak sesuai hipotesis, sikap ilmiah tepat adalah ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "mengubah data"
+        },
+        {
+          "id": "B",
+          "text": "menerbitkan angka buatan"
+        },
+        {
+          "id": "C",
+          "text": "mencatat hasil dan menilai prosedur"
+        },
+        {
+          "id": "D",
+          "text": "menghapus hasil"
+        }
+      ]
+    },
+    {
+      "id": "safety-q04",
+      "topic_id": "safety",
+      "prompt": "Limbah kimia laboratorium sebaiknya ...",
+      "choices": [
+        {
+          "id": "A",
+          "text": "dikelola sesuai jenis bahan dan prosedur institusi"
+        },
+        {
+          "id": "B",
+          "text": "selalu dicampur semua"
+        },
+        {
+          "id": "C",
+          "text": "dibakar di meja"
+        },
+        {
+          "id": "D",
+          "text": "dituang ke saluran air tanpa cek"
+        }
+      ]
+    },
+    {
+      "id": "safety-q05",
+      "topic_id": "safety",
+      "prompt": "Apa yang sebaiknya dilakukan saat kaca laboratorium pecah?",
+      "choices": [
+        {
+          "id": "A",
+          "text": "ikuti prosedur dan gunakan alat penanganan kaca"
+        },
+        {
+          "id": "B",
+          "text": "disapu ke wastafel"
+        },
+        {
+          "id": "C",
+          "text": "ambil serpihan dengan tangan"
+        },
+        {
+          "id": "D",
+          "text": "tetap digunakan"
+        }
+      ]
+    }
+  ]
+}

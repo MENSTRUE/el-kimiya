@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../lib/language';
 import { COURSE, localize } from '../data/course-v45';
+import { HybridCoachV46 } from './HybridCoachV46'; // ELKIMIYA_V46_HYBRID_COACH
 import '../study-v45.css';
 
 type Progress = { passed: string[]; read: string[] };
@@ -150,6 +151,7 @@ export function LearningPathV45({ onOpenLab, onOpenFlashcards, onOpenDraftBank, 
           {attempts > 0 && <small className="v45-attempts">{tx('Percobaan sesi ini:', 'Attempts this session:')} {attempts}</small>}
           {passed && grading === 'none' && <div className="v45-notice-success"><CheckCircle2 size={17}/>{tx('Bab pernah diselesaikan. Kamu dapat mengulang kuis untuk berlatih.', 'You have already completed this chapter. You can repeat the quiz for practice.')}</div>}
         </div>}
+        <HybridCoachV46 key={unit.id} lesson={{ id: unit.id, title: unit.title, objective: unit.objective, concepts: unit.sections }} />
         <details className="v45-source"><summary><ShieldCheck size={17}/>{tx('Tentang materi dan rujukan ilmiah', 'About content and scientific references')}</summary><p>{tx('Teks ringkas dan cek pemahaman V4.5 disusun untuk demo edukasi; belum ditinjau pakar mata pelajaran. Nilai di sini dihitung lokal dari dua kunci jawaban buatan sendiri, bukan nilai resmi/sertifikasi. Bank 65 soal V4.3 tetap draft terpisah.', 'V4.5 lesson summaries and checks are independently authored educational drafts, not subject-expert approved. Scores are calculated locally using two authored answer keys, not official assessment. The 65-question V4.3 bank remains a separate draft.')}</p><a href={unit.reference} target="_blank" rel="noopener noreferrer">{tx('Sumber rujukan: OpenStax Chemistry 2e (opsional)', 'Reference: OpenStax Chemistry 2e (optional)')}</a></details>
       </section>
     </div>

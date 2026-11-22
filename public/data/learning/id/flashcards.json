@@ -1,0 +1,780 @@
+{
+  "cards": [
+    {
+      "id": "acids-f01",
+      "topic_id": "acids",
+      "front": "pH",
+      "back": "Ukuran logaritmik terkait aktivitas ion hidrogen pada larutan.",
+      "sources": [
+        {
+          "id": "openstax-14",
+          "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+          "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria"
+        }
+      ]
+    },
+    {
+      "id": "acids-f02",
+      "topic_id": "acids",
+      "front": "Asam Brønsted",
+      "back": "Donor proton H⁺.",
+      "sources": [
+        {
+          "id": "openstax-14",
+          "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+          "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria"
+        }
+      ]
+    },
+    {
+      "id": "acids-f03",
+      "topic_id": "acids",
+      "front": "Basa Brønsted",
+      "back": "Akseptor proton H⁺.",
+      "sources": [
+        {
+          "id": "openstax-14",
+          "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+          "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria"
+        }
+      ]
+    },
+    {
+      "id": "acids-f04",
+      "topic_id": "acids",
+      "front": "Pasangan konjugasi",
+      "back": "Dua spesies berbeda satu proton H⁺.",
+      "sources": [
+        {
+          "id": "openstax-14",
+          "title": "OpenStax Chemistry 2e — Acid-Base Equilibria",
+          "url": "https://openstax.org/books/chemistry-2e/pages/14-acid-base-equilibria"
+        }
+      ]
+    },
+    {
+      "id": "atoms-f01",
+      "topic_id": "atoms",
+      "front": "Nomor atom Z",
+      "back": "Jumlah proton di inti atom.",
+      "sources": [
+        {
+          "id": "openstax-2",
+          "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions"
+        },
+        {
+          "id": "iupac-atom",
+          "title": "IUPAC Gold Book — Atom",
+          "url": "https://goldbook.iupac.org/terms/view/A00493"
+        }
+      ]
+    },
+    {
+      "id": "atoms-f02",
+      "topic_id": "atoms",
+      "front": "Nomor massa A",
+      "back": "Jumlah proton + neutron.",
+      "sources": [
+        {
+          "id": "openstax-2",
+          "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions"
+        },
+        {
+          "id": "iupac-atom",
+          "title": "IUPAC Gold Book — Atom",
+          "url": "https://goldbook.iupac.org/terms/view/A00493"
+        }
+      ]
+    },
+    {
+      "id": "atoms-f03",
+      "topic_id": "atoms",
+      "front": "Isotop",
+      "back": "Atom unsur sama dengan jumlah neutron berbeda.",
+      "sources": [
+        {
+          "id": "openstax-2",
+          "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions"
+        },
+        {
+          "id": "iupac-atom",
+          "title": "IUPAC Gold Book — Atom",
+          "url": "https://goldbook.iupac.org/terms/view/A00493"
+        }
+      ]
+    },
+    {
+      "id": "atoms-f04",
+      "topic_id": "atoms",
+      "front": "Ion",
+      "back": "Atom atau gugus atom bermuatan listrik.",
+      "sources": [
+        {
+          "id": "openstax-2",
+          "title": "OpenStax Chemistry 2e — Atoms, Molecules, and Ions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/2-atoms-molecules-and-ions"
+        },
+        {
+          "id": "iupac-atom",
+          "title": "IUPAC Gold Book — Atom",
+          "url": "https://goldbook.iupac.org/terms/view/A00493"
+        }
+      ]
+    },
+    {
+      "id": "bonding-f01",
+      "topic_id": "bonding",
+      "front": "Ikatan ionik",
+      "back": "Gaya tarik elektrostatik antara ion dengan muatan berlawanan.",
+      "sources": [
+        {
+          "id": "openstax-7",
+          "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry"
+        },
+        {
+          "id": "iupac-bond",
+          "title": "IUPAC Gold Book — Chemical Bond",
+          "url": "https://goldbook.iupac.org/terms/view/CT07009"
+        }
+      ]
+    },
+    {
+      "id": "bonding-f02",
+      "topic_id": "bonding",
+      "front": "Ikatan kovalen",
+      "back": "Pasangan elektron dipakai bersama dua atom.",
+      "sources": [
+        {
+          "id": "openstax-7",
+          "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry"
+        },
+        {
+          "id": "iupac-bond",
+          "title": "IUPAC Gold Book — Chemical Bond",
+          "url": "https://goldbook.iupac.org/terms/view/CT07009"
+        }
+      ]
+    },
+    {
+      "id": "bonding-f03",
+      "topic_id": "bonding",
+      "front": "Bentuk H₂O",
+      "back": "Bengkok dengan sudut H–O–H sekitar 104,5°.",
+      "sources": [
+        {
+          "id": "openstax-7",
+          "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry"
+        },
+        {
+          "id": "iupac-bond",
+          "title": "IUPAC Gold Book — Chemical Bond",
+          "url": "https://goldbook.iupac.org/terms/view/CT07009"
+        }
+      ]
+    },
+    {
+      "id": "bonding-f04",
+      "topic_id": "bonding",
+      "front": "Kepolaran",
+      "back": "Dipol ikatan dan bentuk keseluruhan menentukan dipol molekul.",
+      "sources": [
+        {
+          "id": "openstax-7",
+          "title": "OpenStax Chemistry 2e — Chemical Bonding and Molecular Geometry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/7-chemical-bonding-and-molecular-geometry"
+        },
+        {
+          "id": "iupac-bond",
+          "title": "IUPAC Gold Book — Chemical Bond",
+          "url": "https://goldbook.iupac.org/terms/view/CT07009"
+        }
+      ]
+    },
+    {
+      "id": "energy-f01",
+      "topic_id": "energy",
+      "front": "Eksotermik",
+      "back": "Proses yang melepaskan kalor dari sistem ke lingkungan.",
+      "sources": [
+        {
+          "id": "openstax-5",
+          "title": "OpenStax Chemistry 2e — Thermochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry"
+        }
+      ]
+    },
+    {
+      "id": "energy-f02",
+      "topic_id": "energy",
+      "front": "Endotermik",
+      "back": "Proses yang menyerap kalor ke sistem.",
+      "sources": [
+        {
+          "id": "openstax-5",
+          "title": "OpenStax Chemistry 2e — Thermochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry"
+        }
+      ]
+    },
+    {
+      "id": "energy-f03",
+      "topic_id": "energy",
+      "front": "Kalor jenis",
+      "back": "Kalor per massa per kenaikan suhu satu derajat.",
+      "sources": [
+        {
+          "id": "openstax-5",
+          "title": "OpenStax Chemistry 2e — Thermochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry"
+        }
+      ]
+    },
+    {
+      "id": "energy-f04",
+      "topic_id": "energy",
+      "front": "Entalpi",
+      "back": "Besaran keadaan dengan ΔH terkait kalor pada tekanan tetap.",
+      "sources": [
+        {
+          "id": "openstax-5",
+          "title": "OpenStax Chemistry 2e — Thermochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/5-thermochemistry"
+        }
+      ]
+    },
+    {
+      "id": "gases-f01",
+      "topic_id": "gases",
+      "front": "Tekanan",
+      "back": "Gaya per luas permukaan.",
+      "sources": [
+        {
+          "id": "openstax-9",
+          "title": "OpenStax Chemistry 2e — Gases",
+          "url": "https://openstax.org/books/chemistry-2e/pages/9-gases"
+        }
+      ]
+    },
+    {
+      "id": "gases-f02",
+      "topic_id": "gases",
+      "front": "Kelvin",
+      "back": "Skala suhu termodinamik dengan 0 K sebagai nol mutlak.",
+      "sources": [
+        {
+          "id": "openstax-9",
+          "title": "OpenStax Chemistry 2e — Gases",
+          "url": "https://openstax.org/books/chemistry-2e/pages/9-gases"
+        }
+      ]
+    },
+    {
+      "id": "gases-f03",
+      "topic_id": "gases",
+      "front": "Hukum Boyle",
+      "back": "PV konstan ketika T dan n tetap untuk gas ideal.",
+      "sources": [
+        {
+          "id": "openstax-9",
+          "title": "OpenStax Chemistry 2e — Gases",
+          "url": "https://openstax.org/books/chemistry-2e/pages/9-gases"
+        }
+      ]
+    },
+    {
+      "id": "gases-f04",
+      "topic_id": "gases",
+      "front": "Tekanan parsial",
+      "back": "Kontribusi suatu komponen gas terhadap tekanan total.",
+      "sources": [
+        {
+          "id": "openstax-9",
+          "title": "OpenStax Chemistry 2e — Gases",
+          "url": "https://openstax.org/books/chemistry-2e/pages/9-gases"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-f01",
+      "topic_id": "kinetics",
+      "front": "Laju reaksi",
+      "back": "Perubahan konsentrasi terhadap waktu.",
+      "sources": [
+        {
+          "id": "openstax-12",
+          "title": "OpenStax Chemistry 2e — Kinetics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics"
+        },
+        {
+          "id": "openstax-13",
+          "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+          "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-f02",
+      "topic_id": "kinetics",
+      "front": "Energi aktivasi",
+      "back": "Hambatan energi untuk mencapai keadaan transisi.",
+      "sources": [
+        {
+          "id": "openstax-12",
+          "title": "OpenStax Chemistry 2e — Kinetics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics"
+        },
+        {
+          "id": "openstax-13",
+          "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+          "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-f03",
+      "topic_id": "kinetics",
+      "front": "Katalis",
+      "back": "Mempercepat proses tanpa habis secara netto.",
+      "sources": [
+        {
+          "id": "openstax-12",
+          "title": "OpenStax Chemistry 2e — Kinetics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics"
+        },
+        {
+          "id": "openstax-13",
+          "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+          "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts"
+        }
+      ]
+    },
+    {
+      "id": "kinetics-f04",
+      "topic_id": "kinetics",
+      "front": "Kesetimbangan dinamis",
+      "back": "Laju maju dan balik sama meski reaksi tetap berlangsung.",
+      "sources": [
+        {
+          "id": "openstax-12",
+          "title": "OpenStax Chemistry 2e — Kinetics",
+          "url": "https://openstax.org/books/chemistry-2e/pages/12-kinetics"
+        },
+        {
+          "id": "openstax-13",
+          "title": "OpenStax Chemistry 2e — Fundamental Equilibrium Concepts",
+          "url": "https://openstax.org/books/chemistry-2e/pages/13-fundamental-equilibrium-concepts"
+        }
+      ]
+    },
+    {
+      "id": "matter-f01",
+      "topic_id": "matter",
+      "front": "Materi",
+      "back": "Segala sesuatu yang memiliki massa dan menempati ruang.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "matter-f02",
+      "topic_id": "matter",
+      "front": "Massa jenis",
+      "back": "ρ = massa/volume.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "matter-f03",
+      "topic_id": "matter",
+      "front": "Sifat intensif",
+      "back": "Tidak bergantung pada jumlah zat dalam sampel homogen.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "matter-f04",
+      "topic_id": "matter",
+      "front": "Perubahan kimia",
+      "back": "Menghasilkan zat dengan komposisi atau struktur kimia berbeda.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "organic-f01",
+      "topic_id": "organic",
+      "front": "Alkana",
+      "back": "Hidrokarbon jenuh dengan ikatan C–C tunggal.",
+      "sources": [
+        {
+          "id": "openstax-20",
+          "title": "OpenStax Chemistry 2e — Organic Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry"
+        }
+      ]
+    },
+    {
+      "id": "organic-f02",
+      "topic_id": "organic",
+      "front": "Alkena",
+      "back": "Hidrokarbon dengan sedikitnya satu ikatan C=C.",
+      "sources": [
+        {
+          "id": "openstax-20",
+          "title": "OpenStax Chemistry 2e — Organic Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry"
+        }
+      ]
+    },
+    {
+      "id": "organic-f03",
+      "topic_id": "organic",
+      "front": "Alkohol",
+      "back": "Senyawa dengan –OH pada karbon jenuh yang sesuai.",
+      "sources": [
+        {
+          "id": "openstax-20",
+          "title": "OpenStax Chemistry 2e — Organic Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry"
+        }
+      ]
+    },
+    {
+      "id": "organic-f04",
+      "topic_id": "organic",
+      "front": "Asam karboksilat",
+      "back": "Senyawa dengan gugus –COOH.",
+      "sources": [
+        {
+          "id": "openstax-20",
+          "title": "OpenStax Chemistry 2e — Organic Chemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/20-organic-chemistry"
+        }
+      ]
+    },
+    {
+      "id": "periodic-f01",
+      "topic_id": "periodic",
+      "front": "Golongan",
+      "back": "Kolom vertikal pada tabel periodik.",
+      "sources": [
+        {
+          "id": "openstax-6",
+          "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+          "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements"
+        }
+      ]
+    },
+    {
+      "id": "periodic-f02",
+      "topic_id": "periodic",
+      "front": "Periode",
+      "back": "Baris horizontal pada tabel periodik.",
+      "sources": [
+        {
+          "id": "openstax-6",
+          "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+          "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements"
+        }
+      ]
+    },
+    {
+      "id": "periodic-f03",
+      "topic_id": "periodic",
+      "front": "Elektron valensi",
+      "back": "Elektron yang dominan terlibat dalam ikatan kimia.",
+      "sources": [
+        {
+          "id": "openstax-6",
+          "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+          "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements"
+        }
+      ]
+    },
+    {
+      "id": "periodic-f04",
+      "topic_id": "periodic",
+      "front": "Keelektronegatifan",
+      "back": "Kecenderungan atom menarik elektron ikatan.",
+      "sources": [
+        {
+          "id": "openstax-6",
+          "title": "OpenStax Chemistry 2e — Electronic Structure and Periodic Properties",
+          "url": "https://openstax.org/books/chemistry-2e/pages/6-electronic-structure-and-periodic-properties-of-elements"
+        }
+      ]
+    },
+    {
+      "id": "redox-f01",
+      "topic_id": "redox",
+      "front": "Oksidasi",
+      "back": "Kehilangan elektron.",
+      "sources": [
+        {
+          "id": "openstax-17",
+          "title": "OpenStax Chemistry 2e — Electrochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry"
+        }
+      ]
+    },
+    {
+      "id": "redox-f02",
+      "topic_id": "redox",
+      "front": "Reduksi",
+      "back": "Penerimaan elektron.",
+      "sources": [
+        {
+          "id": "openstax-17",
+          "title": "OpenStax Chemistry 2e — Electrochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry"
+        }
+      ]
+    },
+    {
+      "id": "redox-f03",
+      "topic_id": "redox",
+      "front": "Anode",
+      "back": "Elektrode tempat oksidasi berlangsung.",
+      "sources": [
+        {
+          "id": "openstax-17",
+          "title": "OpenStax Chemistry 2e — Electrochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry"
+        }
+      ]
+    },
+    {
+      "id": "redox-f04",
+      "topic_id": "redox",
+      "front": "Katode",
+      "back": "Elektrode tempat reduksi berlangsung.",
+      "sources": [
+        {
+          "id": "openstax-17",
+          "title": "OpenStax Chemistry 2e — Electrochemistry",
+          "url": "https://openstax.org/books/chemistry-2e/pages/17-electrochemistry"
+        }
+      ]
+    },
+    {
+      "id": "safety-f01",
+      "topic_id": "safety",
+      "front": "SDS",
+      "back": "Dokumen informasi bahaya dan penanganan bahan kimia.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "safety-f02",
+      "topic_id": "safety",
+      "front": "APD",
+      "back": "Alat pelindung diri sesuai bahaya kegiatan.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "safety-f03",
+      "topic_id": "safety",
+      "front": "Integritas data",
+      "back": "Catat data asli tanpa fabrikasi atau manipulasi.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "safety-f04",
+      "topic_id": "safety",
+      "front": "Pengelolaan limbah",
+      "back": "Pisahkan dan kelola limbah sesuai kategori serta aturan.",
+      "sources": [
+        {
+          "id": "openstax-1",
+          "title": "OpenStax Chemistry 2e — Essential Ideas",
+          "url": "https://openstax.org/books/chemistry-2e/pages/1-introduction"
+        }
+      ]
+    },
+    {
+      "id": "solutions-f01",
+      "topic_id": "solutions",
+      "front": "Zat terlarut",
+      "back": "Zat yang terdispersi dalam pelarut.",
+      "sources": [
+        {
+          "id": "openstax-3",
+          "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions"
+        },
+        {
+          "id": "openstax-11",
+          "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids"
+        }
+      ]
+    },
+    {
+      "id": "solutions-f02",
+      "topic_id": "solutions",
+      "front": "Pelarut",
+      "back": "Medium utama tempat zat terlarut dilarutkan.",
+      "sources": [
+        {
+          "id": "openstax-3",
+          "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions"
+        },
+        {
+          "id": "openstax-11",
+          "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids"
+        }
+      ]
+    },
+    {
+      "id": "solutions-f03",
+      "topic_id": "solutions",
+      "front": "Molaritas",
+      "back": "M = mol zat terlarut per liter larutan.",
+      "sources": [
+        {
+          "id": "openstax-3",
+          "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions"
+        },
+        {
+          "id": "openstax-11",
+          "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids"
+        }
+      ]
+    },
+    {
+      "id": "solutions-f04",
+      "topic_id": "solutions",
+      "front": "Pengenceran",
+      "back": "Penambahan pelarut menurunkan konsentrasi tanpa mengubah jumlah mol zat terlarut.",
+      "sources": [
+        {
+          "id": "openstax-3",
+          "title": "OpenStax Chemistry 2e — Composition of Substances and Solutions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/3-composition-of-substances-and-solutions"
+        },
+        {
+          "id": "openstax-11",
+          "title": "OpenStax Chemistry 2e — Solutions and Colloids",
+          "url": "https://openstax.org/books/chemistry-2e/pages/11-solutions-and-colloids"
+        }
+      ]
+    },
+    {
+      "id": "stoich-f01",
+      "topic_id": "stoich",
+      "front": "Bilangan Avogadro",
+      "back": "6,02214076 × 10²³ mol⁻¹ (tepat).",
+      "sources": [
+        {
+          "id": "openstax-4",
+          "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions"
+        },
+        {
+          "id": "iupac-mole",
+          "title": "IUPAC Gold Book — Mole",
+          "url": "https://goldbook.iupac.org/terms/view/M03980"
+        }
+      ]
+    },
+    {
+      "id": "stoich-f02",
+      "topic_id": "stoich",
+      "front": "Massa molar",
+      "back": "Massa per satu mol zat, umumnya g/mol.",
+      "sources": [
+        {
+          "id": "openstax-4",
+          "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions"
+        },
+        {
+          "id": "iupac-mole",
+          "title": "IUPAC Gold Book — Mole",
+          "url": "https://goldbook.iupac.org/terms/view/M03980"
+        }
+      ]
+    },
+    {
+      "id": "stoich-f03",
+      "topic_id": "stoich",
+      "front": "Reaksi setara",
+      "back": "Jumlah atom tiap unsur sama di kedua sisi.",
+      "sources": [
+        {
+          "id": "openstax-4",
+          "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions"
+        },
+        {
+          "id": "iupac-mole",
+          "title": "IUPAC Gold Book — Mole",
+          "url": "https://goldbook.iupac.org/terms/view/M03980"
+        }
+      ]
+    },
+    {
+      "id": "stoich-f04",
+      "topic_id": "stoich",
+      "front": "Pereaksi pembatas",
+      "back": "Reaktan yang membatasi jumlah produk yang dapat terbentuk.",
+      "sources": [
+        {
+          "id": "openstax-4",
+          "title": "OpenStax Chemistry 2e — Stoichiometry of Chemical Reactions",
+          "url": "https://openstax.org/books/chemistry-2e/pages/4-stoichiometry-of-chemical-reactions"
+        },
+        {
+          "id": "iupac-mole",
+          "title": "IUPAC Gold Book — Mole",
+          "url": "https://goldbook.iupac.org/terms/view/M03980"
+        }
+      ]
+    }
+  ]
+}

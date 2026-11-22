@@ -1,0 +1,17 @@
+{
+  "source": "El-Kimiya V4.3 local learning API",
+  "exported_at": "2026-11-22T07:13:39.376Z",
+  "editorial_status": "original_draft_needs_subject_expert_review",
+  "counts": {
+    "topics": 13,
+    "questions": 65,
+    "flashcards": 52
+  },
+  "excluded": [
+    "quiz correct answers",
+    "user progress",
+    "credentials",
+    "private PDFs",
+    "ChEMBL bulk database"
+  ]
+}

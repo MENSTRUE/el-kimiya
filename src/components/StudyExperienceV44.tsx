@@ -6,6 +6,7 @@ import {
   RefreshCw, RotateCcw, Search, ShieldCheck, Sparkles, X,
 } from 'lucide-react';
 import { useLanguage } from '../lib/language';
+import { readLearningV47 } from '../lib/learningSourceV47'; // ELKIMIYA_V47_PUBLIC_DATA
 import type { StudyCard } from '../data/learning';
 import '../study-v44.css';
 
@@ -14,19 +15,14 @@ type Raw = Record<string, unknown>;
 type Topic = { id: string; title: string; description: string; questionCount: number; flashcardCount: number };
 type Flashcard = { id: string; topicId: string; front: string; back: string; sourceUrl?: string; sourceName?: string; custom?: boolean };
 type Quiz = { id: string; topicId: string; prompt: string; choices: { id: string; text: string }[] };
-const ROOT = 'http://127.0.0.1:8000/api/v1/learning';
 const asObj = (v: unknown): Raw => v && typeof v === 'object' && !Array.isArray(v) ? v as Raw : {};
 const str = (v: unknown, fallback = ''): string => typeof v === 'string' ? v : fallback;
 const num = (v: unknown): number => typeof v === 'number' && Number.isFinite(v) ? v : 0;
 const field = (obj: Raw, ...keys: string[]) => { for (const k of keys) if (obj[k] !== undefined && obj[k] !== null) return obj[k]; return undefined; };
-const localOnly = () => typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const sourceLink = 'https://openstax.org/details/books/chemistry-2e';
 
 async function readApi(path: string, signal?: AbortSignal): Promise<unknown> {
-  if (!localOnly()) throw new Error('Backend lokal tidak tersedia pada situs publik. / Local API is not available on a public domain.');
-  const response = await fetch(`${ROOT}${path}`, { signal, headers: { Accept: 'application/json' } });
-  if (!response.ok) throw new Error(`Learning API returned ${response.status}. Is V4.3 running on port 8000?`);
-  return response.json();
+  return readLearningV47(path, signal);
 }
 async function listApi(path: string, key: string, lang: Lang, signal?: AbortSignal): Promise<unknown[]> {
   // Try permitted API limits, then best-effort pagination. No guessed POST routes.

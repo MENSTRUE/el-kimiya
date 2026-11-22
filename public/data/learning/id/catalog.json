@@ -1,0 +1,95 @@
+{
+  "topics": [
+    {
+      "id": "matter",
+      "title": "Materi & Pengukuran",
+      "summary": "Mulai dengan sifat zat, perubahan fisika dan kimia, serta besaran yang dapat diukur.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "atoms",
+      "title": "Atom, Ion & Isotop",
+      "summary": "Kenali proton, neutron, elektron, ion, dan isotop melalui nomor atom serta nomor massa.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "periodic",
+      "title": "Tabel Periodik & Elektron",
+      "summary": "Gunakan kelompok dan periode untuk memprediksi tren sederhana sifat unsur.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "bonding",
+      "title": "Ikatan & Bentuk Molekul",
+      "summary": "Pelajari ikatan ionik, kovalen, serta kaitan bentuk molekul dengan kepolaran.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "stoich",
+      "title": "Mol & Stoikiometri",
+      "summary": "Hubungkan jumlah zat, massa molar, dan koefisien reaksi yang setara.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "solutions",
+      "title": "Larutan & Konsentrasi",
+      "summary": "Pahami larutan, pelarut, zat terlarut, molaritas, dan pengenceran.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "acids",
+      "title": "Asam, Basa & pH",
+      "summary": "Bedakan sifat asam dan basa serta makna logaritmik pH pada larutan air.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "gases",
+      "title": "Gas & Hukum Gas",
+      "summary": "Terapkan hubungan tekanan, volume, suhu mutlak, dan jumlah gas dalam kasus sederhana.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "energy",
+      "title": "Termokimia & Energi",
+      "summary": "Kenali pertukaran kalor, sistem-lingkungan, dan tanda perubahan entalpi.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "kinetics",
+      "title": "Kinetika & Kesetimbangan",
+      "summary": "Pisahkan laju reaksi dari posisi kesetimbangan dan pahami fungsi katalis.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "redox",
+      "title": "Redoks & Elektrokimia",
+      "summary": "Lacak perpindahan elektron, bilangan oksidasi, serta reaksi pada sel elektrokimia.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "organic",
+      "title": "Kimia Organik Dasar",
+      "summary": "Kenali gugus fungsi umum dan bagaimana struktur memengaruhi sifat molekul.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "safety",
+      "title": "Keselamatan & Etika Sains",
+      "summary": "Terapkan prinsip keselamatan, pelabelan zat, kejujuran data, dan tanggung jawab lingkungan.",
+      "question_count": 5,
+      "flashcard_count": 4
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "topics": [
+    {
+      "id": "matter",
+      "title": "Matter & Measurement",
+      "summary": "Start by examining material properties, physical and chemical changes, and measurable quantities.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "atoms",
+      "title": "Atoms, Ions & Isotopes",
+      "summary": "Understand protons, neutrons, electrons, ions, and isotopes via atomic and mass numbers.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "periodic",
+      "title": "Periodic Table & Electrons",
+      "summary": "Use groups and periods to predict simple trends in element properties.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "bonding",
+      "title": "Bonding & Molecular Shape",
+      "summary": "Study ionic and covalent bonding and how molecular geometry affects polarity.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "stoich",
+      "title": "Moles & Stoichiometry",
+      "summary": "Connect amount of substance, molar mass, and balanced equation coefficients.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "solutions",
+      "title": "Solutions & Concentration",
+      "summary": "Understand solutions, solvents, solutes, molarity, and dilution.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "acids",
+      "title": "Acids, Bases & pH",
+      "summary": "Differentiate acids and bases and understand logarithmic pH in aqueous solutions.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "gases",
+      "title": "Gases & Gas Laws",
+      "summary": "Apply pressure, volume, absolute temperature, and gas amount relations to simple cases.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "energy",
+      "title": "Thermochemistry & Energy",
+      "summary": "Understand heat exchange, system/surroundings, and enthalpy change signs.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "kinetics",
+      "title": "Kinetics & Equilibrium",
+      "summary": "Separate reaction rate from equilibrium position and understand catalysts.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "redox",
+      "title": "Redox & Electrochemistry",
+      "summary": "Track electron transfer, oxidation states, and electrochemical cell reactions.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "organic",
+      "title": "Introduction to Organic Chemistry",
+      "summary": "Recognize common functional groups and how molecular structure affects properties.",
+      "question_count": 5,
+      "flashcard_count": 4
+    },
+    {
+      "id": "safety",
+      "title": "Laboratory Safety & Scientific Ethics",
+      "summary": "Apply safety, chemical labeling, data honesty, and environmental responsibility.",
+      "question_count": 5,
+      "flashcard_count": 4
+    }
+  ]
+}
