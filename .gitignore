@@ -41,3 +41,6 @@ backend/.pytest_cache/
 
 # Local pre-V4.4 source backups
 scripts/.v44-backups/
+
+# Private V4.5 local patch backups
+scripts/.v45-backups/
