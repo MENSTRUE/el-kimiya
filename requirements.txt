@@ -1,0 +1,3 @@
+# Vercel's Python Function runtime only, not the 2.9M-row local FastAPI backend.
+fastapi>=0.116,<1
+rdkit>=2025.9,<2027
