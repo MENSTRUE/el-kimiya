@@ -1,3 +1,4 @@
+import { PetrochemicalExperimentLabV62 } from './PetrochemicalExperimentLabV62';
 import { useEffect, useRef, useState } from 'react';
 import { Atom, ArrowRight, BrainCircuit, BookOpen, CheckCircle2, ChevronDown, ExternalLink, FlaskConical, LoaderCircle, Search, ShieldCheck, Sparkles, TriangleAlert, X } from 'lucide-react';
 import { compoundImage, compoundLink, findCompound, makeResearchPrompt, type Compound, type ComparisonMode } from '../lib/pubchem';
@@ -87,6 +88,7 @@ export function MolecularIntelligenceLab() {
         <div className="mi39-trust"><span><ShieldCheck size={15}/> {words.sourceText}</span><span><BrainCircuit size={15}/> Firebase AI Logic</span><span><CheckCircle2 size={15}/> {language.toUpperCase()}</span></div>
       </div><div className="mi39-hero-art" aria-hidden="true"><span className="mi39-orbit mi39-one"/><span className="mi39-orbit mi39-two"/><span className="mi39-orbit mi39-three"/><Atom size={64}/></div>
     </section>
+    <PetrochemicalExperimentLabV62/>
     <MolecularStudioV60/>{backendAvailableHere() && <MolecularBackendPanel/>}
     <section className="mi39-card">
       <div className="mi39-section-line"><span>{words.step1}</span><div className="mi39-source">{words.source}</div></div>
