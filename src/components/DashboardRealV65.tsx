@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, BrainCircuit, CheckCircle2, FlaskConical, GraduationCap, Layers3, Target, Trophy } from 'lucide-react';
 import { useLanguage } from '../lib/language';
 import { COURSE } from '../data/course-v45';
+import { DashboardMissionV67 } from './DashboardMissionV67'; // ELKIMIYA_V67_RESEARCH_JOURNEY
 import '../real-progress-v65.css';
 
-type Destination = 'practice' | 'library' | 'flashcards' | 'molecules' | 'progress' | 'tutor';
+type Destination = 'practice' | 'library' | 'flashcards' | 'molecules' | 'progress' | 'tutor' | 'mission';
 type Snapshot = { attempted: number; correct: number; lessons: number; bookmarkedBooks: number; reviewedCards: number; recentIds: string[] };
 const empty: Snapshot = { attempted: 0, correct: 0, lessons: 0, bookmarkedBooks: 0, reviewedCards: 0, recentIds: [] };
 function safeObject(key: string): Record<string, unknown> {
@@ -56,6 +57,7 @@ export function DashboardRealV65({ onGo }: { onGo: (page: Destination) => void }
       </div>
       <div className="real65-hero-side"><span>{tx('PROGRES JALUR BELAJAR', 'LEARNING JOURNEY PROGRESS')}</span><strong>{data.lessons}<small>/{COURSE.length}</small></strong><div className="real65-meter"><i style={{ width: `${lessonPercent}%` }}/></div><small>{tx('Materi selesai berdasarkan riwayat belajar', 'Completed lessons from saved learning records')}</small></div>
     </section>
+    <DashboardMissionV67 onOpen={()=>onGo('mission')}/>
     <div className="real65-section-head"><span>{tx('DATA BELAJAR NYATA', 'YOUR ACTUAL LEARNING DATA')}</span><button onClick={() => onGo('progress')}>{tx('Lihat progres lengkap', 'View all progress')} <ArrowRight size={16}/></button></div>
     <div className="real65-metrics">
       <article className="real65-metric amber"><Target size={23}/><strong>{data.attempted}</strong><span>{tx('Jawaban diperiksa', 'Answers checked')}</span></article>

@@ -58,6 +58,8 @@ import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
 import { DashboardRealV65 } from "./components/DashboardRealV65"; // ELKIMIYA_V65_REAL_DASHBOARD
+import { ResearchMissionV67 } from "./components/ResearchMissionV67"; // ELKIMIYA_V67_RESEARCH_JOURNEY
+import { EntryFlowV67, MissionLandingTeaserV67, FeatureOverviewV67 } from "./components/EntryFlowV67";
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
 import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
 import { MolecularIntelligenceLab } from "./components/MolecularIntelligenceLab";
@@ -67,6 +69,9 @@ import { firebaseConfigured, runHybridInference, type InferencePreference } from
 
 type Page =
   | "landing"
+  | "onboarding"
+  | "guest"
+  | "mission"
   | "dashboard"
   | "library"
   | "faith"
@@ -85,6 +90,7 @@ type Page =
 
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
+  { id: "mission", label: "Research Mission", icon: Target },
   { id: "library", label: "My Library", icon: Library },
   { id: "faith", label: "Kimia & Keimanan", icon: Sparkles },
   { id: "tutor", label: "AI Chemistry Tutor", icon: BrainCircuit },
@@ -228,6 +234,7 @@ function Header({
     {label:"Practice equations",meta:"Practice lab",to:"practice"},
     {label:"Molecular explorer",meta:"Chemistry explorer",to:"explorer"},
     {label:"Molecular Intelligence Lab",meta:"PubChem and Firebase AI",to:"molecules"},
+    {label:"Research Mission",meta:"Scientific learning journey",to:"mission"},
   ];
   const searchResults = searchTerm.trim()
     ? searchRoutes.filter((entry) => `${entry.label} ${entry.meta}`.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 5)
@@ -245,6 +252,9 @@ function Header({
     progress: "Learning progress",
     settings: "Settings",
     notes: "Saved notes",
+    mission: "Research Mission",
+    onboarding: "Start learning",
+    guest: "Guest mode",
   };
   return (
     <header className="topbar">
@@ -310,26 +320,28 @@ function Header({
   );
 }
 
-function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith: () => void }) {
+function LandingPage({ start, guest, openFaith, openHybrid, openScan }: { start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
+  const { language } = useLanguage(); const en = language === "en";
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({behavior:"smooth", block:"start"});
   return (
     <main className="landing-page">
       <header className="landing-nav">
-        <button aria-label={t("El-Kīmiyā home")} onClick={enterApp}>
+        <button aria-label={t("El-Kīmiyā home")} onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>
           <BrandMark size="sm" showTagline />
         </button>
         <nav aria-label="Public website navigation">
-          <a href="#product">{t("Product")}</a>
-          <a href="#experience">{t("How it works")}</a>
-          <a href="#hybrid">{t("Hybrid AI")}</a>
-          <a href="#tools">{t("Learning tools")}</a>
-          <button className="landing-faith-link" onClick={openFaith}>{t("Sains & Iman")}</button>
+          <button type="button" onClick={() => scrollTo("product")}>{t("Product")}</button>
+          <button type="button" onClick={() => scrollTo("experience")}>{t("How it works")}</button>
+          <button type="button" onClick={() => scrollTo("hybrid")}>{t("Hybrid AI")}</button>
+          <button type="button" onClick={() => scrollTo("tools")}>{t("Learning tools")}</button>
+          <button className="landing-faith-link" onClick={() => scrollTo("faith-intro")}>{t("Sains & Iman")}</button>
         </nav>
         <div>
           <LanguageSwitch />
-          <button className="landing-signin" onClick={enterApp}>
-            {t("Sign in")}
+          <button className="landing-signin" onClick={guest}>
+            {en ? "Try Guest Mode" : "Coba Mode Tamu"}
           </button>
-          <button className="primary-button" onClick={enterApp}>
+          <button className="primary-button" onClick={start}>
             {t("Start learning")} <ChevronRight size={16} />
           </button>
         </div>
@@ -343,11 +355,11 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
             {t("Chemistry isn't meant to be memorized. It's meant to be understood. Learn from your own books, ask better questions, and discover the science behind everyday life — wherever you are.")}
           </p>
           <div className="landing-actions">
-            <button className="primary-button" onClick={enterApp}>
+            <button className="primary-button" onClick={start}>
               {t("Start Learning Free")} <ChevronRight size={17} />
             </button>
-            <button className="secondary-button" onClick={enterApp}>
-              {t("View the learning space")}
+            <button className="secondary-button" onClick={() => scrollTo("research-mission-intro")}>
+              {en ? "Explore features" : "Jelajahi fitur"}
             </button>
           </div>
           <div className="landing-trust">
@@ -375,7 +387,7 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
                 <div>
                   <small>{t("CHAPTER 03")}</small>
                   <strong>{t("Atomic structure & chemical bonding")}</strong>
-                  <Progress value={68} />
+                  <span className="landing-preview-notice">{en ? "Product preview" : "Pratinjau produk"}</span>
                 </div>
                 <div className="showcase-molecule">
                   <i>C</i>
@@ -404,9 +416,9 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
             <div>
               <BookOpen size={17} />
               <span>{t("Continue learning")}</span>
-              <b>68%</b>
+              <b>{en ? "Preview" : "Pratinjau"}</b>
             </div>
-            <button onClick={enterApp}>
+            <button onClick={openScan}>
               <Camera size={17} /> {t("Scan a page")}
             </button>
           </div>
@@ -450,7 +462,10 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
         </div>
       </section>
 
-      <section className="faith-landing-teaser" aria-label="Kimia dan keimanan">
+      <MissionLandingTeaserV67 onStart={start}/>
+      <FeatureOverviewV67 onStart={start}/>
+
+      <section className="faith-landing-teaser" id="faith-intro" aria-label="Kimia dan keimanan">
         <div><span className="faith-eyebrow">{t("TAFAKKUR · QS. LUQMAN 31:20")}</span><h2>{t("Belajar kimia. Menemukan manfaat. Mensyukuri ciptaan.")}</h2><p>{t("Temukan bagaimana ilmu kimia dapat mengajak kita berpikir kritis, berbuat manfaat, dan menjaga lingkungan—dengan ayat serta sumber yang jelas.")}</p></div>
         <button onClick={openFaith}>{t("Jelajahi Kimia & Keimanan")} <ArrowRight size={17}/></button>
       </section>
@@ -460,9 +475,9 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
           <Badge variant="gold">{t("Hackathon signature experience")}</Badge>
           <h2>{t("Learning support that responds honestly to what is available.")}</h2>
           <p>
-            {t("El-Kīmiyā’s prototype makes preferred inference and the actual simulated provider distinct, so students never mistake cached content for a newly generated answer.")}
+            {en ? "Firebase AI Logic reports the actual inference source after successful responses. Device AI and cloud AI depend on availability and configuration." : "Firebase AI Logic menampilkan sumber inferensi sebenarnya setelah respons berhasil. AI lokal dan cloud bergantung pada kompatibilitas serta konfigurasi."}
           </p>
-          <button className="secondary-button" onClick={enterApp}>
+          <button className="secondary-button" onClick={openHybrid}>
             {t("Open Hybrid AI demo")} <ChevronRight size={16} />
           </button>
         </div>
@@ -486,10 +501,10 @@ function LandingPage({ enterApp, openFaith }: { enterApp: () => void; openFaith:
         </div>
       </section>
 
-      <section className="landing-final" id="tools">
+      <section className="landing-final" id="final-cta">
         <BrandMark size="lg" showTagline />
         <h2>{t("Build a stronger understanding, one concept at a time.")}</h2>
-        <button className="primary-button" onClick={enterApp}>
+        <button className="primary-button" onClick={start}>
           {t("Enter the learning workspace")} <ChevronRight size={17} />
         </button>
       </section>
@@ -1487,7 +1502,7 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 export default function App() {
   const { language } = useLanguage();
   void language;
-  const validPages: Page[] = ['landing','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile'];
+  const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const [page,setCurrentPage] = useState<Page>(hashPage);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
@@ -1511,7 +1526,10 @@ export default function App() {
   const askAbout=(prompt:string)=>{setInitialPrompt(prompt);setPage('tutor')};
   const onAnswer=(correct:boolean)=>setStatistics(prev=>({ ...prev,answered:prev.answered+1,correct:prev.correct+(correct?1:0) }));
   const content=(() => {
-    if(page==='landing')return <LandingPage enterApp={()=>setPage('dashboard')} openFaith={()=>setPage('faith')}/>;
+    if(page==='landing')return <LandingPage start={()=>setPage('onboarding')} guest={()=>setPage('guest')} openFaith={()=>setPage('faith')} openHybrid={()=>setPage('hybrid')} openScan={()=>setPage('scan')}/>;
+    if(page==='onboarding')return <EntryFlowV67 intent="learn" onBack={()=>setPage('landing')} onEnter={setPage}/>;
+    if(page==='guest')return <EntryFlowV67 intent="guest" onBack={()=>setPage('landing')} onEnter={setPage}/>;
+    if(page==='mission')return <ResearchMissionV67 onGo={setPage} onSaveNote={addNote}/>;
     if(page==='dashboard')return <DashboardRealV65 onGo={setPage}/>;
     if(page==='library')return <LibraryPage setPage={setPage} addNote={addNote} notify={notify} askAbout={askAbout}/>;
     if(page==='faith')return <ChemistryFaithPage onBack={()=>setPage('dashboard')} onOpenLibrary={()=>setPage('library')} onAskTutor={askAbout} onSaveNote={addNote}/>;
@@ -1528,7 +1546,7 @@ export default function App() {
     if(page==='notes'||page==='profile')return <SimplePage type={page} setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
     return <Dashboard setPage={setPage}/>;
   })();
-  if(page==='landing')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
+  if(page==='landing'||page==='onboarding'||page==='guest')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
   return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>
     <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
     <div className="app-shell">{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{content}</div></div>

@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 export type Language = 'id' | 'en';
 export const languagePairs: Record<string,string> = {
   "Dashboard": "Dasbor",
+  "Research Mission": "Misi Penelitian",
   "My Library": "Perpustakaan Saya",
   "Kimia & Keimanan": "Chemistry & Faith",
   "AI Chemistry Tutor": "Tutor Kimia AI",

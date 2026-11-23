@@ -50,8 +50,8 @@ for(const [family,count] of counts){assert.equal(count,96,`wrong family coverage
 const targets=[
   ['src/App.tsx','ELKIMIYA_V63_QUIZ_INTEGRATED'],
   ['src/App.tsx','<ConceptGuideV63/>'],
-  ['src/components/PetrochemicalExperimentLabV62.tsx','ELKIMIYA_V63_GLASS_INTEGRATED'],
-  ['src/components/PetrochemicalExperimentLabV62.tsx','glassView ? <ExperimentGlassV63'],
+  ['src/components/PetrochemicalExperimentLabV62.tsx','ELKIMIYA_V66_LIQUID_FIXED'],
+  ['src/components/PetrochemicalExperimentLabV62.tsx','glassView ? <ExperimentGlassV66'],
   ['src/main.tsx',"import './experience-v63.css'"],
   ['src/lib/petroExperimentV62.ts','ELKIMIYA_V63_12_SCENARIOS']
 ];
