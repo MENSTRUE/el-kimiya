@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Atom, Beaker, BrainCircuit, Download, Droplets, FlaskConical, Info, LoaderCircle, RotateCcw, ShieldCheck, Target, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../lib/language';
-import { ExperimentGlassV63 } from './ExperimentGlassV63'; // ELKIMIYA_V63_GLASS_INTEGRATED
+import { ExperimentGlassV66 } from './ExperimentGlassV66'; // ELKIMIYA_V66_LIQUID_FIXED
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
 import { evaluateTitration, summarizeRuns, SYNTHETIC_SCENARIOS, validateScenario, type SyntheticScenario } from '../lib/petroExperimentV62';
 import '../petro-experiment-v62.css';
@@ -110,7 +110,7 @@ export function PetrochemicalExperimentLabV62() {
       <div className="petro62-run">
         <div className="petro62-title"><FlaskConical size={18}/><h3>{tx('02 · Teteskan secara virtual', '02 · Add virtual drops')}</h3></div>
         <div className="v63-lab-view"><button type="button" aria-pressed={glassView} onClick={() => setGlassView(true)}>{tx('Labu ilustratif','Illustrated glassware')}</button><button type="button" aria-pressed={!glassView} onClick={() => setGlassView(false)}>{tx('Diagram klasik','Classic diagram')}</button></div>
-        {glassView ? <ExperimentGlassV63 drops={drops} volumeMl={result?.volumeMl ?? 0} meter={meter} status={result?.status ?? 'before'} en={en}/> :         <div className="petro62-beaker" aria-hidden="true">
+        {glassView ? <ExperimentGlassV66 drops={drops} volumeMl={result?.volumeMl ?? 0} meter={meter} status={result?.status ?? 'before'} en={en}/> :         <div className="petro62-beaker" aria-hidden="true">
           <svg viewBox="0 0 380 168" width="100%" xmlns="http://www.w3.org/2000/svg">
             <defs><linearGradient id="petro-liquid" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor={result?.status === 'after' ? '#f4b0a2' : '#a2d8e8'}/><stop offset="100%" stopColor={result?.status === 'after' ? '#de8f7c' : '#3c92b0'}/></linearGradient></defs>
             <path d="M176 8 L204 8 L201 48 L179 48 Z" fill="#D0E4EA" stroke="#5C8392" strokeWidth="2"/>

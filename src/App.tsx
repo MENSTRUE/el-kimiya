@@ -56,6 +56,7 @@ import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
+import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
 import { DashboardRealV65 } from "./components/DashboardRealV65"; // ELKIMIYA_V65_REAL_DASHBOARD
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
 import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
@@ -733,6 +734,8 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
   const visibleUploads=uploaded.filter(file=> (filter==='All resources'||filter==='Your uploads')&&`${file.name} ${file.content}`.toLowerCase().includes(query.toLowerCase()));
   return (
     <main className="page standard-page">
+      <PublicChemistryLibraryV66 onPractice={() => setPage("practice")} onAskTutor={askAbout}/>
+      <details className="v66-supplemental"><summary>Materi teks pribadi (.txt/.md) dan refleksi kimia / Private notes and chemistry reflection</summary>
       <section className="library-hero">
         <div>
           <Badge variant="gold">{t("Private learning collection")}</Badge>
@@ -751,7 +754,11 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
         <div><span className="faith-eyebrow"><Sparkles size={14}/> {t("SAINS & KEIMANAN")}</span><h3>{t("Ilmu kimia sebagai jalan untuk memberi manfaat.")}</h3><p>{t("QS. Luqman: 20 mengajak kita memperhatikan nikmat Allah di langit dan bumi.")}</p></div>
         <button onClick={() => setPage("faith")}>{t("Baca refleksi")} <ArrowRight size={16}/></button>
       </article>
+      </details>
+      <details className="v66-private-drawer"><summary>PDF pribadi: 8 judul katalog, hubungkan PDF milikmu / Private PDF catalogue</summary>
       <BookResearchPanel askAbout={askAbout} notify={notify}/>
+      </details>
+      <details className="v66-supplemental"><summary>Contoh kartu bacaan lama (demo) / Legacy sample cards</summary>
       <div className="toolbar">
         <label>
           <Search size={18} />
@@ -810,6 +817,7 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
           </article>
         ))}
       </div>
+      </details>
       {uploadError&&<p className="inline-alert" role="alert">{uploadError}</p>}
       {visibleUploads.length>0&&<section className="uploaded-library"><div className="section-heading compact-heading"><div><p className="eyebrow">{t("PERSONAL DOCUMENTS · BROWSER-LOCAL")}</p><h2>{t("Your imported text")}</h2></div></div>
         <div className="uploaded-grid">{visibleUploads.map(file=><article className="uploaded-item" key={file.id}><FileText size={25}/><h3>{file.name}</h3><p>{file.content.slice(0,140)}{file.content.length>140?'…':''}</p><small>{t("Local file · Not AI-indexed ·")} {new Date(file.createdAt).toLocaleDateString()}</small><div><button className="secondary-button" onClick={()=>setOpenUpload(file)}>{t("Read text")}</button><button className="icon-button" title={`Remove ${file.name}`} aria-label={`Remove ${file.name}`} onClick={()=>setUploaded(prev=>prev.filter(item=>item.id!==file.id))}><X size={17}/></button></div></article>)}</div>
