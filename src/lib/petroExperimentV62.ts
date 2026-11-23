@@ -34,6 +34,16 @@ export const SYNTHETIC_SCENARIOS: SyntheticScenario[] = [
   { id: 'a', labelId: 'Sampel minyak A · sintetis', labelEn: 'Oil sample A · synthetic', referenceAcidNumber: .9, sampleMassG: 10, titrantNormality: .1, dropVolumeMl: .05, blankMl: .05 },
   { id: 'b', labelId: 'Sampel campuran B · sintetis', labelEn: 'Blend sample B · synthetic', referenceAcidNumber: 1.4, sampleMassG: 8, titrantNormality: .1, dropVolumeMl: .05, blankMl: .08 },
   { id: 'c', labelId: 'Sampel rendah asam C · sintetis', labelEn: 'Low-acid sample C · synthetic', referenceAcidNumber: .35, sampleMassG: 12, titrantNormality: .1, dropVolumeMl: .03, blankMl: .04 },
+  // ELKIMIYA_V63_12_SCENARIOS · extra educational cases only, NOT real refinery measurements
+  { id: 'd', labelId: 'Umpan kilang D · sintetis', labelEn: 'Refinery feed D · synthetic', referenceAcidNumber: .65, sampleMassG: 9.5, titrantNormality: .1, dropVolumeMl: .04, blankMl: .04 },
+  { id: 'e', labelId: 'Minyak dasar E · sintetis', labelEn: 'Base oil E · synthetic', referenceAcidNumber: .25, sampleMassG: 12, titrantNormality: .08, dropVolumeMl: .03, blankMl: .03 },
+  { id: 'f', labelId: 'Campuran F · sintetis', labelEn: 'Blend F · synthetic', referenceAcidNumber: 1.85, sampleMassG: 7, titrantNormality: .12, dropVolumeMl: .025, blankMl: .06 },
+  { id: 'g', labelId: 'Keasaman rendah G · sintetis', labelEn: 'Low-acid G · synthetic', referenceAcidNumber: .15, sampleMassG: 15, titrantNormality: .08, dropVolumeMl: .02, blankMl: .03 },
+  { id: 'h', labelId: 'Minyak berat H · sintetis', labelEn: 'Heavy oil H · synthetic', referenceAcidNumber: 3.4, sampleMassG: 6, titrantNormality: .14, dropVolumeMl: .05, blankMl: .1 },
+  { id: 'i', labelId: 'Sampel proses I · sintetis', labelEn: 'Process sample I · synthetic', referenceAcidNumber: .95, sampleMassG: 11, titrantNormality: .1, dropVolumeMl: .035, blankMl: .05 },
+  { id: 'j', labelId: 'Kalibrasi J · sintetis', labelEn: 'Calibration challenge J · synthetic', referenceAcidNumber: 1.15, sampleMassG: 8, titrantNormality: .1, dropVolumeMl: .07, blankMl: .08 },
+  { id: 'k', labelId: 'Presisi K · sintetis', labelEn: 'Precision case K · synthetic', referenceAcidNumber: .55, sampleMassG: 14, titrantNormality: .05, dropVolumeMl: .015, blankMl: .05 },
+  { id: 'l', labelId: 'Cek ulang L · sintetis', labelEn: 'Recheck case L · synthetic', referenceAcidNumber: 2.35, sampleMassG: 8, titrantNormality: .15, dropVolumeMl: .03, blankMl: .07 },
 ];
 
 const MG_KOH_PER_MILLIEQUIVALENT = 56.1;

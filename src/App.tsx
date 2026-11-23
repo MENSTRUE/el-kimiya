@@ -51,6 +51,8 @@ import {
 } from "lucide-react";
 import { StudyLearningV44, StudyFlashcardsV44, ChemistryExplorerV44 } from './components/StudyExperienceV44'; // ELKIMIYA_V44_STUDY_UI
 import { LearningPathV45 } from "./components/LearningPathV45";
+import { PracticeBankV63 } from "./components/PracticeBankV63"; // ELKIMIYA_V63_QUIZ_INTEGRATED
+import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
@@ -1185,7 +1187,8 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
 
 function PracticePage({ setPage, onAnswer }: {setPage:(page:Page)=>void; onAnswer:(correct:boolean)=>void}) {
   const { language } = useLanguage();
-  const [view, setView] = useState<'path'|'draft'|'lab'>('path');
+  const [view, setView] = useState<'bank'|'path'|'draft'|'lab'>('bank');
+  if (view === 'bank') return <PracticeBankV63 onAnswer={onAnswer} onOpenPath={() => setView('path')} onOpenClassic={() => setView('lab')} />;
   if (view === 'path') return <LearningPathV45 onOpenLab={() => setView('lab')} onOpenFlashcards={() => setPage('flashcards')} onOpenDraftBank={() => setView('draft')} onOpenExplorer={() => setPage('explorer')} />;
   if (view === 'draft') return <><div className="v45-back"><button onClick={() => setView('path')}>{language === 'en' ? '← Back to learning journey' : '← Kembali ke jalur belajar'}</button></div><StudyLearningV44 onOpenLab={() => setView('lab')} onOpenFlashcards={() => setPage('flashcards')} /></>;
   return <><div className="v44-view-switch"><button onClick={() => setView('path')}>{language === 'en' ? '← Learning journey' : '← Jalur belajar'}</button><span>{language === 'en' ? 'Interactive lab · sample exercises' : 'Laboratorium interaktif · latihan contoh'}</span></div><LegacyPracticePage setPage={setPage} onAnswer={onAnswer}/></>;
@@ -1265,7 +1268,7 @@ function FlashcardsPage({ cards, onReview }: {cards:StudyCard[]; onReview:()=>vo
   // The six old starterCards are demos, not the real 52-card V4.3 bank.
   // Personal cards from the reader/tutor remain available.
   const customCards = cards.filter(card => !starterCards.some(starter => starter.id === card.id));
-  return <StudyFlashcardsV44 customCards={customCards} onReview={onReview}/>;
+  return <><ConceptGuideV63/><StudyFlashcardsV44 customCards={customCards} onReview={onReview}/></>;
 }
 
 function LegacyFlashcardsPage({ cards, onReview }: {cards:StudyCard[]; onReview:()=>void}) {
