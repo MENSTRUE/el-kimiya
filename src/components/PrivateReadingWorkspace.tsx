@@ -12,7 +12,8 @@ import workerURL from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { type SourceBook } from '../data/books';
 import { searchIndex, type PrivateIndex } from '../lib/bookSearch';
 import '../library-v36.css';
-import { t, LanguageSwitch } from '../lib/language';
+import '../library-reader-v65.css'; // ELKIMIYA_V65_PRIVATE_TEXT_READER
+import { t, LanguageSwitch, useLanguage } from '../lib/language';
 
 GlobalWorkerOptions.workerSrc = workerURL;
 
@@ -63,6 +64,16 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
   const [outline, setOutline] = useState<OutlineItem[]>([]);
   const [sideTab, setSideTab] = useState<ReaderTab>('contents');
   const [readMode, setReadMode] = useState<ReadingMode>('document');
+  const { language } = useLanguage();
+  const en = language === 'en';
+  const tx = (id: string, english: string) => en ? english : id;
+  const [fontSize, setFontSize] = useState(19);
+  const [lineHeight, setLineHeight] = useState(1.8);
+  const [fontFamily, setFontFamily] = useState<'serif' | 'sans'>('serif');
+  const [readerText, setReaderText] = useState('');
+  const [textBusy, setTextBusy] = useState(false);
+  const [textError, setTextError] = useState('');
+  const [importedTexts, setImportedTexts] = useState<Record<number, string>>({});
   const [search, setSearch] = useState('');
   const [zoom, setZoom] = useState(1);
   const [rotation, setRotation] = useState(0);
@@ -87,7 +98,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
   const pageCount = pdfDocument?.numPages || total;
   const validPage = clamp(page, pageCount);
   const indexedPages = useMemo(() => privateIndex?.pages.filter(item => item.bookId === book.id) ?? [], [privateIndex, book.id]);
-  const selectedText = useMemo(() => indexedPages.find(item => item.pdfPage === validPage)?.text || '', [indexedPages, validPage]);
+  const selectedText = importedTexts[validPage] || readerText || indexedPages.find(item => item.pdfPage === validPage)?.text || '';
   const hits = useMemo(() => {
     if (!search.trim() || !privateIndex) return [];
     return searchIndex({schemaVersion:1, generatedAt:privateIndex.generatedAt, pages:indexedPages}, search, 25);
@@ -163,6 +174,60 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
     return () => { cancelled = true; activeTask?.cancel(); if (taskRef.current === activeTask) taskRef.current = null; };
   }, [pdfDocument, validPage, zoom, rotation, availableWidth, readMode]);
 
+  // PDF.js extracts text from the ALREADY OPENED PDF in this browser.
+  // No network API, no upload, and no JSON index needed for text-layer PDFs.
+  useEffect(() => {
+    let cancelled = false;
+    setReaderText(''); setTextError('');
+    if (!pdfDocument || readMode !== 'text') { setTextBusy(false); return; }
+    setTextBusy(true);
+    void (async () => {
+      try {
+        const pdfPage = await pdfDocument.getPage(validPage);
+        const layer = await pdfPage.getTextContent();
+        const parts: string[] = [];
+        for (const item of layer.items) {
+          if ('str' in item && typeof item.str === 'string') {
+            parts.push(item.str + (item.hasEOL ? '\n' : ' '));
+          }
+        }
+        const result = parts.join('').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+        if (!cancelled) setReaderText(result);
+      } catch (err) {
+        if (!cancelled) setTextError(err instanceof Error ? err.message : String(err));
+      } finally { if (!cancelled) setTextBusy(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [pdfDocument, validPage, readMode]);
+
+  const importPrivateJson = async (file?: File) => {
+    if (!file) return;
+    if (file.size > 80_000_000) { setTextError(tx('JSON terlalu besar (maks 80 MB).', 'JSON too large (80 MB max).')); return; }
+    try {
+      const parsed: unknown = JSON.parse(await file.text());
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Unsupported JSON format');
+      const data = parsed as Record<string, unknown>;
+      if (data.schema_version !== 1 || data.book_id !== book.id || !Array.isArray(data.pages) || data.pages.length > 5000) {
+        throw new Error(tx('JSON tidak cocok dengan buku ini atau skemanya tidak didukung.', 'JSON does not match this book or uses an unsupported schema.'));
+      }
+      const next: Record<number, string> = {};
+      for (const raw of data.pages) {
+        if (!raw || typeof raw !== 'object') continue;
+        const p = raw as Record<string, unknown>;
+        if (typeof p.page === 'number' && Number.isSafeInteger(p.page) && p.page >= 1 && p.page <= pageCount &&
+            typeof p.text === 'string' && p.text.length <= 35000) next[p.page] = p.text;
+      }
+      if (!Object.keys(next).length) throw new Error(tx('JSON tidak berisi halaman teks yang valid.', 'JSON contains no valid text pages.'));
+      setImportedTexts(next); setTextError('');
+    } catch (err) { setTextError(err instanceof Error ? err.message : String(err)); }
+  };
+
+  const copyPageText = async () => {
+    if (!selectedText) return;
+    try { await navigator.clipboard.writeText(selectedText); setCopied(true); window.setTimeout(() => setCopied(false), 1600); }
+    catch { setTextError(tx('Gagal menyalin teks.', 'Could not copy the text.')); }
+  };
+
   const go = useCallback((next: number) => {
     onPageChange(clamp(next, pageCount));
     viewRef.current?.scrollTo({top:0, behavior:'smooth'});
@@ -236,8 +301,19 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
           </div>
           <div className="library36-mode" role="group" aria-label={t("Mode membaca")}>
             <button className={readMode==='document'?'active':''} onClick={()=>setReadMode('document')}><BookOpen size={15}/> {t("Dokumen")}</button>
-            <button className={readMode==='text'?'active':''} onClick={()=>setReadMode('text')}><FileText size={15}/> {t("Teks")}</button>
+            <button className={readMode==='text'?'active':''} onClick={()=>setReadMode('text')}><FileText size={15}/> {tx("Teks Nyaman", "Comfort reading")}</button>
           </div>
+          {readMode === 'text' && <div className="library65-controls" aria-label={tx('Pengaturan teks', 'Text settings')}>
+            <label>{tx('Font', 'Font')} <select value={fontFamily} onChange={e => setFontFamily(e.target.value as 'serif' | 'sans')}>
+              <option value="serif">Serif</option><option value="sans">Sans-serif</option>
+            </select></label>
+            <button type="button" onClick={() => setFontSize(v => Math.max(14, v - 2))} aria-label={tx('Perkecil font', 'Decrease font size')}><Minus size={15}/></button>
+            <b>{fontSize}px</b>
+            <button type="button" onClick={() => setFontSize(v => Math.min(34, v + 2))} aria-label={tx('Perbesar font', 'Increase font size')}><Plus size={15}/></button>
+            <label>{tx('Spasi', 'Spacing')} <select value={lineHeight} onChange={e => setLineHeight(Number(e.target.value))}>
+              <option value={1.45}>1.45</option><option value={1.8}>1.8</option><option value={2.1}>2.1</option>
+            </select></label>
+          </div>}
           <div className="library36-zoom"><button aria-label={t("Perkecil")} onClick={()=>setZoom(x=>Math.max(.6,+(x-.1).toFixed(2)))}><Minus size={17}/></button><span>{Math.round(zoom*100)}%</span><button aria-label={t("Perbesar")} onClick={()=>setZoom(x=>Math.min(2,+(x+.1).toFixed(2)))}><Plus size={17}/></button></div>
         </div>
         <div className="library36-scroll" ref={viewRef}>
@@ -247,7 +323,10 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
             <div className="library36-paper"><canvas ref={canvasRef} aria-label={`Halaman PDF ${validPage} dari ${book.title}`}/>{rendering&&<div className="library36-rendering"><LoaderCircle className="spin" size={22}/> {t("Memuat halaman…")}</div>}</div>
             <p className="library36-page-foot">El-Kīmiyā · {book.title} · PDF p. {validPage}</p>
           </div>}
-          {!loading && readMode==='text' && <article className="library36-text-sheet"><span className="library36-text-kicker">{t("DIGITAL READING · PDF PAGE")} {validPage}</span><h2>{book.title}</h2><p className="library36-text-description">{t("Versi teks dari indeks privat. Untuk rumus, tabel, gambar, dan tata letak asli, gunakan mode Dokumen.")}</p>{selectedText?<div className="library36-text-content">{selectedText}</div>:<div className="library36-text-missing"><FileText size={30}/><strong>{t("Belum ada teks terindeks untuk halaman ini.")}</strong><p>{t("Buat indeks JSON dari PDF asli untuk mengaktifkan tampilan teks dan pencarian.")}</p></div>}<div className="library36-text-actions"><button onClick={()=>void copyCitation()}>{copied?<Check size={16}/>:<Bookmark size={16}/>} {copied?'Referensi disalin':'Salin referensi halaman'}</button><button onClick={()=>setReadMode('document')}><BookOpen size={16}/> {t("Lihat PDF asli")}</button></div></article>}
+          {!loading && readMode==='text' && <article className="library36-text-sheet"><span className="library36-text-kicker">{t("DIGITAL READING · PDF PAGE")} {validPage}</span><h2>{book.title}</h2><p className="library36-text-description">{t("Teks diambil dari PDF yang dibuka di browser atau JSON privat yang kamu impor. Tata letak rumus dan gambar tetap gunakan mode Dokumen.")}</p>{selectedText?<div className="library36-text-content library65-extracted" style={{fontSize: `${fontSize}px`, lineHeight, fontFamily: fontFamily === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif'}}>{selectedText}</div>:<div className="library36-text-missing"><FileText size={30}/><strong>{t("Belum ada teks terindeks untuk halaman ini.")}</strong><p>{t("Jika PDF hasil scan tanpa text layer, ekstraksi otomatis bisa kosong. Gunakan PDF asli atau impor JSON teks privat yang dibuat dari file milikmu.")}</p></div>}{textBusy && <p className="library65-caption" role="status">{tx('Mengekstrak teks dari PDF…', 'Extracting text from PDF…')}</p>}
+          {textError && <p className="library65-reader-error" role="alert">{textError}</p>}
+          <p className="library65-source">{tx('Hanya untuk penggunaan privat. Teks dari PDF bukan hasil OCR, tabel dan rumus mungkin tidak sempurna.', 'Private use only. PDF text extraction is not OCR; tables and formulas may not preserve layout.')}</p>
+          <div className="library36-text-actions"><label className="library65-import"><FileText size={16}/>{tx('Impor JSON privat', 'Import private JSON')}<input type="file" accept=".json,application/json" onChange={e => { void importPrivateJson(e.target.files?.[0]); e.target.value = ''; }}/></label><button onClick={() => void copyPageText()} disabled={!selectedText}><FileText size={16}/>{tx('Salin teks', 'Copy text')}</button><button onClick={()=>void copyCitation()}>{copied?<Check size={16}/>:<Bookmark size={16}/>} {copied?'Referensi disalin':'Salin referensi halaman'}</button><button onClick={()=>setReadMode('document')}><BookOpen size={16}/> {t("Lihat PDF asli")}</button></div></article>}
         </div>
         <footer className="library36-bottom"><div><ShieldCheck size={15}/> {t("Dokumen privat · Tidak dipublikasikan")}</div><div className="library36-bottom-actions"><button onClick={()=>onAsk(`Jelaskan topik pada ${book.title}, halaman PDF ${validPage}. Jangan mengarang isi halaman; jika tidak memiliki cuplikan sumber, minta saya mengimpor indeks pribadi terlebih dahulu.`)}><Sparkles size={16}/> {t("Diskusikan di AI Tutor")}</button><button onClick={()=>go(validPage+1)} disabled={validPage>=pageCount}>{t("Halaman berikutnya")} <ChevronRight size={16}/></button></div></footer>
       </div>

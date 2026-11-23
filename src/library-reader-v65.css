@@ -1,0 +1,14 @@
+/* El-Kīmiyā V6.5: accessible, browser-local text reading. Scoped styles only. */
+.library65-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:5px 8px;border-radius:11px;background:#fff6e8;border:1px solid #edd8b9}
+.library65-controls label{display:flex;align-items:center;gap:5px;color:#5d523f;font-size:12px;font-weight:710}
+.library65-controls select{background:#fff;border:1px solid #dfcda9;border-radius:7px;padding:6px 8px;color:#233b3b}
+.library65-controls button{border:1px solid #c7d6cd;background:#fff;border-radius:8px;color:#255547;width:30px;height:30px;display:grid;place-items:center}
+.library65-controls b{font-size:12px;min-width:34px;text-align:center;color:#224d43}
+.library65-extracted{white-space:pre-wrap;overflow-wrap:anywhere;hyphens:auto;text-align:start;color:#253631;max-width:75ch;margin:25px auto;padding:0 2px;user-select:text;letter-spacing:normal}
+.library65-caption{font-size:12px;color:#667e7a;line-height:1.6}
+.library65-import{display:inline-flex;align-items:center;gap:6px;border:1px solid #c8d8ce;border-radius:9px;background:#eaf5ed;color:#285b45;padding:9px 11px;cursor:pointer;font-size:12px;font-weight:770}
+.library65-import input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.library65-import:focus-within{outline:2px solid #17816d;outline-offset:3px}
+.library65-source{padding:8px 11px;background:#f7eddd;color:#65553b;border-radius:9px;font-size:12px;line-height:1.6}
+.library65-reader-error{color:#9d3836;background:#fff0e8;padding:10px 13px;border-radius:8px;font-size:12px}
+@media(max-width:850px){.library65-controls{width:100%}.library65-extracted{padding:0 4px}}

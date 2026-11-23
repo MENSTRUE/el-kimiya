@@ -56,6 +56,7 @@ import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
 import { BookResearchPanel } from "./components/BookResearchPanel";
+import { DashboardRealV65 } from "./components/DashboardRealV65"; // ELKIMIYA_V65_REAL_DASHBOARD
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
 import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
 import { MolecularIntelligenceLab } from "./components/MolecularIntelligenceLab";
@@ -1503,7 +1504,7 @@ export default function App() {
   const onAnswer=(correct:boolean)=>setStatistics(prev=>({ ...prev,answered:prev.answered+1,correct:prev.correct+(correct?1:0) }));
   const content=(() => {
     if(page==='landing')return <LandingPage enterApp={()=>setPage('dashboard')} openFaith={()=>setPage('faith')}/>;
-    if(page==='dashboard')return <Dashboard setPage={setPage}/>;
+    if(page==='dashboard')return <DashboardRealV65 onGo={setPage}/>;
     if(page==='library')return <LibraryPage setPage={setPage} addNote={addNote} notify={notify} askAbout={askAbout}/>;
     if(page==='faith')return <ChemistryFaithPage onBack={()=>setPage('dashboard')} onOpenLibrary={()=>setPage('library')} onAskTutor={askAbout} onSaveNote={addNote}/>;
     if(page==='reader')return <ReaderPage setPage={setPage} addNote={addNote} addCard={addCard} dark={dark} notify={notify}/>;
