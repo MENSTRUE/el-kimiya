@@ -11,6 +11,8 @@ import { contextForPrompt, parsePrivateIndex, searchIndex, type PrivateIndex } f
 import '../library-v35.css';
 import { t } from '../lib/language';
 import { PrivateReadingWorkspace } from './PrivateReadingWorkspace';
+import { LibraryEmptyStateV64 } from './LibraryEmptyStateV64'; // ELKIMIYA_V64_ADAPTIVE_LIBRARY
+import { useLanguage } from '../lib/language';
 
 type Props = { askAbout: (text: string) => void; notify: (text: string) => void };
 type ReadingMap = Record<string, number>;
@@ -70,6 +72,9 @@ function BookCover({ book, large = false }: { book: SourceBook; large?: boolean 
 }
 
 export function BookResearchPanel({ askAbout, notify }: Props) {
+const { language } = useLanguage();
+const en = language === 'en';
+const tx = (id: string, english: string) => en ? english : id;
   const [pdfs, setPdfs] = useState<Record<string, string>>({});
   const [autoStatus, setAutoStatus] = useState<AutoStatus>('checking');
   const [query, setQuery] = useState('');
@@ -269,13 +274,20 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
         <span className="library35-private"><ShieldCheck size={16} /> {t("Personal & private")}</span>
       </div>
 
-      <div className="library35-hero">
+      {connectedCount === 0 ? <LibraryEmptyStateV64
+        english={en}
+        checking={autoStatus === 'checking'}
+        count={sourceBooks.length}
+        onChooseFolder={() => folderInput.current?.click()}
+        onBrowseCatalog={() => document.getElementById('elkimiya-v64-catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+      /> : <div className="library35-hero">
         <div className="library35-hero-copy">
           <div className="library35-pill"><Sparkles size={14} /> {t("YOUR PRIVATE READING STUDIO")}</div>
-          <h3>{lastBook ? 'Continue where curiosity took you.' : 'A new chapter of discovery awaits.'}</h3>
+          <h3>{lastBook ? tx('Lanjutkan dari halaman terakhir.', 'Continue where you left off.') : tx('Buku siap dibaca.', 'Your book is ready to read.')}</h3>
           <p>{t("Eksplorasi kimia dengan buku sungguhan. Buka, tandai halaman, dan temukan referensi tanpa meninggalkan El-Kīmiyā.")}</p>
           <div className="library35-hero-actions">
-            <button className="library35-btn library35-btn--light" onClick={() => featured && openBook(featured.id)} disabled={!featured || !pdfs[featured.id]}><BookOpen size={17} /> {lastBook ? 'Lanjutkan membaca' : 'Mulai membaca'} <ArrowRight size={16} /></button>
+            <button className="library35-btn library35-btn--light" onClick={() => featured && openBook(featured.id)} disabled={!featured || !pdfs[featured.id]}><BookOpen size={17} /> {lastBook ? tx('Lanjutkan membaca', 'Continue reading') : tx('Mulai membaca', 'Start reading')} <ArrowRight size={16} /></button>
+            <a href="#progress" className="library64-inline-link">{tx('Lihat progres', 'View progress')} <ArrowRight size={15}/></a>
             <span className="library35-hero-hint">{lastBook ? `${lastBook.title} · halaman tersimpan ${pages[lastBook.id] || 1}` : 'Pilih buku untuk mulai membaca'}</span>
           </div>
           <div className="library35-metrics">
@@ -285,15 +297,15 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
           </div>
         </div>
         {featured && <div className="library35-hero-art"><div className="library35-hero-orbit"/><div className="library35-hero-book"><BookCover book={featured} large /></div><span className="library35-hero-annotation">{t("CURATED READING")} <span>01 / 08</span></span></div>}
-      </div>
+        </div>}
 
       <div className="library35-connect" role="status">
         <span className={`library35-connect-icon ${connectedCount ? 'online' : ''}`}>{connectedCount ? <Check size={19} /> : <FolderOpen size={19} />}</span>
-        <div><strong>{autoStatus === 'checking' ? 'Sedang mencari PDF pribadi…' : connectedCount ? `${connectedCount} PDF terhubung · Siap dibaca` : 'Hubungkan buku dari laptop'}</strong><p>{autoStatus === 'connected' ? 'PDF tersedia hanya dari server pengembangan lokal. Tidak masuk ke website publik.' : 'Jika belum otomatis, pilih folder private/chemistry-books milikmu. Buku tidak dikirim ke cloud.'}</p></div>
+        <div><strong>{autoStatus === 'checking' ? tx('Memeriksa PDF lokal…', 'Checking local PDFs…') : connectedCount ? tx(`${connectedCount} PDF terhubung · Siap dibaca`, `${connectedCount} PDFs connected · Ready to read`) : tx('Pilih PDF milikmu dari perangkat', 'Choose your own PDFs from this device')}</strong><p>{autoStatus === 'connected' ? tx('PDF dari server development lokal; tidak dipublikasikan di website.', 'PDFs from the local development server; not published online.') : tx('Pilih folder atau buka PDF pada kartu katalog. Berkas tidak diunggah ke server.', 'Choose a folder or open a PDF on a catalogue card. Files are not uploaded to the server.')}</p></div>
         <button className="library35-connect-button" onClick={() => folderInput.current?.click()}><FolderOpen size={16}/> {t("Pilih folder")} <ChevronDown size={15}/></button>
       </div>
 
-      <div className="library35-discover-head"><div><span className="library35-overline">{t("EXPLORE THE SHELVES")}</span><h3>{t("Find something worth reading.")}</h3></div><span>{visibleBooks.length} {t("dari")} {sourceBooks.length} {t("referensi")}</span></div>
+      <div className="library35-discover-head" id="elkimiya-v64-catalog"><div><span className="library35-overline">{t("EXPLORE THE SHELVES")}</span><h3>{t("Find something worth reading.")}</h3></div><span>{visibleBooks.length} {t("dari")} {sourceBooks.length} {t("referensi")}</span></div>
       <div className="library35-toolbar">
         <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari judul, penulis, atau topik kimia..." aria-label="Cari buku" />{query && <button aria-label={t("Hapus pencarian")} onClick={() => setQuery('')}><X size={16}/></button>}</label>
         <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label="Urutkan buku" value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">{t("Urutan katalog")}</option><option value="title">{t("Judul A–Z")}</option><option value="length">{t("Halaman paling sedikit")}</option></select></label>
@@ -312,7 +324,7 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
         const remembered = pages[book.id];
         const isFavorite = favorites.includes(book.id);
         return <article key={book.id} className="library35-card" style={{ animationDelay: `${Math.min(i, 7) * 45}ms` }}>
-          <button className="library35-card-main" onClick={() => openBook(book.id)} title={ready ? 'Baca buku ini' : 'Hubungkan PDF untuk membaca'}>
+          <button className="library35-card-main" onClick={() => ready ? openBook(book.id) : chooseOwnPdf(book.id)} title={ready ? tx('Baca buku ini', 'Read this book') : tx('Pilih PDF pribadi untuk buku ini', 'Select your own PDF for this book')}>
             <span className="library35-card-cover"><BookCover book={book}/></span>
             <span className="library35-card-body"><span className="library35-card-role">{t(roleLabels[book.role])}</span><strong className="library35-card-title">{book.title}</strong><span className="library35-card-author">{book.author}</span><span className="library35-card-meta"><span><BookOpen size={13}/> {book.pdfPages} {t("halaman")}</span><span className={ready ? 'ready' : 'pending'}>{t(ready ? '● Siap dibaca' : '○ PDF belum ada')}</span></span>{remembered && <span className="library35-card-progress"><span><span style={{ width: `${Math.max(4, remembered / book.pdfPages * 100)}%` }} /></span><small>{t("Penanda: halaman")} {remembered}</small></span>}<span className="library35-card-cta">{t(ready ? (remembered ? 'Lanjutkan membaca' : 'Baca sekarang') : 'Hubungkan PDF')} <ArrowRight size={16}/></span></span>
           </button>
@@ -323,7 +335,7 @@ export function BookResearchPanel({ askAbout, notify }: Props) {
       {message && <div className="library35-toast" role="status"><Check size={16}/>{message}<button onClick={() => setMessage('')} aria-label="Tutup pesan"><X size={15}/></button></div>}
 
       <div className="library35-research">
-        <div><span className="library35-overline">{t("FROM READING TO UNDERSTANDING")}</span><h3>{t("Ask your books, not just the AI.")}</h3><p>{t("Indeks teks PDF tersedia otomatis saat dibuat di laptop. Cari halaman relevan, kemudian siapkan pertanyaan ke AI Tutor. Kutipan hanya dikirim ke cloud setelah kamu menyetujui.")}</p><span><ShieldCheck size={16}/> {t("Pencarian di browser · kutipan berbasis halaman PDF")}</span></div>
+        <div><span className="library35-overline">{t("FROM READING TO UNDERSTANDING")}</span><h3>{index ? tx('Tanya bukumu berdasarkan sumber.', 'Ask your books with evidence.') : tx('Cari isi buku setelah membuat indeks.', 'Search inside books after building an index.')}</h3><p>{index ? tx('Indeks PDF tersedia. Pilih halaman relevan dan tinjau kutipan sebelum bertanya kepada AI.', 'Your PDF index is ready. Review page-level excerpts before asking AI.') : tx('Pencarian isi PDF memerlukan indeks pribadi di laptop atau JSON yang kamu impor sendiri. Katalog saja belum menyediakan isi buku.', 'Searching PDF contents needs a local index or your own imported JSON. Catalogue entries do not contain full book text.')}</p><span><ShieldCheck size={16}/>{tx('PDF tetap privat · kutipan hanya atas persetujuanmu', 'PDFs remain private · quotes require your consent')}</span></div>
         <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? 'Tutup pencarian' : 'Buka pencarian buku'}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
       </div>
       {showResearch && <section className="library35-research-panel" aria-label="Cari isi PDF dengan indeks privat">
