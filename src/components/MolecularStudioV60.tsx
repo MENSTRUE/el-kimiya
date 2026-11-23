@@ -4,6 +4,7 @@ import {
   Maximize2, RotateCcw, ShieldCheck, Sparkles, ZoomIn, ZoomOut, AlertTriangle,
 } from 'lucide-react';
 import { useLanguage } from '../lib/language';
+import { VisualMolecularBuilderV61, type BuilderResultV61 } from './VisualMolecularBuilderV61';
 import '../molecular-studio-v60.css';
 
 type Atom3D = { element: string; xyz: [number, number, number] };
@@ -236,6 +237,20 @@ export function MolecularStudioV60() {
     } catch { /* Storage unavailable (private mode); note entry remains usable. */ }
   }, [result?.canonical_smiles_rdkit]);
 
+  // V6.1: Visual Builder returns a chemically validated RDKit result.
+  // Existing SMILES, samples, 2D/3D, Firebase and notebook stay untouched.
+  const acceptAssembly = useCallback((built: BuilderResultV61) => {
+    controllerRef.current?.abort();
+    controllerRef.current = null;
+    setBusy(false);
+    setSelected('custom');
+    setSmiles(built.canonical_smiles_rdkit);
+    setResult(built);
+    cache.current.set(built.canonical_smiles_rdkit, built);
+    setView('2d');
+    setZoom2d(1);
+    setError('');
+  }, []);
   const choose = (item: Sample) => {
     setSelected(item.chembl_id); setSmiles(item.canonical_smiles);
     void analyze(item.canonical_smiles);
@@ -318,13 +333,14 @@ export function MolecularStudioV60() {
         {sampleWarning && <p className="v60-subtle">{sampleWarning}</p>}
       </aside>
       <div className="v60-main">
+        <VisualMolecularBuilderV61 onResult={acceptAssembly} />
         <form className="v60-editor" onSubmit={submit}>
           <label htmlFor="v60-smiles"><FlaskConical size={16}/>{tx('Editor SMILES', 'SMILES editor')}</label>
           <div><input id="v60-smiles" value={smiles} maxLength={256} spellCheck={false} autoComplete="off" onChange={e => { setSmiles(e.target.value); setSelected('custom'); }} placeholder="CCO"/>
             <button type="submit" disabled={busy || !smiles.trim()}>{busy ? <LoaderCircle size={16} className="v60-loading"/> : <Sparkles size={16}/>} {tx('Gambar molekul', 'Draw molecule')}</button></div>
           <small>{tx('Gambar otomatis saat memilih sampel; untuk SMILES yang diketik, tekan Gambar molekul.', 'Automatic drawing on sample selection; for typed SMILES, select Draw molecule.')} · {tx('Maks. 256 karakter', 'Max. 256 characters')}</small>
         </form>
-        <div className="v60-artboard">
+        <div className="v60-artboard" id="v60-artboard">
           <div className="v60-artbar"><div className="v60-tabs"><button type="button" aria-pressed={view === '2d'} className={view === '2d' ? 'on' : ''} onClick={() => setView('2d')}><Atom size={15}/> 2D</button><button type="button" aria-pressed={view === '3d'} className={view === '3d' ? 'on' : ''} onClick={ask3d} disabled={!result || busy}><Box size={15}/> 3D {busy && <LoaderCircle size={13} className="v60-loading"/>}</button></div>
             <div className="v60-actions"><button type="button" onClick={() => setZoom2d(z => Math.min(2.4, z + .2))} disabled={view !== '2d' || !result} title="Zoom in"><ZoomIn size={17}/></button><button type="button" onClick={() => setZoom2d(z => Math.max(.55, z - .2))} disabled={view !== '2d' || !result} title="Zoom out"><ZoomOut size={17}/></button><button type="button" onClick={() => { setZoom2d(1); setView('2d'); }} disabled={!result} title="Reset view"><Maximize2 size={17}/></button></div></div>
           <div className="v60-art-content" aria-live="polite">
@@ -354,7 +370,7 @@ export function MolecularStudioV60() {
         <p>{tx('Pisahkan data terukur, perhitungan, dan hipotesis. Jangan menyimpulkan kehalalan, keamanan, atau toksisitas hanya dari SMILES.', 'Distinguish measurements, computations, and hypotheses. Never infer halal status, safety, or toxicity from a SMILES string alone.')}</p>
         <p>{tx('Langkah berikutnya: bandingkan dengan sumber ChEMBL, PubChem, dan literatur ilmiah. ', 'Next step: verify against ChEMBL, PubChem, and scientific literature. ')}
           <a href="https://www.ebi.ac.uk/chembl/" target="_blank" rel="noopener noreferrer">ChEMBL</a> · <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer">PubChem</a></p>
-        <small>{tx('V6 Studio Core · bukan editor menggambar atom bebas dan bukan prediktor klinis.', 'V6 Studio Core · not a freehand atom/bond sketch editor or clinical predictor.')}</small>
+        <small>{tx('V6.1: builder molekul sederhana, bukan editor stereo profesional atau prediktor klinis.', 'V6.1: simple assembly, not a professional stereo editor or clinical predictor.')}</small>
       </div>
     </div>
   </section>;
