@@ -4,8 +4,7 @@ import { compoundImage, compoundLink, findCompound, makeResearchPrompt, type Com
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
 import { useLanguage } from '../lib/language';
 import { MolecularBackendPanel } from './MolecularBackendPanel';
-import { PublicMoleculesV47 } from './PublicMoleculesV47';
-import { PublicRDKitV49 } from './PublicRDKitV49';
+import { MolecularStudioV60 } from './MolecularStudioV60';
 import { backendAvailableHere } from '../lib/molecularBackend';
 import '../molecular-lab-v39.css';
 
@@ -88,7 +87,7 @@ export function MolecularIntelligenceLab() {
         <div className="mi39-trust"><span><ShieldCheck size={15}/> {words.sourceText}</span><span><BrainCircuit size={15}/> Firebase AI Logic</span><span><CheckCircle2 size={15}/> {language.toUpperCase()}</span></div>
       </div><div className="mi39-hero-art" aria-hidden="true"><span className="mi39-orbit mi39-one"/><span className="mi39-orbit mi39-two"/><span className="mi39-orbit mi39-three"/><Atom size={64}/></div>
     </section>
-    {backendAvailableHere() ? <MolecularBackendPanel/> : <><PublicMoleculesV47/><PublicRDKitV49/></>}
+    <MolecularStudioV60/>{backendAvailableHere() && <MolecularBackendPanel/>}
     <section className="mi39-card">
       <div className="mi39-section-line"><span>{words.step1}</span><div className="mi39-source">{words.source}</div></div>
       <form onSubmit={e=>{e.preventDefault();void load()}} className="mi39-search">
