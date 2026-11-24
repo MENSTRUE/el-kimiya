@@ -1,0 +1,108 @@
+/* ELKIMIYA_V70_DARK_CONTRAST
+ * Explicit surface / foreground pairs for marketing cards.
+ * Root cause: editorial.css hardcodes #fffefa and #f8f7f3 while .dark
+ * changes --navy to near-white; previous V6.9 rules miss these selectors.
+ * Do not filter/invert the user-approved El-Kimiya logo.
+ */
+
+/* Dark mode: native Android V3 supplies localStorage elk.dark; React applies
+   the .dark class to .app. Never rely on OS inversion or color-scheme alone. */
+.app.dark .landing-principles {
+  background: #0c2030 !important;
+  color: #eaf4f2 !important;
+}
+.app.dark .landing-principles .eyebrow {
+  color: #b0c9cc !important;
+}
+.app.dark .landing-principles h2 {
+  color: #f2f7f5 !important;
+}
+.app.dark .landing-principles .principle-grid article {
+  background: #183647 !important;
+  border-color: #3d5c6c !important;
+  color: #eaf4f2 !important;
+  box-shadow: 0 7px 24px rgba(0, 0, 0, .13);
+}
+.app.dark .landing-principles .principle-grid article > span {
+  background: #284b5a !important;
+  color: #aed9cf !important;
+}
+.app.dark .landing-principles .principle-grid article > span svg {
+  color: #b4ddd3 !important;
+}
+.app.dark .landing-principles .principle-grid h3 {
+  color: #f2f7f5 !important;
+}
+.app.dark .landing-principles .principle-grid p {
+  color: #c2d7db !important;
+  opacity: 1 !important;
+}
+
+/* Light mode: explicitly pair ivory cards with deep, readable navy text. */
+.app:not(.dark) .landing-principles {
+  background: #fffefa !important;
+  color: #193a4a !important;
+}
+.app:not(.dark) .landing-principles h2 {
+  color: #173b4c !important;
+}
+.app:not(.dark) .landing-principles .principle-grid article {
+  background: #f8f7f3 !important;
+  border-color: #d6dfdc !important;
+  color: #193a4a !important;
+}
+.app:not(.dark) .landing-principles .principle-grid h3 {
+  color: #183b49 !important;
+}
+.app:not(.dark) .landing-principles .principle-grid p {
+  color: #516b72 !important;
+  opacity: 1 !important;
+}
+.app:not(.dark) .landing-principles .principle-grid article > span {
+  background: #e4efeb !important;
+  color: #2b6874 !important;
+}
+
+/* Also complete the dark marketing footer so no light-only background
+   inherits the near-white foreground from .dark design tokens. */
+.app.dark .landing-final {
+  background: #17384a !important;
+  border-color: #426170 !important;
+  color: #eef5f3 !important;
+}
+.app.dark .landing-final h2,
+.app.dark .landing-final h3,
+.app.dark .landing-final strong {
+  color: #f3f7f5 !important;
+}
+.app.dark .landing-footer {
+  background: #0d2130 !important;
+  color: #d1e1e1 !important;
+  border-color: #345363 !important;
+}
+.app.dark .landing-footer p,
+.app.dark .landing-footer small,
+.app.dark .landing-footer a {
+  color: #bdd2d4 !important;
+}
+
+/* Restrict layout changes to mobile, preserving desktop typography. */
+@media (max-width: 760px) {
+  .landing-principles {
+    padding-block: 48px !important;
+  }
+  .landing-principles .principle-grid article {
+    min-height: 0 !important;
+    padding: 20px !important;
+  }
+  .landing-principles .principle-grid h3 {
+    margin-top: 17px !important;
+    margin-bottom: 8px !important;
+    font-size: 17px !important;
+    line-height: 1.4 !important;
+  }
+  .landing-principles .principle-grid p {
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+  }
+}

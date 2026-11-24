@@ -8,6 +8,15 @@ import './editorial.css'
 import './interactive.css'
 import './research.css'
 import './experience-v63.css'
+import './dark-contrast-v70.css'
+
+// ELKIMIYA_V70_SYSTEM_THEME_BOOTSTRAP: on first visit only, respect system theme.
+// Never override a manual Light/Dark choice already stored by React or Android.
+try {
+  if (localStorage.getItem('elk.dark') === null) {
+    localStorage.setItem('elk.dark', String(window.matchMedia('(prefers-color-scheme: dark)').matches));
+  }
+} catch { /* Storage can be unavailable in private browser contexts. */ }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
