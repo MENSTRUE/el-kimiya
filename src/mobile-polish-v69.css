@@ -1,0 +1,117 @@
+/* El-Kimiyā V6.9: high-contrast Android WebView polish and honest Scan Studio.
+   Scoped to known V6.7 surfaces; does not change report printing or chemistry data. */
+html:has(.app.dark) { color-scheme: dark; }
+html:has(.app:not(.dark)) { color-scheme: light; }
+
+/* The V6.7 entry flow uses light-only hardcoded backgrounds and colors.
+   Its original CSS otherwise conflicts with Samsung's dark WebView theme. */
+.app.dark .entry67 { background: radial-gradient(circle at 88% 5%,#234b50 0%,transparent 42%),#0c1e30 !important; color:#f2f5f3 !important; }
+.app.dark .entry67-nav { border-color:#34515e !important; color:#bad0d3 !important; }
+.app.dark .entry67-nav button,.app.dark .entry67-nav span {color:#e2f2f0 !important;}
+.app.dark .entry67-nav strong,.app.dark .entry67-top p {color:#c0d4d5 !important;}
+.app.dark .entry67-top h1 {color:#f2f5f3 !important;}
+.app.dark .entry67-kicker {color:#efc885 !important;}
+.app.dark .entry67-privacy {background:#183a42 !important;border-color:#34605b !important;color:#d2e7df !important;}
+.app.dark .entry67-choices button {background:#183345 !important;border-color:#395668 !important;color:#f2f5f3 !important;box-shadow:none !important;}
+.app.dark .entry67-choices button.chosen {background:#234b4a !important;border-color:#9bcbb9 !important;}
+.app.dark .entry67-choices strong {color:#f2f5f3 !important;}
+.app.dark .entry67-choices small {color:#c4d3da !important;}
+.app.dark .entry67-choice-icon {background:#294b52 !important;color:#f4d8a1 !important;}
+.app.dark .entry67-check {color:#afdfbd !important;}
+.app.dark .entry67-bottom,.app.dark .entry67-guest {background:#183345 !important;border-color:#395668 !important;}
+.app.dark .entry67-bottom span,.app.dark .entry67-guest p {color:#c8d9dd !important;}
+.app.dark .entry67-bottom strong,.app.dark .entry67-guest h2 {color:#f3f6f5 !important;}
+.app.dark .entry67-guest-icon {background:#314d4d !important;color:#f5d6a0 !important;}
+.app.dark .entry67-foot {color:#a9c3ca !important;}
+.app.dark .entry67-bottom button,.app.dark .entry67-guest button {background:#ddcba4 !important;color:#133344 !important;}
+
+/* V6.7 marketing feature cards must not inherit near-white text on white cards. */
+.app.dark .feature67 {color:#ecf3f1 !important;}
+.app.dark .feature67-head h2 {color:#f2f5f3 !important;}
+.app.dark .feature67-head p {color:#c0d4d8 !important;}
+.app.dark .feature67-grid article,.app.dark .feature67-grid article:nth-child(n) {background:#173246 !important;border-color:#345268 !important;}
+.app.dark .feature67-grid h3 {color:#e7f1ed !important;}
+.app.dark .feature67-grid p {color:#c5d6d8 !important;}
+.app.dark .feature67-grid svg {color:#a4d8c2 !important;}
+
+/* Research Mission body is light by design. Define the contrast explicitly
+   rather than inheriting white global dark-text from .app.dark. */
+.app.dark .mission67-body {background:#142f41 !important;border-color:#35586a !important;color:#eff5f4 !important;}
+.app.dark .mission67-paper h3 {color:#eff5f4 !important;}
+.app.dark .mission67-paper>p {color:#c4d9db !important;}
+.app.dark .mission67-stepper button:not(.selected) {background:#183748 !important;color:#d6e5e2 !important;border-color:#365767 !important;}
+.app.dark .mission67-scope {background:#443b2b !important;color:#f4dfb8 !important;}
+.app.dark .mission67-choices button {background:#1b394a !important;color:#eaf4f1 !important;border-color:#416071 !important;}
+.app.dark .mission67-choices button.chosen {background:#204d4a !important;border-color:#85bda7 !important;}
+.app.dark .mission67-stats>div {background:#1a3949 !important;border-color:#43606b !important;}
+.app.dark .mission67-stats strong {color:#f1f6f3 !important;}
+.app.dark .mission67-stats span,.app.dark .mission67-stats small {color:#c7d7d8 !important;}
+.app.dark .mission67-note {background:#224354 !important;color:#c8d8db !important;}
+.app.dark .mission67-select,.app.dark .mission67-reflection {color:#e3f0ea !important;}
+.app.dark .mission67-select select,.app.dark .mission67-reflection textarea {background:#122e3e !important;color:#f0f7f4 !important;border-color:#5b7f86 !important;}
+.app.dark .mission67-secondary {background:#294552 !important;color:#e9f5ec !important;border-color:#5b7f86 !important;}
+
+/* Landing V6.7: explicit dark contrast for text on the marketing page. */
+.app.dark .landing-page {background:#0c1e30 !important;}
+.app.dark .landing-nav {color:#edf4f3 !important;}
+.app.dark .landing-hero h1 {color:#f0f5f3 !important;}
+.app.dark .landing-hero-copy>p {color:#c0d5d8 !important;}
+.app.dark .landing-trust {color:#c7d8dd !important;}
+
+/* Modern Scan Studio: no blank camera simulation, no fake OCR results. */
+.scan69,.app .scan69 {--scan-canvas:#f8f7f2;--scan-card:#ffffff;--scan-ink:#183a4b;--scan-muted:#5d747b;--scan-border:#d9e4e5;--scan-hero:#153f50;--scan-accent:#e8d9b9;position:relative;min-height:100dvh;width:100%;padding:0 0 140px;background:var(--scan-canvas)!important;color:var(--scan-ink)!important;overflow:visible;isolation:isolate;}
+.app.dark .scan69 {--scan-canvas:#0c1e30;--scan-card:#173245;--scan-ink:#eef6f5;--scan-muted:#b9d0d4;--scan-border:#37586a;--scan-hero:#173e4d;--scan-accent:#dfc99e;}
+.scan69 * {box-sizing:border-box;}
+.scan69-topbar {display:flex;align-items:center;gap:12px;min-height:76px;padding:14px clamp(16px,4vw,32px);background:var(--scan-card);border-bottom:1px solid var(--scan-border);}
+.scan69-back {width:44px;height:44px;display:grid;place-items:center;flex-shrink:0;background:var(--scan-canvas);color:var(--scan-ink);border:1px solid var(--scan-border);border-radius:14px;}
+.scan69-identity {display:grid;gap:3px;min-width:0;flex:1;}
+.scan69-overline {color:var(--scan-muted);font-size:10px;font-weight:800;letter-spacing:.10em;}
+.scan69-identity strong {font-size:15px;color:var(--scan-ink);font-weight:800;letter-spacing:-.2px;}
+.scan69-step {flex-shrink:0;font-size:12px;font-weight:700;color:var(--scan-muted);}
+.scan69-hero {background:linear-gradient(125deg,#153948,#26635a);color:#f5f7f3;padding:clamp(26px,6vw,52px) clamp(20px,5vw,48px);}
+.scan69-kicker {display:inline-flex;align-items:center;gap:7px;color:#f5daaa;font-size:10px;font-weight:800;letter-spacing:.10em;}
+.scan69-hero h1 {max-width:660px;color:#fff!important;font:500 clamp(31px,5vw,48px)/1.15 Georgia,serif;margin:14px 0 13px;letter-spacing:-.8px;}
+.scan69-hero p {max-width:680px;color:#d7e8e3!important;font-size:14px;line-height:1.75;margin:0;}
+.scan69-content {max-width:760px;margin:0 auto;padding:24px clamp(16px,5vw,34px) 16px;}
+.scan69-preview-placeholder {position:relative;min-height:210px;display:grid;place-items:center;padding:20px;border-radius:22px;background:linear-gradient(135deg,#e6efeb,#f3ede1);border:1px solid #cfded8;overflow:hidden;}
+.app.dark .scan69-preview-placeholder {background:linear-gradient(130deg,#203f4d,#173344);border-color:#365b64;}
+.scan69-page {display:grid;justify-items:center;align-content:center;gap:12px;width:164px;min-height:168px;background:#fffdf7;border:1px solid #c7d2cc;border-radius:10px;transform:rotate(-4deg);box-shadow:0 13px 32px #0d283128;color:#3e6264;padding:18px;}
+.scan69-page-icon {display:grid;place-items:center;color:#215a62;}
+.scan69-page span {font:600 14px Georgia,serif;color:#355e5c;}
+.scan69-page i {height:5px;width:100%;background:#d4ded8;border-radius:4px;}
+.scan69-page i:last-child {width:70%;}
+.scan69-corners span {position:absolute;width:32px;height:32px;border-color:#4c8d83;border-style:solid;}
+.scan69-corners span:nth-child(1) {left:16px;top:16px;border-width:3px 0 0 3px;border-radius:9px 0 0;}
+.scan69-corners span:nth-child(2) {right:16px;top:16px;border-width:3px 3px 0 0;border-radius:0 9px 0 0;}
+.scan69-corners span:nth-child(3) {left:16px;bottom:16px;border-width:0 0 3px 3px;border-radius:0 0 0 9px;}
+.scan69-corners span:nth-child(4) {right:16px;bottom:16px;border-width:0 3px 3px 0;border-radius:0 0 9px;}
+.scan69-actions {display:grid;gap:12px;margin-top:20px;}
+.scan69-actions button {min-height:50px;width:100%;border-radius:13px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:750;cursor:pointer;touch-action:manipulation;}
+.scan69-actions button:disabled {opacity:.45;cursor:not-allowed;}
+.scan69-primary {background:#245e65;color:#fff!important;border:1px solid #245e65;}
+.scan69-primary:not(:disabled):active {background:#174850;}
+.scan69-secondary {background:var(--scan-card);color:var(--scan-ink)!important;border:1px solid var(--scan-border);}
+.scan69-text-button {background:transparent;color:var(--scan-ink)!important;border:0;}
+.scan69-file {position:absolute!important;left:-100vw!important;top:auto!important;width:1px!important;height:1px!important;opacity:0!important;}
+.scan69-error {background:#fff0ed;border:1px solid #f4beb4;color:#7f312c;border-radius:12px;padding:13px 15px;font-size:13px;}
+.scan69-notice {display:flex;align-items:flex-start;gap:12px;border:1px solid var(--scan-border);background:var(--scan-card);border-radius:16px;padding:17px;margin-top:22px;color:var(--scan-muted);}
+.scan69-notice>svg {flex-shrink:0;color:#64a69a;}
+.scan69-notice p {margin:0;display:grid;gap:6px;line-height:1.55;font-size:12px;}
+.scan69-notice strong {color:var(--scan-ink);font-size:13px;}
+.scan69-notice span {color:var(--scan-muted);}
+.scan69-photo {display:grid;place-items:center;min-height:180px;background:var(--scan-card);border-radius:16px;border:1px solid var(--scan-border);padding:14px;}
+.scan69-photo img {display:block;max-width:100%;max-height:340px;width:auto;height:auto;object-fit:contain;border-radius:9px;}
+.scan69-sample {display:flex;align-items:center;gap:10px;padding:15px 16px;color:var(--scan-ink);background:var(--scan-card);border:1px solid var(--scan-border);border-radius:13px;font-size:13px;}
+.scan69-field {display:grid;gap:10px;margin-top:23px;}
+.scan69-field label {font-size:14px;font-weight:800;color:var(--scan-ink);}
+.scan69-field textarea {width:100%;min-height:195px;padding:16px;border:1px solid var(--scan-border);border-radius:13px;font:400 15px/1.65 Inter,system-ui,sans-serif;resize:vertical;background:var(--scan-card);color:var(--scan-ink);outline-offset:3px;}
+.scan69-field textarea::placeholder {color:var(--scan-muted);opacity:.8;}
+.scan69-field>span {font-size:11px;color:var(--scan-muted);overflow-wrap:anywhere;}
+.scan69-complete {display:grid;justify-items:center;text-align:center;gap:12px;padding-top:60px;}
+.scan69-complete>svg {color:#388b78;}
+.scan69-complete h2 {color:var(--scan-ink);font:500 29px Georgia,serif;margin:0;}
+.scan69-complete p {color:var(--scan-muted);font-size:14px;line-height:1.7;max-width:540px;margin:0;}
+.scan69-complete .scan69-actions {width:min(100%,480px);}
+@media (min-width:660px) {.scan69-actions {grid-template-columns:1fr 1fr;}.scan69-actions .scan69-text-button {grid-column:1 / -1;}}
+@media (max-width:370px) {.scan69-hero {padding:22px 16px;}.scan69-topbar {padding-inline:12px;}.scan69-identity strong {font-size:13px;}}
+@media (prefers-reduced-motion: reduce) {.scan69 *, .scan69 *::before,.scan69 *::after {animation:none!important;transition:none!important;}}

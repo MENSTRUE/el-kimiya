@@ -55,6 +55,7 @@ import { PracticeBankV63 } from "./components/PracticeBankV63"; // ELKIMIYA_V63_
 import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
+import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
 import { DashboardRealV65 } from "./components/DashboardRealV65"; // ELKIMIYA_V65_REAL_DASHBOARD
@@ -1421,41 +1422,7 @@ function ScanPage({ setPage, addNote, addCard, notify, askAbout }: {
   notify:(message:string)=>void;
   askAbout:(prompt:string)=>void;
 }) {
-  const [step,setStep] = useState<'camera'|'review'|'result'>('camera');
-  const [preview,setPreview] = useState<string|null>(null);
-  const [text,setText] = useState('');
-  const [error,setError] = useState('');
-  const sample='A covalent bond forms when atoms share one or more electron pairs. These electrons are attracted by both atomic nuclei.';
-  useEffect(()=>()=>{if(preview)URL.revokeObjectURL(preview)},[preview]);
-  const fileChange = (file?:File) => {
-    if(!file)return;
-    if(!['image/png','image/jpeg','image/webp'].includes(file.type)){setError('Choose a PNG, JPEG or WebP image.');return}
-    if(file.size>6*1024*1024){setError('Image is larger than 6MB. Please choose a smaller file.');return}
-    setError('');setPreview(URL.createObjectURL(file));setText('');setStep('review');
-  };
-  const useSample=()=>{setText(sample);setError('');setStep('review');};
-  const save=()=>addNote('Captured study passage',text,'Personal text entered/reviewed in scanner · Not OCR verified');
-  const makeCard=()=>{addCard({id:`scan-${Date.now()}`,topic:'Personal scan',question:'Explain the concept in this scanned passage.',answer:text,detail:'Based on manually reviewed text, not verified source text.'});notify('Flashcard created from reviewed passage')};
-  return <main className="scan-page v2-scan">
-    {step==='camera'&&<div className="camera-view"><div className="scan-header"><button className="icon-button" onClick={()=>setPage('dashboard')} aria-label="Close scanner"><X/></button><div><BrandMark compact inverted size="sm"/><strong>{t("Capture learning material")}</strong><small>{t("Camera/gallery upload — no OCR running")}</small></div></div>
-      <div className="scan-frame"><i/><i/><i/><i/><div className="sample-page"><small>{t("PERSONAL LEARNING WORKSPACE")}</small><h3>{t("From a page")}<br/>{t("to understanding.")}</h3><p>{t("Take a photo or upload a page. Then review and enter the passage you want to study.")}</p><p className="demo-disclaimer">{t("No image recognition or text extraction is claimed in this prototype.")}</p></div></div>
-      <p className="scan-hint">{t("Your photograph stays in this browser session; it is not uploaded to a server by this feature.")}</p>
-      <div className="camera-actions"><label className="scan-upload-button"><Upload size={21}/><small>{t("Gallery")}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>fileChange(e.target.files?.[0])}/></small></label>
-        <label className="capture" title="Use camera"><Camera size={24}/><input type="file" accept="image/*" capture="environment" onChange={e=>fileChange(e.target.files?.[0])}/></label>
-        <button onClick={useSample}><BookOpen size={20}/><small>{t("Try demo")}</small></button></div>{error&&<p role="alert" className="inline-alert">{error}</p>}
-    </div>}
-    {step==='review'&&<div className="scan-review"><div className="scan-review-head"><button className="icon-button" onClick={()=>setStep('camera')} aria-label="Back to scanner"><ChevronLeft/></button><div><BrandMark compact size="sm"/><strong>{t("Review the passage")}</strong><small>{t("Manual transcription — OCR not available")}</small></div><Badge>{t("Private")}</Badge></div>
-      {preview&&<div className="scan-image-preview"><img src={preview} alt="Your selected page photographed for manual transcription"/></div>}
-      <div className="captured-page"><small>{preview?'SELECTED IMAGE':'SAMPLE PASSAGE · DEMO'}</small><h2>{t("Text to study")}</h2><label htmlFor="scan-text">{t("Type or correct the passage from the photograph")}</label><textarea id="scan-text" rows={7} value={text} placeholder="Enter the paragraph or chemistry question from your page..." onChange={e=>setText(e.target.value)} maxLength={4000}/><p>{text.length}{t("/4000 characters · Source unverified until you inspect it.")}</p></div>
-      <div className="scan-bottom"><p><CircleHelp size={16}/> {t("This is not automatic OCR. Please check every word.")}</p><button className="primary-button" disabled={!text.trim()} onClick={()=>setStep('result')}>{t("Continue to study guide")} <ChevronRight size={16}/></button></div>
-    </div>}
-    {step==='result'&&<div className="scan-result"><div className="scan-review-head"><button className="icon-button" onClick={()=>setStep('review')} aria-label="Back to edit"><ChevronLeft/></button><div><BrandMark compact size="sm"/><strong>{t("Study the passage")}</strong><small>{t("Reviewed text · Manual input")}</small></div><Badge>{t("Local")}</Badge></div>
-      <div className="scan-answer-orb"><BookOpen/></div><Badge variant="gold">{t("Source-grounded note")}</Badge><h2>{t("Read, reflect,")}<br/>{t("remember.")}</h2><p className="scan-quoted-passage">{text}</p><p>{t("This view preserves exactly the passage you reviewed. It does not invent an AI explanation. You can save it, create a review card, or open the AI tutor separately.")}</p>
-      <div className="source-box"><div><strong>{t("Provenance")}</strong><Badge variant="neutral">{t("Manual review")}</Badge></div><p>{preview?'Your selected image':'Original demo sample'}</p><span>{t("No verified book title, chapter or page metadata.")}</span></div>
-      <div className="mobile-action-grid"><button onClick={save}><NotebookPen/> {t("Save note")}</button><button onClick={makeCard}><Layers3/> {t("Create flashcard")}</button></div><button className="primary-button full" onClick={()=>askAbout(`Please explain this chemistry passage; distinguish facts from any unsupported claims:
-${text.slice(0,1500)}`)}>{t("Review question in chemistry tutor")} <ChevronRight/></button>
-    </div>}
-  </main>;
+  return <ScanStudioV69 setPage={setPage} addNote={addNote} addCard={addCard} notify={notify} askAbout={askAbout} />;
 }
 
 function MobileBottomNav({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
