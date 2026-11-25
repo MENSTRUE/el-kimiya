@@ -7,6 +7,8 @@ import {
 import { BrandMark } from './BrandMark';
 import { COURSE } from '../data/course-v45';
 import { useLanguage } from '../lib/language';
+import { usePlatform } from '../v8/platform';
+// ELKIMIYA_V80_LOCAL_PROFILE
 import { useStoredState } from '../lib/storage';
 
 type Destination = 'dashboard' | 'library' | 'practice' | 'mission' | 'flashcards' | 'notes' | 'progress' | 'tutor' | 'settings' | 'molecules';
@@ -48,6 +50,7 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
   flashcardsCount: number;
 }) {
   const { language } = useLanguage();
+  const {user} = usePlatform();
   const en = language === 'en';
   const tx = (id: string, english: string) => en ? english : id;
   const [nickname, setNickname] = useStoredState('elk.profile.nickname.v71', '');
@@ -64,8 +67,8 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
       window.removeEventListener('elk:v45-progress', refresh);
     };
   }, []);
-  const name = nickname.trim() || tx('Penjelajah Kimia', 'Chemistry Explorer');
-  const initial = nickname.trim() ? nickname.trim().slice(0, 1).toUpperCase() : 'E';
+  const name = user?.displayName || user?.email || nickname.trim() || tx('Penjelajah Kimia', 'Chemistry Explorer');
+  const initial = name.slice(0, 1).toUpperCase();
   const completePercent = Math.round(100 * progress.lessons / Math.max(COURSE.length, 1));
   const accuracy = progress.attempted ? `${Math.round(100 * progress.correct / progress.attempted)}%` : '—';
   const goals = [
@@ -94,7 +97,7 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
       <section className="guest71-hero">
         <div className="guest71-hero-top">
           <BrandMark compact inverted size="sm" />
-          <span className="guest71-private"><ShieldCheck size={15}/>{tx('MODE TAMU · LOKAL', 'GUEST MODE · LOCAL')}</span>
+          <span className="guest71-private"><ShieldCheck size={15}/>{user ? tx('AKTIVITAS · PERANGKAT INI', 'ACTIVITY · THIS DEVICE') : tx('MODE TAMU · LOKAL', 'GUEST MODE · LOCAL')}</span>
         </div>
         <div className="guest71-identity">
           <span className="guest71-avatar" aria-hidden="true">{initial}</span>
@@ -104,7 +107,7 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
             <p>{tx('Setiap langkah kecil dalam belajar kimia layak dicatat.', 'Every small step in learning chemistry matters.')}</p>
           </div>
         </div>
-        {editing ? (
+        {!user && (editing ? (
           <form className="guest71-name-editor" onSubmit={event => { event.preventDefault(); setNickname(draftNickname.trim().slice(0,24)); setEditing(false); }}>
             <label htmlFor="elk-guest-name">{tx('Nama panggilan (tersimpan di perangkat)', 'Nickname (saved on this device)')}</label>
             <div>
@@ -115,7 +118,7 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
           </form>
         ) : (
           <button className="guest71-edit" onClick={()=>{setDraftNickname(nickname);setEditing(true);}}><PenLine size={15}/>{tx('Atur nama panggilan', 'Set your nickname')}</button>
-        )}
+        ))}
         <div className="guest71-journey">
           <div><span>{tx('PROGRES JALUR BELAJAR', 'LEARNING JOURNEY')}</span><strong>{completePercent}%</strong></div>
           <div className="guest71-track" role="progressbar" aria-valuenow={completePercent} aria-valuemin={0} aria-valuemax={100} aria-label={tx('Materi selesai', 'Lessons completed')}><i style={{width:`${completePercent}%`}}/></div>
@@ -144,7 +147,7 @@ export function GuestLearningSpaceV71({onGo, notesCount, flashcardsCount}: {
 
       <section className="guest71-footer">
         <BookMarked size={20}/>
-        <p>{tx('Nama, tujuan belajar, catatan, dan progres berada di penyimpanan lokal aplikasi/browser ini. Belum ada akun, cloud sync, atau backup otomatis.', 'Your nickname, goals, notes and progress stay in this app/browser storage. There is no account, cloud sync or automatic backup yet.')}</p>
+        <p>{tx('Nama panggilan, tujuan belajar, catatan, dan progres tersimpan lokal. Gunakan panel akun untuk membuat atau memulihkan cadangan secara eksplisit.', 'Nickname, goals, notes and progress are stored locally. Use the account panel to explicitly create or restore a backup.')}</p>
         <button onClick={()=>onGo('settings')}>{tx('Pengaturan', 'Settings')} <ArrowRight size={16}/></button>
       </section>
     </main>

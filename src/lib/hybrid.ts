@@ -57,7 +57,7 @@ function getFirebaseApp() {
       });
 }
 
-function setupAppCheck() {
+export function setupAppCheck() {
   const app = getFirebaseApp();
   if (appCheckReady) return app;
   if (appCheckProvider !== 'v3' && appCheckProvider !== 'enterprise') {

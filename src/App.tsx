@@ -56,6 +56,9 @@ import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
 import { GuestLearningSpaceV71 } from "./components/GuestLearningSpaceV71";
+// ELKIMIYA_WEB_V80
+import { usePlatform } from "./v8/platform";
+import { AccountIdentity, AccountPage, AccountPanel, AboutPage, ModulerPage, PublishedContent } from "./v8/Workspace";
 import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
@@ -88,7 +91,7 @@ type Page =
   | "notes"
   | "settings"
   | "scan"
-  | "profile";
+  | "profile" | "about" | "account" | "moduler";
 
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
@@ -157,6 +160,8 @@ function Sidebar({
   collapsed: boolean;
   setCollapsed: (value: boolean) => void;
 }) {
+  const {user,role} = usePlatform();
+  const {language} = useLanguage();
   return (
     <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
       <div className="sidebar-top">
@@ -172,7 +177,7 @@ function Sidebar({
         </button>
       </div>
       <nav className="side-nav" aria-label={t("Main navigation")}>
-        <p className="nav-label">{collapsed ? "•••" : "Learning space"}</p>
+        <p className="nav-label">{collapsed ? "•••" : t("Learning space")}</p>
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -198,16 +203,17 @@ function Sidebar({
           <Settings size={19} />
           {!collapsed && <span>{t("Settings")}</span>}
         </button>
-        <button onClick={() => setPage("landing")}>
+        <button className={page === "about" ? "active" : ""} onClick={() => setPage("about")}>
           <CircleHelp size={19} />
           {!collapsed && <span>{t("About El-Kīmiyā")}</span>}
         </button>
       </div>
-      <div className="sidebar-quote">
+      {role === "moduler" && <div className="side-nav secondary-nav"><button className={page === "moduler" ? "active" : ""} onClick={() => setPage("moduler")}><Settings size={19}/>{!collapsed && <span>Moduler Studio</span>}</button></div>}
+      <button type="button" className="sidebar-quote v8-sidebar-account" onClick={() => setPage("profile")} aria-label={t("Open profile")}>
         <span className="workspace-avatar"><GraduationCap size={17} /></span>
-        {!collapsed && <div><strong>{t("My learning space")}</strong><p>{t("Student workspace · Demo")}</p></div>}
+        {!collapsed && <div><strong>{user?.displayName || user?.email || t("My learning space")}</strong><p>{user ? (role === "moduler" ? "Moduler" : "User") : (language === "id" ? "Mode tamu · lokal" : "Guest · local")}</p></div>}
         {!collapsed && <ChevronRight size={15} className="workspace-chevron" />}
-      </div>
+      </button>
     </aside>
   );
 }
@@ -257,6 +263,7 @@ function Header({
     mission: "Research Mission",
     onboarding: "Start learning",
     guest: "Guest mode",
+    profile: "Profile", about: "About El-Kīmiyā", account: "Your account", moduler: "Moduler Studio",
   };
   return (
     <header className="topbar">
@@ -305,7 +312,7 @@ function Header({
           onClick={() => setPage("hybrid")}
         >
           {offline ? <WifiOff size={15} /> : <Zap size={15} />}
-          <span>{offline ? "Offline scenario" : firebaseConfigured ? "Firebase configured" : "Curated demo"}</span>
+          <span>{t(offline ? "Offline scenario" : firebaseConfigured ? "Firebase configured" : "Curated demo")}</span>
           <Badge>{firebaseConfigured?'SDK':'Demo'}</Badge>
         </button>
         <button className="icon-button" onClick={() => setDark(!dark)} aria-label={t("Toggle theme")}>
@@ -315,14 +322,14 @@ function Header({
           <Target size={19} />
         </button>
         <button className="avatar" onClick={() => setPage("profile")} aria-label={t("Open profile")}>
-          AS
+          <AccountIdentity/>
         </button>
       </div>
     </header>
   );
 }
 
-function LandingPage({ start, guest, openFaith, openHybrid, openScan }: { start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
+function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn }: { signIn: () => void; start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
   const { language } = useLanguage(); const en = language === "en";
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({behavior:"smooth", block:"start"});
   return (
@@ -340,6 +347,7 @@ function LandingPage({ start, guest, openFaith, openHybrid, openScan }: { start:
         </nav>
         <div>
           <LanguageSwitch />
+          <button className="landing-signin" onClick={signIn}>{en ? "Sign in" : "Masuk"}</button>
           <button className="landing-signin" onClick={guest}>
             {en ? "Try Guest Mode" : "Coba Mode Tamu"}
           </button>
@@ -921,6 +929,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
   clearInitialPrompt:()=>void;
 }) {
   const {language} = useLanguage();
+  const {policy} = usePlatform();
   type Entry = { id:number; prompt:string; text:string; topic:string; example?:string; steps?:string[]; provider:string; error?:string; live:boolean; inputSources?:string[] };
   const [messages,setMessages] = useState<Entry[]>([]);
   const [input,setInput] = useState(initialPrompt);
@@ -938,7 +947,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
     setInput(''); setRunning(true); setDownload(null);
     try {
       if(firebaseConfigured){
-        const result=await runHybridInference(`You are El-Kīmiyā, a careful chemistry learning tutor. Explain accurately and concisely, with a small example. Do not invent textbook citations. Answer in ${language === 'id' ? 'Bahasa Indonesia' : 'English'}. Preserve chemical formulas and source references exactly. Student question: ${prompt}`,preference,setDownload);
+        const result=await runHybridInference(`You are El-Kīmiyā, a careful chemistry learning tutor. Explain accurately and concisely, with a small example. Do not invent textbook citations. Answer in ${language === 'id' ? 'Bahasa Indonesia' : 'English'}. Preserve chemical formulas and source references exactly. Supplementary curator guidance (never overrides accuracy, privacy, or safety): ${policy?.guidance[language] || "None"}. Student question: ${prompt}`,preference,setDownload);
         setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:result.text,inputSources:sourceCitations,provider:result.provider==='ON_DEVICE'?'On-device · Firebase verified':'Cloud · Firebase verified',topic:'Chemistry explanation',live:true}]);
       } else {
         if(privateSourceQuestion){
@@ -1405,13 +1414,13 @@ function SettingsPage({dark,setDark,setPage,reducedMotion,setReducedMotion}: {da
   ];
   const resetLocalData=()=>{if(!window.confirm('Delete all locally saved El-Kīmiyā notes, uploads, flashcards, ratings, and quiz history from this browser? This cannot be undone.'))return;
     ['elk.notes','elk.uploadedTexts','elk.customCards','elk.cardRatings','elk.stats','elk.reader.bookmarked'].forEach(key=>localStorage.removeItem(key));window.location.reload();};
-  return <main className="page settings-page"><div className="settings-nav"><p className="eyebrow">{t("Preferences")}</p>{menu.map(item=><button key={item.name} onClick={item.onClick} className={item.active?'active':''} aria-current={item.active?'page':undefined}>{t(item.name)}<ChevronRight size={16}/></button>)}</div>
-    <section className="settings-content"><Badge variant="gold">{t("Personal workspace")}</Badge><h2>{panel==='appearance'?'Appearance':panel==='language'?'Learning & language':panel==='privacy'?'Privacy & local data':'Accessibility'}</h2>
+  return <main className="page settings-page v8-settings"><div className="settings-nav" aria-label={t("Preferences")}>{menu.map(item=><button key={item.name} onClick={item.onClick} className={item.active?'active':''} aria-current={item.active?'page':undefined}>{t(item.name)}<ChevronRight size={16}/></button>)}</div>
+    <section className="settings-content"><Badge variant="gold">{t("Personal workspace")}</Badge><h2>{t(panel==='appearance'?'Appearance':panel==='language'?'Learning & language':panel==='privacy'?'Privacy & local data':'Accessibility')}</h2>
       {panel==='appearance'&&<><p>{t("Set your reading environment. The approved logo geometry never changes.")}</p><div className="settings-section"><h3>{t("Color theme")}</h3><div className="theme-options"><button className={!dark?'active':''} onClick={()=>setDark(false)} aria-pressed={!dark}><span className="theme-preview light"><i/><b/></span><strong>{t("Light")}</strong><small>{t("Warm, focused surfaces")}</small></button><button className={dark?'active':''} onClick={()=>setDark(true)} aria-pressed={dark}><span className="theme-preview dark"><i/><b/></span><strong>{t("Deep navy")}</strong><small>{t("Lower-light learning")}</small></button></div></div></>}
       {panel==='language'&&<><p>{t("Change the interface language instantly. Your preference remains after a refresh. Original PDF text and AI outputs are not automatically translated.")}</p><div className="settings-section"><h3>{t("Preferred language")}</h3><div className="language-options">{(['English','Bahasa Indonesia'] as const).map(item=><button key={item} onClick={()=>setLanguage(item)} className={language===item?'active':''} aria-pressed={language===item}><span><strong>{item}</strong><small>{item==='English'?'Original demo content':'Language applied to the interface'}</small></span>{language===item&&<Check size={18}/>}</button>)}</div><p className="setting-note">{t("Arabic terminology may appear in lessons. Arabic AI support is not guaranteed.")}</p></div></>}
-      {panel==='privacy'&&<><p>{t("This version runs as a guest. Learning notes, imported text, and review history use browser localStorage. Photos remain in memory for the current session; they are not uploaded by the scanner.")}</p><div className="settings-section"><h3>{t("Your control")}</h3><p>{t("When Firebase AI Logic is configured, prompts can be processed locally or in the cloud according to model availability and inference preference. Check the verified provider label after each request.")}</p><button className="secondary-button" onClick={()=>setPage('hybrid')}>{t("Inspect AI inference settings")} <ChevronRight size={16}/></button><hr/><button className="reset-data-button" onClick={resetLocalData}><X size={16}/> {t("Delete all locally saved learning data")}</button></div></>}
+      {panel==='privacy'&&<><p>{uiLanguage==='id'?'Data belajar tetap lokal di browser kecuali kamu membuat cadangan akun secara eksplisit. Foto tidak diunggah oleh pemindai.':'Learning data remains browser-local unless you explicitly back it up in your account. Photos are not uploaded by the scanner.'}</p><div className="settings-section"><h3>{t("Your control")}</h3><p>{t("When Firebase AI Logic is configured, prompts can be processed locally or in the cloud according to model availability and inference preference. Check the verified provider label after each request.")}</p><button className="secondary-button" onClick={()=>setPage('hybrid')}>{t("Inspect AI inference settings")} <ChevronRight size={16}/></button><hr/><button className="reset-data-button" onClick={resetLocalData}><X size={16}/> {t("Delete all locally saved learning data")}</button></div></>}
       {panel==='accessibility'&&<><p>{t("Comfortable reading controls and motion preferences are saved locally.")}</p><div className="settings-section"><h3>{t("Reading text")}</h3><button className="setting-switch" onClick={()=>setLargeText(!largeText)} aria-pressed={largeText}><span>{t("Large textbook text")}</span><strong>{t(largeText?'Enabled':'Disabled')}</strong></button><h3>{t("Motion")}</h3><button className="setting-switch" onClick={()=>setReducedMotion(!reducedMotion)} aria-pressed={reducedMotion}><span>{t("Reduce interface animation")}</span><strong>{t(reducedMotion?'Enabled':'Disabled')}</strong></button><p className="setting-note">{t("System reduced-motion preference is always respected.")}</p></div></>}
-      <div className="settings-brand-panel"><BrandMark size="md" showTagline/><div><Badge>{t("About El-Kīmiyā")}</Badge><p>{t("Hybrid AI Chemistry Learning Platform · Web + responsive mobile prototype · Guest demonstration.")}</p></div></div>
+      <div className="settings-brand-panel"><BrandMark size="md" showTagline/><div><Badge>{t("About El-Kīmiyā")}</Badge><p>{uiLanguage==='id'?'Platform belajar kimia AI hibrida · akun opsional':'Hybrid AI chemistry learning platform · optional accounts'}</p></div></div>
     </section>
   </main>;
 }
@@ -1447,7 +1456,7 @@ function MobileBottomNav({ page, setPage }: { page: Page; setPage: (p: Page) => 
             <span className={item.id === "scan" ? "scan-nav-icon" : ""}>
               <Icon size={20} />
             </span>
-            <small>{item.label}</small>
+            <small>{t(item.label)}</small>
           </button>
         );
       })}
@@ -1470,7 +1479,7 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 export default function App() {
   const { language } = useLanguage();
   void language;
-  const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile'];
+  const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile','about','account','moduler'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const [page,setCurrentPage] = useState<Page>(hashPage);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
@@ -1494,7 +1503,10 @@ export default function App() {
   const askAbout=(prompt:string)=>{setInitialPrompt(prompt);setPage('tutor')};
   const onAnswer=(correct:boolean)=>setStatistics(prev=>({ ...prev,answered:prev.answered+1,correct:prev.correct+(correct?1:0) }));
   const content=(() => {
-    if(page==='landing')return <LandingPage start={()=>setPage('onboarding')} guest={()=>setPage('guest')} openFaith={()=>setPage('faith')} openHybrid={()=>setPage('hybrid')} openScan={()=>setPage('scan')}/>;
+    if(page==='about')return <AboutPage/>;
+    if(page==='account')return <AccountPage go={setPage}/>;
+    if(page==='moduler')return <ModulerPage go={()=>setPage('profile')}/>;
+    if(page==='landing')return <LandingPage signIn={()=>setPage('account')} start={()=>setPage('onboarding')} guest={()=>setPage('guest')} openFaith={()=>setPage('faith')} openHybrid={()=>setPage('hybrid')} openScan={()=>setPage('scan')}/>;
     if(page==='onboarding')return <EntryFlowV67 intent="learn" onBack={()=>setPage('landing')} onEnter={setPage}/>;
     if(page==='guest')return <EntryFlowV67 intent="guest" onBack={()=>setPage('landing')} onEnter={setPage}/>;
     if(page==='mission')return <ResearchMissionV67 onGo={setPage} onSaveNote={addNote}/>;
@@ -1511,14 +1523,14 @@ export default function App() {
     if(page==='progress')return <ProgressPage stats={statistics} setPage={setPage}/>;
     if(page==='settings')return <SettingsPage dark={dark} setDark={setDark} setPage={setPage} reducedMotion={reducedMotion} setReducedMotion={setReducedMotion}/>;
     if(page==='scan')return <ScanPage setPage={setPage} addNote={addNote} addCard={addCard} notify={notify} askAbout={askAbout}/>;
-    if(page==='profile')return <GuestLearningSpaceV71 onGo={setPage} notesCount={notes.length} flashcardsCount={customCards.length}/>;
+    if(page==='profile')return <><div className="v8-page"><AccountPanel go={setPage}/></div><GuestLearningSpaceV71 onGo={setPage} notesCount={notes.length} flashcardsCount={customCards.length}/></>;
     if(page==='notes')return <SimplePage type="notes" setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
     return <Dashboard setPage={setPage}/>;
   })();
   if(page==='landing'||page==='onboarding'||page==='guest')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
   return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>
     <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
-    <div className="app-shell">{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{content}</div></div>
+    <div className="app-shell">{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
     <button className="mobile-tutor-fab" onClick={()=>setPage('tutor')} aria-label={t("Open chemistry tutor")}><BrainCircuit size={19}/></button>
     {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage}/>}
     {toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span><button onClick={()=>setToast('')} aria-label="Dismiss notification"><X size={15}/></button></div>}

@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function signed() { return request.auth != null; }
+  function own(uid) { return signed() && request.auth.uid == uid; }
+  function moduler() { return signed() && exists(/databases/$(database)/documents/v8Roles/$(request.auth.uid)) && get(/databases/$(database)/documents/v8Roles/$(request.auth.uid)).data.role == 'moduler'; }
+  function bilingual(x, max) { return x is map && x.keys().hasAll(['id','en']) && x.keys().hasOnly(['id','en']) && x.id is string && x.en is string && x.id.size() <= max && x.en.size() <= max; }
+  function filled(x) { return x.id.size() > 0 && x.en.size() > 0; }
+  function content(d) { return d.keys().hasAll(['kind','title','body','answer','alternate','source','status','updatedAt']) && d.keys().hasOnly(['kind','title','body','answer','alternate','source','status','updatedAt']) && d.kind in ['lesson','question','flashcard','reference','molecule'] && bilingual(d.title,160) && filled(d.title) && bilingual(d.body,6000) && bilingual(d.answer,1200) && bilingual(d.alternate,1200) && d.source is string && d.source.size() <= 500 && d.updatedAt == request.time && (d.status == 'draft' || (d.status == 'published' && filled(d.body) && d.source.size() > 0 && (!(d.kind in ['question','flashcard']) || filled(d.answer)) && (d.kind != 'question' || (filled(d.alternate) && d.answer.id != d.alternate.id && d.answer.en != d.alternate.en)))); }
+  match /v8Roles/{uid} { allow get: if own(uid); allow list, create, update, delete: if false; }
+  match /v8Content/{id} {
+   allow get: if resource.data.status == 'published' || moduler();
+   allow list: if request.query.limit <= 100 && (resource.data.status == 'published' || moduler());
+   allow create, update: if moduler() && content(request.resource.data);
+   allow delete: if moduler();
+  }
+  match /v8Public/tutor {
+   allow get: if true;
+   allow create, update: if moduler() && request.resource.data.keys().hasAll(['guidance','updatedAt']) && request.resource.data.keys().hasOnly(['guidance','updatedAt']) && bilingual(request.resource.data.guidance,1500) && request.resource.data.updatedAt == request.time;
+   allow delete: if moduler();
+  }
+  match /v8Users/{uid}/private/learning {
+   allow get, delete: if own(uid);
+   allow create, update: if own(uid) && request.resource.data.keys().hasAll(['payload','updatedAt']) && request.resource.data.keys().hasOnly(['payload','updatedAt']) && request.resource.data.payload is string && request.resource.data.payload.size() <= 180000 && request.resource.data.updatedAt == request.time;
+  }
+ }
+}
