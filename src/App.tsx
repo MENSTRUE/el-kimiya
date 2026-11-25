@@ -55,6 +55,7 @@ import { PracticeBankV63 } from "./components/PracticeBankV63"; // ELKIMIYA_V63_
 import { ConceptGuideV63 } from "./components/ConceptGuideV63";
 import { ChemistryExplorerV45 } from "./components/ChemistryExplorerV45"; // ELKIMIYA_V45_LEARNING_JOURNEY
 import { BrandMark } from "./components/BrandMark";
+import { GuestLearningSpaceV71 } from "./components/GuestLearningSpaceV71";
 import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
@@ -1510,7 +1511,8 @@ export default function App() {
     if(page==='progress')return <ProgressPage stats={statistics} setPage={setPage}/>;
     if(page==='settings')return <SettingsPage dark={dark} setDark={setDark} setPage={setPage} reducedMotion={reducedMotion} setReducedMotion={setReducedMotion}/>;
     if(page==='scan')return <ScanPage setPage={setPage} addNote={addNote} addCard={addCard} notify={notify} askAbout={askAbout}/>;
-    if(page==='notes'||page==='profile')return <SimplePage type={page} setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
+    if(page==='profile')return <GuestLearningSpaceV71 onGo={setPage} notesCount={notes.length} flashcardsCount={customCards.length}/>;
+    if(page==='notes')return <SimplePage type="notes" setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
     return <Dashboard setPage={setPage}/>;
   })();
   if(page==='landing'||page==='onboarding'||page==='guest')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;

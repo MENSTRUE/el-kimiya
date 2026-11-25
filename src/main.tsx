@@ -9,6 +9,7 @@ import './interactive.css'
 import './research.css'
 import './experience-v63.css'
 import './dark-contrast-v70.css'
+import './profile-studio-v71.css'
 
 // ELKIMIYA_V70_SYSTEM_THEME_BOOTSTRAP: on first visit only, respect system theme.
 // Never override a manual Light/Dark choice already stored by React or Android.

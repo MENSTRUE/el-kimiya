@@ -1,3 +1,4 @@
+/* El-Kimiya approved marks; no CSS inversion or regenerated logo geometry. */
 type BrandMarkProps = {
   compact?: boolean;
   inverted?: boolean;
@@ -13,23 +14,22 @@ export function BrandMark({
   showTagline = false,
   className = "",
 }: BrandMarkProps) {
-  const source = inverted
-    ? "/brand/el-kimiya-approved-logo-white.svg"
-    : "/brand/el-kimiya-approved-logo.svg";
-
+  const markNavy = "/brand/el-kimiya-approved-logo.svg";
+  const markWhite = "/brand/el-kimiya-approved-logo-white.svg";
   return (
-    <span
-      className={`brand-lockup brand-lockup-${size} ${compact ? "brand-lockup-compact" : ""} ${className}`}
-    >
-      <img className="brand-asset" src={source} alt="" aria-hidden="true" draggable={false} />
+    <span className={`brand-lockup brand-lockup-${size} ${compact ? "brand-lockup-compact" : ""} ${inverted ? "brand-lockup-inverted" : "brand-lockup-auto"} ${className}`}>
+      {inverted ? (
+        <img className="brand-asset brand-asset-forced-white" src={markWhite} alt="" aria-hidden="true" draggable={false} />
+      ) : (
+        <>
+          <img className="brand-asset brand-asset-navy" src={markNavy} alt="" aria-hidden="true" draggable={false} />
+          <img className="brand-asset brand-asset-white" src={markWhite} alt="" aria-hidden="true" draggable={false} />
+        </>
+      )}
       {!compact && (
         <span className="brand-wordmark">
           <strong>El-Kīmiyā</strong>
-          {showTagline ? (
-            <small>Understand Chemistry. Anywhere.</small>
-          ) : (
-            <small lang="ar">الكيمياء</small>
-          )}
+          {showTagline ? <small>Understand Chemistry. Anywhere.</small> : <small lang="ar">الكيمياء</small>}
         </span>
       )}
     </span>
