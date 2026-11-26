@@ -11,21 +11,11 @@ const choices: {id:Goal; titleId:string; titleEn:string; descId:string; descEn:s
   {id:'practice',titleId:'Latihan soal kimia',titleEn:'Practice chemistry questions',descId:'Kerjakan pilihan ganda dengan pembahasan dan progres lokal.',descEn:'Solve multiple-choice questions with explanations and local progress.',target:'practice'},
   {id:'explore',titleId:'Jelajahi molekul',titleEn:'Explore molecular structures',descId:'Lihat struktur 2D/3D, perhitungan RDKit, dan lab virtual.',descEn:'View 2D/3D structures, RDKit descriptors, and virtual laboratory.',target:'molecules'},
 ];
-export function EntryFlowV67({intent,onBack,onEnter}:{intent:'learn'|'guest';onBack:()=>void;onEnter:(target:Destination)=>void}) {
+// ELKIMIYA_V81_GUEST_ENTRY
+// ELKIMIYA_V82_PREVIEW_ONLY
+export function EntryFlowV67({onBack,onSignIn}:{intent:'learn'|'guest';onBack:()=>void;onEnter?:(target:Destination)=>void;onSignIn?:()=>void;onChooseGoal?:()=>void}) {
   const {language}=useLanguage();const en=language==='en';
-  const tx=(id:string,english:string)=>en?english:id;
-  const [goal,setGoal]=useState<Goal>('research');
-  const selected=choices.find(x=>x.id===goal)||choices[0];
-  return <main className="entry67">
-    <header className="entry67-nav"><button type="button" onClick={onBack}><ArrowLeft size={17}/>{tx('Kembali ke beranda','Back to homepage')}</button><span>El-Kīmiyā <strong>/ {intent==='guest'?tx('Mode Tamu','Guest Mode'):tx('Mulai Belajar','Start Learning')}</strong></span></header>
-    <section className="entry67-top"><div className="entry67-kicker"><Sparkles size={17}/> {tx('SELAMAT DATANG DI EL-KĪMIYĀ','WELCOME TO EL-KĪMIYĀ')}</div>
-      <h1>{intent==='guest'?tx('Jelajahi tanpa akun.','Explore without an account.'):tx('Mau mulai dari mana?','Where would you like to begin?')}</h1>
-      <p>{intent==='guest'?tx('Belum ada login atau sinkronisasi akun. Ini adalah mode tamu yang transparan; kemajuan disimpan pada browser yang kamu gunakan.','There is no real account login or cloud sync yet. This is a transparent guest mode; progress is saved in this browser.'):tx('Pilih satu tujuan. Kamu dapat berpindah ke fitur lain kapan saja melalui sidebar aplikasi.','Choose a goal. You can switch to other tools anytime using the app sidebar.')}</p></section>
-    <div className="entry67-privacy"><ShieldCheck size={21}/><span>{tx('Tidak memerlukan email. Tidak ada akun palsu. Buku PDF pribadi tidak diunggah otomatis.','No email required. No fake account. Your private PDFs are never auto-uploaded.')}</span></div>
-    {intent==='guest'?<div className="entry67-guest"><div className="entry67-guest-icon"><LockKeyhole size={33}/></div><div><h2>{tx('Lanjut sebagai tamu','Continue as a guest')}</h2><p>{tx('Lihat dasbor dengan progres nyata. Jika belum ada aktivitas, nilainya mulai dari nol.','Open the dashboard with real learning progress. If you have no activity yet, all counters start at zero.')}</p></div><button type="button" onClick={()=>onEnter('dashboard')}>{tx('Buka ruang belajar tamu','Open guest workspace')}<ArrowRight size={18}/></button></div>:
-      <><div className="entry67-choices" role="group" aria-label={tx('Pilih tujuan belajar','Select a learning goal')}>{choices.map((x,i)=>{const Icon=[BookOpen,GraduationCap,BrainCircuit,Atom][i];return <button key={x.id} type="button" aria-pressed={goal===x.id} className={goal===x.id?'chosen':''} onClick={()=>setGoal(x.id)}><span className="entry67-choice-icon"><Icon size={25}/></span><strong>{en?x.titleEn:x.titleId}</strong><small>{en?x.descEn:x.descId}</small><span className="entry67-check">{goal===x.id?'●':'○'}</span></button>})}</div><div className="entry67-bottom"><span>{tx('Pilihanmu:', 'Your choice:')} <strong>{en?selected.titleEn:selected.titleId}</strong></span><button type="button" onClick={()=>onEnter(selected.target)}>{tx('Lanjutkan ke fitur','Continue to workspace')}<ArrowRight size={18}/></button></div></>}
-    <p className="entry67-foot"><ShieldCheck size={15}/>{tx('El-Kīmiyā adalah prototipe edukasi. Semua simulasi ilmiah menggunakan label dan batasan yang transparan.','El-Kīmiyā is an educational prototype. Scientific simulations disclose their assumptions and limitations.')}</p>
-  </main>;
+  return <main className="entry67"><header className="entry67-nav"><button type="button" onClick={onBack}><ArrowLeft size={17}/>{en?'Back to homepage':'Kembali ke beranda'}</button></header><section className="entry67-top"><h1>{en?'Account required':'Akun diperlukan'}</h1><p>{en?'Sign in to open the learning workspace.':'Masuk untuk membuka ruang belajar.'}</p><button type="button" className="primary-button" onClick={onSignIn||onBack}>{en?'Sign in':'Masuk'}<ArrowRight size={17}/></button></section></main>;
 }
 export function MissionLandingTeaserV67({onStart}:{onStart:()=>void}) {
   const {language}=useLanguage();const en=language==='en';

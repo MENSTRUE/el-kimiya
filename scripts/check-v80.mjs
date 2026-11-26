@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 const checks={
- 'src/App.tsx':['ELKIMIYA_WEB_V80','setPage("about")','v8-settings','<AccountPanel','<ModulerPage','<PublishedContent kind="question"','policy?.guidance[language]'],
+ 'src/App.tsx':['ELKIMIYA_WEB_V80','setPage("about")','v8-settings','<AccountPanel','<ModulerWorkspace81','<PublishedContent kind="question"','policy?.guidance[language]'],
  'src/main.tsx':['<PlatformProvider><App /></PlatformProvider>',"import './v8/platform.css'"],
  'src/lib/hybrid.ts':['export function setupAppCheck()','getGenerativeModel','generateContent(prompt)','response.inferenceSource'],
  'src/v8/platform.tsx':['onAuthStateChanged','v8Roles',"where('status','==','published')"],
- 'src/v8/Workspace.tsx':['createUserWithEmailAndPassword','signInWithPopup','setDoc','deleteDoc','readBackup','serverTimestamp'],
+ 'src/v8/Workspace.tsx':['setDoc','deleteDoc','readBackup','serverTimestamp'],
+ 'src/v8/Auth81.tsx':['createUserWithEmailAndPassword','signInWithEmailAndPassword'],
  'firestore-v8.rules':['allow list, create, update, delete: if false','moduler() && content','if own(uid)','request.query.limit <= 100'],
  'src/components/GuestLearningSpaceV71.tsx':['ELKIMIYA_V80_LOCAL_PROFILE'],
 };

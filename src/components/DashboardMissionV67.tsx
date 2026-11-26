@@ -1,10 +1,11 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useState } from 'react';
 import { ArrowRight, ClipboardList, Microscope, ShieldCheck, Trophy } from 'lucide-react';
 import { useLanguage } from '../lib/language';
 import { MISSION_EVENT, MISSION_KEY, progressPercent, restoreMission } from '../lib/researchMissionV67';
 import '../research-journey-v67.css';
 function status() {
-  try { const s=restoreMission(localStorage.getItem(MISSION_KEY));return {progress:progressPercent(s),finished:s.finished,trials:s.trials.length}; }
+  try { const s=restoreMission(elkLearningStorage.getItem(MISSION_KEY));return {progress:progressPercent(s),finished:s.finished,trials:s.trials.length}; }
   catch {return {progress:0,finished:false,trials:0};}
 }
 export function DashboardMissionV67({onOpen}:{onOpen:()=>void}) {

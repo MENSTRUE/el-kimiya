@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 /**
  * V6.6 public reading shelf. Content is original in src/data/course-v45.ts.
  * HF model is an OPTIONAL browser-only enhancement; nothing private is sent.
@@ -16,7 +17,7 @@ const HF_MODEL = 'Xenova/paraphrase-multilingual-MiniLM-L12-v2';
 const HF_BROWSER_ESM = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2';
 const CACHE_KEY = 'elk.v66.public.lastLesson';
 function restoreId():string {
-  try { return window.localStorage.getItem(CACHE_KEY) || COURSE[0]?.id || ''; } catch {return COURSE[0]?.id || '';}
+  try { return elkLearningStorage.getItem(CACHE_KEY) || COURSE[0]?.id || ''; } catch {return COURSE[0]?.id || '';}
 }
 const corpus = COURSE.map(unit => ({
   id:unit.id,
@@ -47,7 +48,7 @@ export function PublicChemistryLibraryV66({onPractice,onAskTutor}:{onPractice:()
     .sort((a,b)=>query.trim()?foundIds.indexOf(a.id)-foundIds.indexOf(b.id):COURSE.indexOf(a)-COURSE.indexOf(b));
   const choose=(id:string)=>{
     setSelectedId(id);setShowCheck(false);setAnswers({});
-    try{window.localStorage.setItem(CACHE_KEY,id)}catch{/* optional */}
+    try{elkLearningStorage.setItem(CACHE_KEY,id)}catch{/* optional */}
     readerRef.current?.scrollIntoView({behavior:'smooth',block:'start'});
   };
   const currentIndex=COURSE.findIndex(x=>x.id===chosen.id);

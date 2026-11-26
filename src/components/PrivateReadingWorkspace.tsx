@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 /** El-Kīmiyā V3.6: first-party reading studio with local PDF.js canvas + private index.
  * PDFs stay on the local-only Vite bridge or in user-selected object URLs.
  */
@@ -81,7 +82,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
   const [manual, setManual] = useState(String(page));
   const [notes, setNotes] = useState<Record<number,string>>(() => {
     try {
-      const value: unknown = JSON.parse(localStorage.getItem(`elk.reader.notes.${book.id}`) || '{}');
+      const value: unknown = JSON.parse(elkLearningStorage.getItem(`elk.reader.notes.${book.id}`) || '{}');
       if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
       return Object.fromEntries(Object.entries(value).filter(([k,v])=> /^\d+$/.test(k) && typeof v === 'string' && v.length <= 2500).map(([k,v])=>[Number(k),v as string]));
     } catch { return {}; }
@@ -107,7 +108,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
   useEffect(() => { setManual(String(validPage)); }, [validPage]);
   useEffect(() => { setNoteDraft(notes[validPage] || ''); }, [validPage, notes]);
   useEffect(() => {
-    try { localStorage.setItem(`elk.reader.notes.${book.id}`, JSON.stringify(notes)); }
+    try { elkLearningStorage.setItem(`elk.reader.notes.${book.id}`, JSON.stringify(notes)); }
     catch { /* Storage disabled. Notes remain in memory for this session. */ }
   }, [notes,book.id]);
   useEffect(() => {

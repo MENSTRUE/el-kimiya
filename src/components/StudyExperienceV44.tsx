@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import {
   ArrowRight, Atom, BookOpen, BookmarkPlus, Check, CheckCircle2,
@@ -189,7 +190,7 @@ export function StudyLearningV44({ onOpenLab, onOpenFlashcards }: { onOpenLab: (
 type ReviewRating = 'again' | 'hard' | 'known';
 const ratingKey = 'elk.v44.review.v1';
 function getRatings(): Record<string, ReviewRating> {
-  try { const parsed: unknown = JSON.parse(localStorage.getItem(ratingKey) || '{}'); return asObj(parsed) as Record<string, ReviewRating>; }
+  try { const parsed: unknown = JSON.parse(elkLearningStorage.getItem(ratingKey) || '{}'); return asObj(parsed) as Record<string, ReviewRating>; }
   catch { return {}; }
 }
 export function StudyFlashcardsV44({ customCards, onReview }: { customCards: StudyCard[]; onReview: () => void }) {
@@ -227,7 +228,7 @@ export function StudyFlashcardsV44({ customCards, onReview }: { customCards: Stu
   const rate = (card: Flashcard, status: ReviewRating) => {
     const changed = ratings[card.id] !== status;
     const next = { ...ratings, [card.id]: status };
-    setRatings(next); try { localStorage.setItem(ratingKey, JSON.stringify(next)); } catch { /* optional local persistence */ }
+    setRatings(next); try { elkLearningStorage.setItem(ratingKey, JSON.stringify(next)); } catch { /* optional local persistence */ }
     if (changed) onReview();
     if (mode === 'focus') { setFlipped(prev => ({ ...prev, [card.id]: false })); setFocusIndex(i => (i + 1) % Math.max(1, filtered.length)); }
   };

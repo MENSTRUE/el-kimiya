@@ -9,13 +9,14 @@ service cloud.firestore {
   function content(d) { return d.keys().hasAll(['kind','title','body','answer','alternate','source','status','updatedAt']) && d.keys().hasOnly(['kind','title','body','answer','alternate','source','status','updatedAt']) && d.kind in ['lesson','question','flashcard','reference','molecule'] && bilingual(d.title,160) && filled(d.title) && bilingual(d.body,6000) && bilingual(d.answer,1200) && bilingual(d.alternate,1200) && d.source is string && d.source.size() <= 500 && d.updatedAt == request.time && (d.status == 'draft' || (d.status == 'published' && filled(d.body) && d.source.size() > 0 && (!(d.kind in ['question','flashcard']) || filled(d.answer)) && (d.kind != 'question' || (filled(d.alternate) && d.answer.id != d.alternate.id && d.answer.en != d.alternate.en)))); }
   match /v8Roles/{uid} { allow get: if own(uid); allow list, create, update, delete: if false; }
   match /v8Content/{id} {
-   allow get: if resource.data.status == 'published' || moduler();
-   allow list: if request.query.limit <= 100 && (resource.data.status == 'published' || moduler());
+   // ELKIMIYA_V82_SIGNED_READS
+   allow get: if signed() && (resource.data.status == 'published' || moduler());
+   allow list: if signed() && request.query.limit <= 100 && (resource.data.status == 'published' || moduler());
    allow create, update: if moduler() && content(request.resource.data);
    allow delete: if moduler();
   }
   match /v8Public/tutor {
-   allow get: if true;
+   allow get: if signed();
    allow create, update: if moduler() && request.resource.data.keys().hasAll(['guidance','updatedAt']) && request.resource.data.keys().hasOnly(['guidance','updatedAt']) && bilingual(request.resource.data.guidance,1500) && request.resource.data.updatedAt == request.time;
    allow delete: if moduler();
   }

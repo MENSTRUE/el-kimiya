@@ -1,4 +1,4 @@
-/* Optional integration test: only a demo Firebase Emulator project, never production. */
+/* ELKIMIYA_V82_SIGNED_READS — Optional integration test: only a demo Firebase Emulator project, never production. */
 import assert from 'node:assert/strict';
 import { initializeApp, deleteApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator, createUserWithEmailAndPassword } from 'firebase/auth';
@@ -22,15 +22,19 @@ try{
  await deny(()=>getDoc(doc(guest.db,'v8Content',id)));
  await deny(()=>getDocs(query(collection(learner.db,'v8Content'),limit(100))));
  await setDoc(doc(mod.db,'v8Content',id),{...body,status:'published',updatedAt:serverTimestamp()});
- assert.ok((await getDoc(doc(guest.db,'v8Content',id))).exists());
- assert.ok((await getDocs(query(collection(guest.db,'v8Content'),where('status','==','published'),limit(100)))).docs.some(d=>d.id===id));
+ await deny(()=>getDoc(doc(guest.db,'v8Content',id)));
+ assert.ok((await getDoc(doc(learner.db,'v8Content',id))).exists());
+ await deny(()=>getDocs(query(collection(guest.db,'v8Content'),where('status','==','published'),limit(100))));
+ assert.ok((await getDocs(query(collection(learner.db,'v8Content'),where('status','==','published'),limit(100)))).docs.some(d=>d.id===id));
  await setDoc(doc(learner.db,'v8Users',learner.user.uid,'private','learning'),{payload:'{}',updatedAt:serverTimestamp()});
  assert.ok((await getDoc(doc(learner.db,'v8Users',learner.user.uid,'private','learning'))).exists());
  await deny(()=>getDoc(doc(mod.db,'v8Users',learner.user.uid,'private','learning')));
  await deny(()=>setDoc(doc(learner.db,'v8Public','tutor'),{guidance:bi,updatedAt:serverTimestamp()}));
  await setDoc(doc(mod.db,'v8Public','tutor'),{guidance:bi,updatedAt:serverTimestamp()});
+ await deny(()=>getDoc(doc(guest.db,'v8Public','tutor')));
+ assert.ok((await getDoc(doc(learner.db,'v8Public','tutor'))).exists());
  await deleteDoc(doc(mod.db,'v8Content',id));
  const revoke=await fetch(rolePath,{method:'DELETE',headers:{Authorization:'Bearer owner'}});assert.ok(revoke.ok);
  await deny(()=>setDoc(doc(mod.db,'v8Content',id),{...body,updatedAt:serverTimestamp()}));
- console.log('[PASS] Emulator: role escalation denied, drafts private, publish public, own backup only, curator policy protected, revocation enforced.');
+ console.log('[PASS] Emulator: role escalation denied, drafts private, published content authenticated, own backup only, curator policy protected, revocation enforced.');
 }finally{await Promise.all(apps.map(deleteApp));}

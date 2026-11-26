@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useState } from "react";
 
 export type SavedNote = {
@@ -12,14 +13,14 @@ export type StudyProgress = { answered: number; correct: number; reviewed: numbe
 export function useStoredState<T>(key: string, defaultValue: T): [T, (value: T | ((prev: T) => T)) => void] {
   const [state, setState] = useState<T>(() => {
     try {
-      const value = localStorage.getItem(key);
+      const value = elkLearningStorage.getItem(key);
       return value ? (JSON.parse(value) as T) : defaultValue;
     } catch { return defaultValue; }
   });
   const update = (value: T | ((prev: T) => T)) => {
     setState(previous => {
       const next = typeof value === 'function' ? (value as (prev: T) => T)(previous) : value;
-      try { localStorage.setItem(key, JSON.stringify(next)); } catch { /* storage may be disabled/full */ }
+      try { elkLearningStorage.setItem(key, JSON.stringify(next)); } catch { /* storage may be disabled/full */ }
       return next;
     });
   };

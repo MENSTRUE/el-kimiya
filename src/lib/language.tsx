@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 
 /** UI language only. Never translates the original PDFs, Qur'an Arabic, or source quotations. */
@@ -636,7 +637,7 @@ const STORAGE_KEY = 'elk.language'; // Reuses the existing Settings key.
 function readPreference(): Language {
   if (typeof window === 'undefined') return 'id';
   try {
-    const value = window.localStorage.getItem(STORAGE_KEY);
+    const value = elkLearningStorage.getItem(STORAGE_KEY);
     if(value === 'English' || value === 'en') return 'en';
     if(value === 'Bahasa Indonesia' || value === 'id') return 'id';
   } catch { /* Storage is optional. */ }
@@ -658,7 +659,7 @@ export function LanguageProvider({children}:{children:ReactNode}) {
   const [language,update] = useState<Language>(()=>{active=readPreference();return active});
   const setLanguage = useCallback((value:Language)=>{
     active=value;
-    try { window.localStorage.setItem(STORAGE_KEY, value==='en'?'English':'Bahasa Indonesia'); } catch { /* no-op */ }
+    try { elkLearningStorage.setItem(STORAGE_KEY, value==='en'?'English':'Bahasa Indonesia'); } catch { /* no-op */ }
     update(value);
   }, []);
   useEffect(()=>{document.documentElement.lang=language;},[language]);

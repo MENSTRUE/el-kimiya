@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowDownUp, ArrowLeft, ArrowRight, BookMarked, BookOpen, Bookmark,
@@ -37,7 +38,7 @@ const boundPage = (page: number, max: number) => Math.min(max, Math.max(1, Numbe
 
 function readPages(): ReadingMap {
   try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(STORE_PAGES) || '{}');
+    const parsed: unknown = JSON.parse(elkLearningStorage.getItem(STORE_PAGES) || '{}');
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
     const pages: ReadingMap = {};
     for (const book of sourceBooks) {
@@ -49,13 +50,13 @@ function readPages(): ReadingMap {
 }
 function readFavorites(): string[] {
   try {
-    const parsed: unknown = JSON.parse(localStorage.getItem(STORE_FAVORITES) || '[]');
+    const parsed: unknown = JSON.parse(elkLearningStorage.getItem(STORE_FAVORITES) || '[]');
     return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string' && !!getBook(id)) : [];
   } catch { return []; }
 }
 function readRecent(): string | null {
   try {
-    const id = localStorage.getItem(STORE_RECENT);
+    const id = elkLearningStorage.getItem(STORE_RECENT);
     return id && getBook(id) ? id : null;
   } catch { return null; }
 }
@@ -149,9 +150,9 @@ const tx = (id: string, english: string) => en ? english : id;
     folderInput.current?.setAttribute('directory', '');
     return () => Object.values(localUrls.current).forEach(url => URL.revokeObjectURL(url));
   }, []);
-  useEffect(() => { try { localStorage.setItem(STORE_PAGES, JSON.stringify(pages)); } catch { /* storage unavailable */ } }, [pages]);
-  useEffect(() => { try { localStorage.setItem(STORE_FAVORITES, JSON.stringify(favorites)); } catch { /* storage unavailable */ } }, [favorites]);
-  useEffect(() => { try { recent ? localStorage.setItem(STORE_RECENT, recent) : localStorage.removeItem(STORE_RECENT); } catch { /* storage unavailable */ } }, [recent]);
+  useEffect(() => { try { elkLearningStorage.setItem(STORE_PAGES, JSON.stringify(pages)); } catch { /* storage unavailable */ } }, [pages]);
+  useEffect(() => { try { elkLearningStorage.setItem(STORE_FAVORITES, JSON.stringify(favorites)); } catch { /* storage unavailable */ } }, [favorites]);
+  useEffect(() => { try { recent ? elkLearningStorage.setItem(STORE_RECENT, recent) : elkLearningStorage.removeItem(STORE_RECENT); } catch { /* storage unavailable */ } }, [recent]);
 
   useEffect(() => { setManualPage(String(readerPage)); }, [readerPage]);
 

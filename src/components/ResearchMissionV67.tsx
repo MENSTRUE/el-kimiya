@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft, ArrowRight, BookOpen, BrainCircuit, CheckCircle2, ClipboardList,
@@ -18,7 +19,7 @@ type Destination = 'dashboard' | 'library' | 'practice' | 'molecules';
 const labelsId = ['Masalah', 'Hipotesis', 'Eksperimen', 'Analisis', 'Laporan'];
 const labelsEn = ['Problem', 'Hypothesis', 'Experiment', 'Analysis', 'Report'];
 function load(): MissionState {
-  try { return restoreMission(window.localStorage.getItem(MISSION_KEY)); }
+  try { return restoreMission(elkLearningStorage.getItem(MISSION_KEY)); }
   catch { return {...EMPTY_MISSION}; }
 }
 function exportFile(filename: string, text: string, mime: string) {
@@ -50,7 +51,7 @@ export function ResearchMissionV67({onGo, onSaveNote}:{onGo:(page:Destination)=>
   const pct = progressPercent(state);
   const completeReady = canFinish(state);
   useEffect(()=>{
-    try { window.localStorage.setItem(MISSION_KEY,JSON.stringify(state)); }
+    try { elkLearningStorage.setItem(MISSION_KEY,JSON.stringify(state)); }
     catch { /* In private browsing, progress remains in memory for this session. */ }
     window.dispatchEvent(new Event(MISSION_EVENT));
   },[state]);

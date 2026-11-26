@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type PointerEvent } from 'react';
 import {
   Atom, BookOpen, Box, Check, Copy, Download, FlaskConical, LoaderCircle,
@@ -229,7 +230,7 @@ export function MolecularStudioV60() {
     setNote(''); setSaveMessage('');
     if (!result) return;
     try {
-      const stored: unknown = JSON.parse(window.localStorage.getItem(NOTES_KEY) || '{}');
+      const stored: unknown = JSON.parse(elkLearningStorage.getItem(NOTES_KEY) || '{}');
       if (stored && typeof stored === 'object' && result.canonical_smiles_rdkit in stored) {
         const text = (stored as Record<string, unknown>)[result.canonical_smiles_rdkit];
         if (typeof text === 'string') setNote(text);
@@ -291,11 +292,11 @@ export function MolecularStudioV60() {
   const saveNote = () => {
     if (!result) return;
     try {
-      const previous: Record<string, string> = JSON.parse(window.localStorage.getItem(NOTES_KEY) || '{}');
+      const previous: Record<string, string> = JSON.parse(elkLearningStorage.getItem(NOTES_KEY) || '{}');
       const entries = Object.entries(previous).filter(([key, value]) => typeof key === 'string' && typeof value === 'string');
       const capped = Object.fromEntries(entries.slice(-40));
       capped[result.canonical_smiles_rdkit] = note.slice(0, 1600);
-      window.localStorage.setItem(NOTES_KEY, JSON.stringify(capped));
+      elkLearningStorage.setItem(NOTES_KEY, JSON.stringify(capped));
       setSaveMessage(tx('Catatan tersimpan di browser ini', 'Note saved in this browser'));
     } catch { setSaveMessage(tx('Browser menolak penyimpanan lokal', 'Browser blocked local storage')); }
   };

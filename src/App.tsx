@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from './v8/learningStorage';
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Atom,
@@ -58,13 +59,21 @@ import { BrandMark } from "./components/BrandMark";
 import { GuestLearningSpaceV71 } from "./components/GuestLearningSpaceV71";
 // ELKIMIYA_WEB_V80
 import { usePlatform } from "./v8/platform";
-import { AccountIdentity, AccountPage, AccountPanel, AboutPage, ModulerPage, PublishedContent } from "./v8/Workspace";
+import { AccountIdentity, AccountPanel, AboutPage, PublishedContent } from "./v8/Workspace";
+// ELKIMIYA_WEB_V81_ACCESS_FLOW
+import { SessionBoundary } from "./v8/SessionBoundary";
+import { AuthPage81 } from "./v8/Auth81";
+import { ModulerWorkspace81 } from "./v8/Moduler81";
+import { SessionExit } from "./v8/SessionExit";
+// ELKIMIYA_WEB_V82_LOGIN_REQUIRED
+import { resolveRoute, isAuthRoute, writeGuest } from "./v8/routes81";
+import { GuestPreview82 } from "./v8/GuestPreview82";
 import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
 import { DashboardRealV65 } from "./components/DashboardRealV65"; // ELKIMIYA_V65_REAL_DASHBOARD
 import { ResearchMissionV67 } from "./components/ResearchMissionV67"; // ELKIMIYA_V67_RESEARCH_JOURNEY
-import { EntryFlowV67, MissionLandingTeaserV67, FeatureOverviewV67 } from "./components/EntryFlowV67";
+import { MissionLandingTeaserV67, FeatureOverviewV67 } from "./components/EntryFlowV67";
 import { LanguageSwitch, useLanguage, t } from "./lib/language";
 import { ChemistryFaithPage } from "./components/ChemistryFaithPage";
 import { MolecularIntelligenceLab } from "./components/MolecularIntelligenceLab";
@@ -91,7 +100,7 @@ type Page =
   | "notes"
   | "settings"
   | "scan"
-  | "profile" | "about" | "account" | "moduler";
+  | "profile" | "about" | "account" | "register" | "reset" | "moduler";
 
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
@@ -165,7 +174,7 @@ function Sidebar({
   return (
     <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
       <div className="sidebar-top">
-        <button className="brand" aria-label={t("El-Kīmiyā home")} onClick={() => setPage("dashboard")}>
+        <button className="brand" aria-label={t("El-Kīmiyā home")} onClick={() => setPage("landing")}>
           <BrandMark compact={collapsed} size="sm" />
         </button>
         <button
@@ -175,6 +184,10 @@ function Sidebar({
         >
           {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
         </button>
+      </div>
+      <div className="v82-session-nav">
+        <button type="button" className="v81-exit" onClick={()=>setPage("landing")} title={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/><span>{language==="id"?"Ke halaman utama":"Back to homepage"}</span></button>
+        <SessionExit go={()=>setPage("landing")}/>
       </div>
       <nav className="side-nav" aria-label={t("Main navigation")}>
         <p className="nav-label">{collapsed ? "•••" : t("Learning space")}</p>
@@ -208,12 +221,12 @@ function Sidebar({
           {!collapsed && <span>{t("About El-Kīmiyā")}</span>}
         </button>
       </div>
-      {role === "moduler" && <div className="side-nav secondary-nav"><button className={page === "moduler" ? "active" : ""} onClick={() => setPage("moduler")}><Settings size={19}/>{!collapsed && <span>Moduler Studio</span>}</button></div>}
       <button type="button" className="sidebar-quote v8-sidebar-account" onClick={() => setPage("profile")} aria-label={t("Open profile")}>
         <span className="workspace-avatar"><GraduationCap size={17} /></span>
         {!collapsed && <div><strong>{user?.displayName || user?.email || t("My learning space")}</strong><p>{user ? (role === "moduler" ? "Moduler" : "User") : (language === "id" ? "Mode tamu · lokal" : "Guest · local")}</p></div>}
         {!collapsed && <ChevronRight size={15} className="workspace-chevron" />}
       </button>
+
     </aside>
   );
 }
@@ -231,6 +244,7 @@ function Header({
   setDark: (value: boolean) => void;
   offline: boolean;
 }) {
+  const {language}=useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const searchRoutes: {label:string; meta:string; to:Page}[] = [
     {label:"Atomic structure",meta:"Guided lesson",to:"reader"},
@@ -270,7 +284,7 @@ function Header({
       <button
         className="mobile-header-brand"
         aria-label={t("El-Kīmiyā home")}
-        onClick={() => setPage("dashboard")}
+        onClick={() => setPage("landing")}
       >
         <BrandMark compact inverted={dark} size="sm" />
       </button>
@@ -283,6 +297,7 @@ function Header({
         </h1>
       </div>
       <div className="header-actions">
+        <button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"} title={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/><span>{language==="id"?"Beranda":"Homepage"}</span></button>
         <LanguageSwitch />
         <div className="global-search-wrap">
           <label className="global-search">
@@ -331,9 +346,10 @@ function Header({
 
 function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn }: { signIn: () => void; start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
   const { language } = useLanguage(); const en = language === "en";
+  const {user}=usePlatform();
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({behavior:"smooth", block:"start"});
   return (
-    <main className="landing-page">
+    <main className="landing-page" data-web-version="8.2">
       <header className="landing-nav">
         <button aria-label={t("El-Kīmiyā home")} onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>
           <BrandMark size="sm" showTagline />
@@ -347,13 +363,11 @@ function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn }: 
         </nav>
         <div>
           <LanguageSwitch />
-          <button className="landing-signin" onClick={signIn}>{en ? "Sign in" : "Masuk"}</button>
-          <button className="landing-signin" onClick={guest}>
-            {en ? "Try Guest Mode" : "Coba Mode Tamu"}
-          </button>
-          <button className="primary-button" onClick={start}>
-            {t("Start learning")} <ChevronRight size={16} />
-          </button>
+          {user ? <><button className="primary-button" onClick={start}>{en?"Open workspace":"Buka ruang kerja"} <ChevronRight size={16}/></button><SessionExit go={()=>{}}/></> : <>
+            <button className="landing-signin" onClick={signIn}>{en ? "Sign in" : "Masuk"}</button>
+            <button className="landing-signin" onClick={guest}>{en ? "Guest preview" : "Pratinjau tamu"}</button>
+            <button className="primary-button" onClick={start}>{t("Start learning")} <ChevronRight size={16}/></button>
+          </>}
         </div>
       </header>
 
@@ -1413,7 +1427,7 @@ function SettingsPage({dark,setDark,setPage,reducedMotion,setReducedMotion}: {da
     {name:'Accessibility',onClick:()=>setPanel('accessibility'),active:panel==='accessibility'},
   ];
   const resetLocalData=()=>{if(!window.confirm('Delete all locally saved El-Kīmiyā notes, uploads, flashcards, ratings, and quiz history from this browser? This cannot be undone.'))return;
-    ['elk.notes','elk.uploadedTexts','elk.customCards','elk.cardRatings','elk.stats','elk.reader.bookmarked'].forEach(key=>localStorage.removeItem(key));window.location.reload();};
+    ['elk.notes','elk.uploadedTexts','elk.customCards','elk.cardRatings','elk.stats','elk.reader.bookmarked'].forEach(key=>elkLearningStorage.removeItem(key));window.location.reload();};
   return <main className="page settings-page v8-settings"><div className="settings-nav" aria-label={t("Preferences")}>{menu.map(item=><button key={item.name} onClick={item.onClick} className={item.active?'active':''} aria-current={item.active?'page':undefined}>{t(item.name)}<ChevronRight size={16}/></button>)}</div>
     <section className="settings-content"><Badge variant="gold">{t("Personal workspace")}</Badge><h2>{t(panel==='appearance'?'Appearance':panel==='language'?'Learning & language':panel==='privacy'?'Privacy & local data':'Accessibility')}</h2>
       {panel==='appearance'&&<><p>{t("Set your reading environment. The approved logo geometry never changes.")}</p><div className="settings-section"><h3>{t("Color theme")}</h3><div className="theme-options"><button className={!dark?'active':''} onClick={()=>setDark(false)} aria-pressed={!dark}><span className="theme-preview light"><i/><b/></span><strong>{t("Light")}</strong><small>{t("Warm, focused surfaces")}</small></button><button className={dark?'active':''} onClick={()=>setDark(true)} aria-pressed={dark}><span className="theme-preview dark"><i/><b/></span><strong>{t("Deep navy")}</strong><small>{t("Lower-light learning")}</small></button></div></div></>}
@@ -1469,19 +1483,27 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 }) {
   const [query,setQuery] = useState('');
   const filtered=notes.filter(note=>`${note.title} ${note.content} ${note.source}`.toLowerCase().includes(query.toLowerCase()));
-  return <main className="page standard-page"><section className="page-intro"><Badge variant="gold">{type==='notes'?'Personal knowledge':'Your account'}</Badge><h2>{type==='notes'?'Your saved ideas,\nkept close.':'Your learning space.'}</h2><p>{type==='notes'?'These notes are stored in this browser, not in a cloud account.':'This version is a guest prototype. Authentication is not enabled.'}</p></section>
+  return <main className="page standard-page"><section className="page-intro"><Badge variant="gold">{type==='notes'?'Personal knowledge':'Your account'}</Badge><h2>{type==='notes'?'Your saved ideas,\nkept close.':'Your learning space.'}</h2><p>{type==='notes'?'These notes are stored in this browser, not in a cloud account.':'Your account is required to access the learning workspace.'}</p></section>
     {type==='notes'?<><div className="notes-toolbar"><label><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t("Search saved notes")} aria-label={t("Search saved notes")}/></label><span>{filtered.length} {t("saved entries")}</span></div>
       {filtered.length?<div className="notes-grid">{filtered.map(note=><article className="saved-note-card" key={note.id}><div><Badge variant="neutral">{new Date(note.createdAt).toLocaleDateString()}</Badge><button className="icon-button" title="Delete note" aria-label={`Delete ${note.title}`} onClick={()=>deleteNote(note.id)}><X size={16}/></button></div><h3>{note.title}</h3><p>{note.content}</p><small>{note.source}</small><button className="text-button" onClick={()=>{void navigator.clipboard?.writeText(note.content).then(()=>notify('Note copied')).catch(()=>notify('Copy unavailable; select the text instead'))}}><FileText size={15}/> {t("Copy note")}</button></article>)}</div>:<div className="empty-state"><span><NotebookPen/></span><h3>{notes.length?'No matching notes':'No notes saved yet'}</h3><p>{notes.length?'Try a different search.':'Open a lesson, select a passage, and save a real note to this browser.'}</p><button className="primary-button" onClick={()=>setPage('reader')}>{t("Open textbook")} <ChevronRight size={16}/></button></div>}
     </>:<div className="empty-state"><span><User/></span><h3>{t("Guest scholar")}</h3><p>{t("Local notes, learning review state and quiz statistics are stored on this device. This is not a signed-in account.")}</p><button className="primary-button" onClick={()=>setPage('settings')}>{t("Manage preferences")} <ChevronRight size={16}/></button></div>}
   </main>;
 }
 
-export default function App() {
+export default function App() { return <SessionBoundary><WorkspaceApp/></SessionBoundary>; }
+
+function WorkspaceApp() {
   const { language } = useLanguage();
   void language;
-  const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile','about','account','moduler'];
+  const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile','about','account','register','reset','moduler'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
-  const [page,setCurrentPage] = useState<Page>(hashPage);
+  const {role}=usePlatform();
+  const [requestedPage,setCurrentPage] = useState<Page>(hashPage);
+  const page=resolveRoute(requestedPage,role) as Page;
+  useEffect(()=>writeGuest(false),[]);
+  useEffect(()=>{
+    if(requestedPage!==page){history.replaceState({},'',`#${page}`);setCurrentPage(page);}
+  },[requestedPage,page]);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
   const [dark,setDark] = useStoredState('elk.dark',false);
   const [reducedMotion,setReducedMotion] = useStoredState('elk.reduceMotion',false);
@@ -1492,7 +1514,9 @@ export default function App() {
   const [statistics,setStatistics] = useStoredState<StudyProgress>('elk.stats',{answered:0,correct:0,reviewed:0});
   const [toast,setToast] = useState('');
   const [initialPrompt,setInitialPrompt] = useState('');
-  const setPage=(next:Page) => {if(next!==page){history.pushState({},'',`#${next}`);setCurrentPage(next);window.scrollTo({top:0,behavior:'auto'})}};
+  const setPage=(next:Page) => {
+    if(next!==requestedPage){history.pushState({},'',`#${next}`);setCurrentPage(next);window.scrollTo({top:0,behavior:'auto'});}
+  };
   const notify=(message:string)=>setToast(message);
   useEffect(()=>{const handler=()=>setCurrentPage(hashPage());window.addEventListener('popstate',handler);window.addEventListener('hashchange',handler);return()=>{window.removeEventListener('popstate',handler);window.removeEventListener('hashchange',handler)}},[]);
   useEffect(()=>{if(!toast)return;const timer=window.setTimeout(()=>setToast(''),3500);return()=>window.clearTimeout(timer)},[toast]);
@@ -1504,11 +1528,10 @@ export default function App() {
   const onAnswer=(correct:boolean)=>setStatistics(prev=>({ ...prev,answered:prev.answered+1,correct:prev.correct+(correct?1:0) }));
   const content=(() => {
     if(page==='about')return <AboutPage/>;
-    if(page==='account')return <AccountPage go={setPage}/>;
-    if(page==='moduler')return <ModulerPage go={()=>setPage('profile')}/>;
-    if(page==='landing')return <LandingPage signIn={()=>setPage('account')} start={()=>setPage('onboarding')} guest={()=>setPage('guest')} openFaith={()=>setPage('faith')} openHybrid={()=>setPage('hybrid')} openScan={()=>setPage('scan')}/>;
-    if(page==='onboarding')return <EntryFlowV67 intent="learn" onBack={()=>setPage('landing')} onEnter={setPage}/>;
-    if(page==='guest')return <EntryFlowV67 intent="guest" onBack={()=>setPage('landing')} onEnter={setPage}/>;
+    if(page==='account'||page==='register'||page==='reset')return <AuthPage81 key={page} mode={page} go={setPage} dark={dark} setDark={setDark}/>;
+    if(page==='moduler')return <ModulerWorkspace81 dark={dark} setDark={setDark} onHome={()=>setPage('landing')}/>;
+    if(page==='landing')return <LandingPage signIn={()=>setPage('account')} start={()=>setPage(role==='guest'?'account':role==='moduler'?'moduler':'dashboard')} guest={()=>setPage('guest')} openFaith={()=>setPage(role==='guest'?'account':'faith')} openHybrid={()=>setPage(role==='guest'?'account':'hybrid')} openScan={()=>setPage(role==='guest'?'account':'scan')}/>;
+    if(page==='guest')return <GuestPreview82 onHome={()=>setPage('landing')} onLogin={()=>setPage('account')} onRegister={()=>setPage('register')} dark={dark} setDark={setDark}/>;
     if(page==='mission')return <ResearchMissionV67 onGo={setPage} onSaveNote={addNote}/>;
     if(page==='dashboard')return <DashboardRealV65 onGo={setPage}/>;
     if(page==='library')return <LibraryPage setPage={setPage} addNote={addNote} notify={notify} askAbout={askAbout}/>;
@@ -1527,10 +1550,10 @@ export default function App() {
     if(page==='notes')return <SimplePage type="notes" setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
     return <Dashboard setPage={setPage}/>;
   })();
-  if(page==='landing'||page==='onboarding'||page==='guest')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
+  if(page==='landing'||page==='guest'||isAuthRoute(page)||page==='moduler')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
   return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>
     <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
-    <div className="app-shell">{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
+    <div className="app-shell">{(page==='reader'||page==='scan')&&<div className="v82-special-nav"><button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/>{language==="id"?"Beranda":"Homepage"}</button><SessionExit go={()=>setPage('landing')}/></div>}{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
     <button className="mobile-tutor-fab" onClick={()=>setPage('tutor')} aria-label={t("Open chemistry tutor")}><BrainCircuit size={19}/></button>
     {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage}/>}
     {toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span><button onClick={()=>setToast('')} aria-label="Dismiss notification"><X size={15}/></button></div>}

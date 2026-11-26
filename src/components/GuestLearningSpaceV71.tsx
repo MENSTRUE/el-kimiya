@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useState } from 'react';
 import {
   ArrowRight, BookOpen, BrainCircuit, CheckCircle2, ClipboardCheck,
@@ -17,7 +18,7 @@ type Snapshot = { attempted: number; correct: number; lessons: number; bookmarke
 
 function objectFromStorage(key: string): Record<string, unknown> {
   try {
-    const value: unknown = JSON.parse(localStorage.getItem(key) || '{}');
+    const value: unknown = JSON.parse(elkLearningStorage.getItem(key) || '{}');
     return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
   } catch { return {}; }
 }

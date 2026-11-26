@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight, BookOpen, Check, CheckCircle2, ChevronLeft, CircleHelp,
@@ -14,7 +15,7 @@ type Score = { attempted: number; correct: number; history: { id: string; correc
 const EMPTY: Score = { attempted: 0, correct: 0, history: [] };
 function loadScore(): Score {
   try {
-    const value: unknown = JSON.parse(localStorage.getItem(KEY) || '{}');
+    const value: unknown = JSON.parse(elkLearningStorage.getItem(KEY) || '{}');
     if (!value || typeof value !== 'object') return EMPTY;
     const s = value as Partial<Score>;
     return {
@@ -71,7 +72,7 @@ export function PracticeBankV63({ onAnswer, onOpenPath, onOpenClassic }: {
   const resetSession = () => { setScore(EMPTY); resetAnswer(); };
 
   useEffect(() => {
-    try { localStorage.setItem(KEY, JSON.stringify(score)); } catch { /* browser storage optional */ }
+    try { elkLearningStorage.setItem(KEY, JSON.stringify(score)); } catch { /* browser storage optional */ }
   }, [score]);
 
   const current = active as ExerciseV63 | null;

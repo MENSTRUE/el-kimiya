@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useState } from 'react';
 import { ArrowRight, BookOpen, BrainCircuit, CheckCircle2, FlaskConical, GraduationCap, Layers3, Target, Trophy } from 'lucide-react';
 import { useLanguage } from '../lib/language';
@@ -9,7 +10,7 @@ type Destination = 'practice' | 'library' | 'flashcards' | 'molecules' | 'progre
 type Snapshot = { attempted: number; correct: number; lessons: number; bookmarkedBooks: number; reviewedCards: number; recentIds: string[] };
 const empty: Snapshot = { attempted: 0, correct: 0, lessons: 0, bookmarkedBooks: 0, reviewedCards: 0, recentIds: [] };
 function safeObject(key: string): Record<string, unknown> {
-  try { const parsed: unknown = JSON.parse(localStorage.getItem(key) || '{}'); return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {}; }
+  try { const parsed: unknown = JSON.parse(elkLearningStorage.getItem(key) || '{}'); return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {}; }
   catch { return {}; }
 }
 function naturalCount(v: unknown): number { return typeof v === 'number' && Number.isSafeInteger(v) && v >= 0 ? v : 0; }

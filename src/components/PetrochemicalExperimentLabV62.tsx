@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useState } from 'react';
 import { Atom, Beaker, BrainCircuit, Download, Droplets, FlaskConical, Info, LoaderCircle, RotateCcw, ShieldCheck, Target, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../lib/language';
@@ -25,7 +26,7 @@ export function PetrochemicalExperimentLabV62() {
   const [scenario, setScenario] = useState<SyntheticScenario>(SYNTHETIC_SCENARIOS[0]);
   const [drops, setDrops] = useState(0);
   const [runs, setRuns] = useState<Run[]>(() => {
-    try { const saved: unknown = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]');
+    try { const saved: unknown = JSON.parse(elkLearningStorage.getItem(STORAGE_KEY) || '[]');
       return Array.isArray(saved) ? saved.filter((r: unknown) => r && typeof r === 'object' && 'acidNumber' in r && Number.isFinite((r as Run).acidNumber)).slice(-12) as Run[] : [];
     } catch { return []; }
   });
@@ -44,7 +45,7 @@ export function PetrochemicalExperimentLabV62() {
   const summary = summarizeRuns(ownRuns.map(r => r.acidNumber), scenario.referenceAcidNumber);
 
   useEffect(() => {
-    try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(-12))); } catch { /* session still works without storage */ }
+    try { elkLearningStorage.setItem(STORAGE_KEY, JSON.stringify(runs.slice(-12))); } catch { /* session still works without storage */ }
   }, [runs]);
 
   const choose = (id: string) => {

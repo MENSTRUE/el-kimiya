@@ -1,3 +1,4 @@
+import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight, BookOpen, Check, CheckCircle2, ChevronLeft, ChevronRight,
@@ -13,7 +14,7 @@ type Progress = { passed: string[]; read: string[] };
 const KEY = 'elk.v45.learningPath.1';
 function loadProgress(): Progress {
   try {
-    const raw = JSON.parse(localStorage.getItem(KEY) || '{}') as Record<string, unknown>;
+    const raw = JSON.parse(elkLearningStorage.getItem(KEY) || '{}') as Record<string, unknown>;
     return {
       passed: Array.isArray(raw.passed) ? raw.passed.filter((v): v is string => typeof v === 'string') : [],
       read: Array.isArray(raw.read) ? raw.read.filter((v): v is string => typeof v === 'string') : [],
@@ -21,7 +22,7 @@ function loadProgress(): Progress {
   } catch { return { passed: [], read: [] }; }
 }
 function saveProgress(next: Progress): Progress {
-  try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* Browsers without storage can still practice this session. */ }
+  try { elkLearningStorage.setItem(KEY, JSON.stringify(next)); } catch { /* Browsers without storage can still practice this session. */ }
   window.dispatchEvent(new Event('elk:v45-progress'));
   return next;
 }
