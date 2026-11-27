@@ -700,6 +700,22 @@ export const languagePairs: Record<string,string> = {
   "PubChem and Firebase AI": "PubChem dan Firebase AI",
   "Scientific learning journey": "Perjalanan belajar ilmiah",
   "Which coefficients balance this equation?": "Koefisien mana yang menyetarakan persamaan ini?",
+  "Book Reader": "Pembaca Buku",
+  "Scan": "Pindai",
+  "Profile & Account": "Profil & Akun",
+  "Study tools": "Fitur belajar",
+  "System & account": "Sistem & akun",
+  "Open menu": "Buka menu",
+  "Close menu": "Tutup menu",
+  "Back to homepage": "Kembali ke halaman utama",
+  "Learner account": "Akun pelajar",
+  "Homepage": "Beranda",
+  "Text imported to this browser": "Teks diimpor ke browser ini",
+  "Flashcard added to your deck": "Kartu hafalan ditambahkan ke koleksimu",
+  "Note copied": "Catatan disalin",
+  "Copy unavailable; select the text instead": "Penyalinan tidak tersedia; pilih teks secara manual",
+  "Try a different search.": "Coba kata kunci lain.",
+  "Open a lesson, select a passage, and save a real note to this browser.": "Buka materi, pilih kutipan, dan simpan catatan ke browser ini.",
 };
 
 const STORAGE_KEY = 'elk.language'; // Reuses the existing Settings key.
@@ -738,8 +754,8 @@ export function useLanguage(){return useContext(LocaleContext)}
 export function LanguageSwitch(){
   const {language,setLanguage}=useLanguage();
   return <div className="elk-language-switch" role="group" aria-label="Bahasa / Language">
-    <button type="button" className={language==='id'?'active':''} aria-pressed={language==='id'} onClick={()=>setLanguage('id')} lang="id" title="Bahasa Indonesia">ID</button>
-    <button type="button" className={language==='en'?'active':''} aria-pressed={language==='en'} onClick={()=>setLanguage('en')} lang="en" title="English">EN</button>
+    <button type="button" data-elk-language="id" className={language==='id'?'active':''} aria-pressed={language==='id'} onClick={()=>setLanguage('id')} lang="id" title="Bahasa Indonesia">ID</button>
+    <button type="button" data-elk-language="en" className={language==='en'?'active':''} aria-pressed={language==='en'} onClick={()=>setLanguage('en')} lang="en" title="English">EN</button>
   </div>
 }
 

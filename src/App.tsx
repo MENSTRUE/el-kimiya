@@ -26,8 +26,6 @@ import {
   Moon,
   MoreHorizontal,
   NotebookPen,
-  PanelLeftClose,
-  PanelLeftOpen,
   Play,
   Plus,
   RotateCcw,
@@ -71,6 +69,7 @@ import { GuestPreview82 } from "./v8/GuestPreview82";
 // ELKIMIYA_V83_MOBILE_PARITY
 import { isAndroid83 } from "./lib/nativeAi83";
 import { NativeModel83 } from "./v8/NativeModel83";
+import { RichAnswer85 } from "./v8/RichAnswer85";
 import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
@@ -105,10 +104,13 @@ type Page =
   | "scan"
   | "profile" | "about" | "account" | "register" | "reset" | "moduler";
 
+// Single source for the same learner destinations on desktop and mobile.
 const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "dashboard", label: "Dashboard", icon: Home },
   { id: "mission", label: "Research Mission", icon: Target },
   { id: "library", label: "My Library", icon: Library },
+  { id: "reader", label: "Book Reader", icon: BookOpen },
+  { id: "scan", label: "Scan", icon: Camera },
   { id: "faith", label: "Kimia & Keimanan", icon: Sparkles },
   { id: "tutor", label: "AI Chemistry Tutor", icon: BrainCircuit },
   { id: "explorer", label: "Chemistry Explorer", icon: Atom },
@@ -117,6 +119,10 @@ const navItems: { id: Page; label: string; icon: typeof Home }[] = [
   { id: "flashcards", label: "Flashcards", icon: Layers3 },
   { id: "progress", label: "Learning Progress", icon: Trophy },
   { id: "notes", label: "Saved Notes", icon: NotebookPen },
+  { id: "hybrid", label: "AI Engine Status", icon: Zap },
+  { id: "settings", label: "Settings", icon: Settings },
+  { id: "profile", label: "Profile & Account", icon: User },
+  { id: "about", label: "About El-Kīmiyā", icon: CircleHelp },
 ];
 
 const books = [
@@ -161,77 +167,55 @@ function Progress({ value }: { value: number }) {
   );
 }
 
-function Sidebar({
-  page,
-  setPage,
-  collapsed,
-  setCollapsed,
-}: {
-  page: Page;
-  setPage: (page: Page) => void;
-  collapsed: boolean;
-  setCollapsed: (value: boolean) => void;
+// The same navigation markup is used in a permanent desktop aside and the
+// modal mobile drawer. Keep .sidebar .v82-session-nav for the native role gate.
+function Sidebar({page,setPage,mobile,open,close}:{
+  page:Page;setPage:(page:Page)=>void;mobile:boolean;open:boolean;close:()=>void;
 }) {
-  const {user,role} = usePlatform();
-  const {language} = useLanguage();
-  return (
-    <aside className={`sidebar ${collapsed ? "sidebar-collapsed" : ""}`}>
-      <div className="sidebar-top">
-        <button className="brand" aria-label={t("El-Kīmiyā home")} onClick={() => setPage("landing")}>
-          <BrandMark compact={collapsed} size="sm" />
-        </button>
-        <button
-          className="icon-button collapse-button"
-          onClick={() => setCollapsed(!collapsed)}
-          aria-label={t("Toggle sidebar")}
-        >
-          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-        </button>
-      </div>
-      <div className="v82-session-nav">
-        <button type="button" className="v81-exit" onClick={()=>setPage("landing")} title={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/><span>{language==="id"?"Ke halaman utama":"Back to homepage"}</span></button>
-        <SessionExit go={()=>setPage("landing")}/>
-      </div>
-      <nav className="side-nav" aria-label={t("Main navigation")}>
-        <p className="nav-label">{collapsed ? "•••" : t("Learning space")}</p>
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              className={page === item.id ? "active" : ""}
-              onClick={() => setPage(item.id)}
-              title={collapsed ? t(item.label) : undefined}
-            >
-              <Icon size={19} />
-              {!collapsed && <span>{t(item.label)}</span>}
-            </button>
-          );
-        })}
-      </nav>
-      <div className="side-nav secondary-nav">
-        <button className={page === "hybrid" ? "active" : ""} onClick={() => setPage("hybrid")}>
-          <BrainCircuit size={19} />
-          {!collapsed && <span>{t("AI Engine Status")}</span>}
-          {!collapsed && <i className="status-dot" />}
-        </button>
-        <button className={page === "settings" ? "active" : ""} onClick={() => setPage("settings")}>
-          <Settings size={19} />
-          {!collapsed && <span>{t("Settings")}</span>}
-        </button>
-        <button className={page === "about" ? "active" : ""} onClick={() => setPage("about")}>
-          <CircleHelp size={19} />
-          {!collapsed && <span>{t("About El-Kīmiyā")}</span>}
-        </button>
-      </div>
-      <button type="button" className="sidebar-quote v8-sidebar-account" onClick={() => setPage("profile")} aria-label={t("Open profile")}>
-        <span className="workspace-avatar"><GraduationCap size={17} /></span>
-        {!collapsed && <div><strong>{user?.displayName || user?.email || t("My learning space")}</strong><p>{user ? (role === "moduler" ? "Moduler" : "User") : (language === "id" ? "Mode tamu · lokal" : "Guest · local")}</p></div>}
-        {!collapsed && <ChevronRight size={15} className="workspace-chevron" />}
-      </button>
+  const {user,role}=usePlatform();
+  const {language}=useLanguage();
+  const ref=useRef<HTMLDialogElement>(null);
+  useEffect(()=>{
+    const dialog=ref.current;
+    if(!mobile||!dialog)return;
+    if(open&&!dialog.open)dialog.showModal();
+    else if(!open&&dialog.open)dialog.close();
+    if(!open)return;
+    const oldOverflow=document.documentElement.style.overflow;
+    document.documentElement.style.overflow='hidden';
+    return ()=>{document.documentElement.style.overflow=oldOverflow};
+  },[mobile,open]);
+  const groups=[
+    {title:"Learning space",items:navItems.slice(0,6)},
+    {title:"Study tools",items:navItems.slice(6,13)},
+    {title:"System & account",items:navItems.slice(13)}
+  ];
+  const contents=<aside className="sidebar v85-nav-surface" aria-label={t("Main navigation")}>
+    <div className="v85-nav-head sidebar-top">
+      <button type="button" className="brand" aria-label={t("El-Kīmiyā home")} onClick={()=>setPage("landing")}><BrandMark size="sm" showTagline/></button>
+      {mobile&&<button type="button" className="v85-nav-close icon-button" aria-label={t("Close menu")} data-elk-drawer-close onClick={close}><X size={22}/></button>}
+    </div>
+    <div className="v82-session-nav">
+      <button type="button" className="v81-exit" onClick={()=>setPage("landing")}><Home size={18}/><span>{t("Back to homepage")}</span></button>
+      <SessionExit go={()=>setPage("landing")}/>
+    </div>
+    <nav className="side-nav v85-nav-links" aria-label={t("Learning space")}>
+      {groups.map(group=><div key={group.title} className="v85-nav-group">
+        <p className="nav-label">{t(group.title)}</p>
+        {group.items.map(item=><button type="button" key={item.id} data-elk-route={item.id} className={page===item.id?"active":""} aria-current={page===item.id?"page":undefined} onClick={()=>setPage(item.id)}><item.icon size={19}/><span>{t(item.label)}</span>{page===item.id&&<ChevronRight size={15} className="v85-nav-chevron"/>}</button>)}
+      </div>)}
+    </nav>
+    <div className="sidebar-quote v8-sidebar-account v85-nav-account">
+      <span className="workspace-avatar"><GraduationCap size={17}/></span>
+      <div><strong>{user?.displayName||user?.email||t("My learning space")}</strong><p>{user?(role==="moduler"?"Moduler":t("Learner account")):(language==="id"?"Mode tamu · lokal":"Guest · local")}</p></div>
+    </div>
+  </aside>;
+  if(!mobile)return contents;
+  return <dialog id="elk-drawer" className="v85-drawer" ref={ref} data-elk-drawer data-elk-drawer-open={open?"true":"false"} aria-hidden={!open} aria-label={t("Main navigation")} onCancel={event=>{event.preventDefault();close()}} onClose={close} onClick={event=>{if(event.target===event.currentTarget)close()}}>{contents}</dialog>;
+}
 
-    </aside>
-  );
+function DrawerToggle85({open,showMenu}:{open:boolean;showMenu:()=>void}) {
+  return <button type="button" className="v85-drawer-toggle icon-button" data-elk-drawer-toggle aria-haspopup="dialog" aria-expanded={open} aria-controls="elk-drawer" aria-label={t("Open menu")} onClick={showMenu}><Menu size={22}/></button>
 }
 
 function Header({
@@ -240,12 +224,18 @@ function Header({
   dark,
   setDark,
   offline,
+  mobile,
+  menuOpen,
+  showMenu,
 }: {
   page: Page;
   setPage: (page: Page) => void;
   dark: boolean;
   setDark: (value: boolean) => void;
   offline: boolean;
+  mobile:boolean;
+  menuOpen:boolean;
+  showMenu:()=>void;
 }) {
   const {language}=useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
@@ -284,16 +274,10 @@ function Header({
   };
   return (
     <header className="topbar">
-      <button
-        className="mobile-header-brand"
-        aria-label={t("El-Kīmiyā home")}
-        onClick={() => setPage("landing")}
-      >
-        <BrandMark compact inverted={dark} size="sm" />
-      </button>
-      <div>
+      {mobile&&<div className="v85-mobile-leading"><DrawerToggle85 open={menuOpen} showMenu={showMenu}/><button type="button" className="mobile-header-brand" aria-label={t("El-Kīmiyā home")} onClick={()=>setPage("landing")}><BrandMark compact size="sm"/></button></div>}
+      <div className="v85-header-title">
         <p className="eyebrow">
-          {page === "dashboard" ? "YOUR PERSONAL LABORATORY" : "EL-KĪMIYĀ  /  STUDY SPACE"}
+          {t(page === "dashboard" ? "YOUR PERSONAL LABORATORY" : "EL-KĪMIYĀ  /  STUDY SPACE")}
         </p>
         <h1>
           {t(page === "dashboard" ? "Make room for discovery." : titles[page] || "Continue learning")}
@@ -333,7 +317,7 @@ function Header({
           <span>{t(offline ? "Offline scenario" : firebaseConfigured ? "Firebase configured" : "Curated demo")}</span>
           <Badge>{firebaseConfigured?'SDK':'Demo'}</Badge>
         </button>
-        <button className="icon-button" onClick={() => setDark(!dark)} aria-label={t("Toggle theme")}>
+        <button className="icon-button" data-elk-theme-toggle onClick={() => setDark(!dark)} aria-label={t("Toggle theme")}>
           {dark ? <Sun size={19} /> : <Moon size={19} />}
         </button>
         <button className="icon-button notification" onClick={() => setPage("progress")} aria-label={t("View learning progress")}>
@@ -347,17 +331,17 @@ function Header({
   );
 }
 
-function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn }: { signIn: () => void; start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
+function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn, dark, setDark }: { dark:boolean;setDark:(v:boolean)=>void;signIn: () => void; start: () => void; guest: () => void; openFaith: () => void; openHybrid: () => void; openScan: () => void }) {
   const { language } = useLanguage(); const en = language === "en";
   const {user}=usePlatform();
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({behavior:"smooth", block:"start"});
   return (
-    <main className="landing-page" data-web-version="8.2">
+    <main className="landing-page" data-web-version="8.5">
       <header className="landing-nav">
         <button aria-label={t("El-Kīmiyā home")} onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>
           <BrandMark size="sm" showTagline />
         </button>
-        <nav aria-label="Public website navigation">
+        <nav aria-label={t("Public website navigation")}>
           <button type="button" onClick={() => scrollTo("product")}>{t("Product")}</button>
           <button type="button" onClick={() => scrollTo("experience")}>{t("How it works")}</button>
           <button type="button" onClick={() => scrollTo("hybrid")}>{t("Hybrid AI")}</button>
@@ -366,6 +350,7 @@ function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn }: 
         </nav>
         <div>
           <LanguageSwitch />
+          <button type="button" className="icon-button" data-elk-theme-toggle aria-label={t("Toggle theme")} onClick={()=>setDark(!dark)}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>
           {user ? <><button className="primary-button" onClick={start}>{en?"Open workspace":"Buka ruang kerja"} <ChevronRight size={16}/></button><SessionExit go={()=>{}}/></> : <>
             <button className="landing-signin" onClick={signIn}>{en ? "Sign in" : "Masuk"}</button>
             <button className="landing-signin" onClick={guest}>{en ? "Guest preview" : "Pratinjau tamu"}</button>
@@ -993,7 +978,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
         <div className="prompt-grid">{(en?['Explain ionic and covalent bonds.','Why does salt dissolve in water?','Help me balance an equation.','Explain pH with an everyday example.']:['Jelaskan ikatan ionik dan kovalen.','Mengapa garam larut dalam air?','Bantu setarakan persamaan reaksi.','Jelaskan pH dengan contoh sehari-hari.']).map(prompt=><button key={prompt} onClick={()=>void ask(prompt)}><span>{prompt}</span><ChevronRight size={17}/></button>)}</div></div>
       :<div className="answer-thread" aria-live="polite">{messages.map(message=><div className="thread-pair" key={message.id}><div className="user-message">{message.prompt}</div><div className="ai-answer" data-elk-provider={message.providerId} data-elk-live={message.live?"true":undefined}>
         <div className="answer-intro"><span className="ai-orb"><BrainCircuit size={17}/></span><div><strong>{t("El-Kīmiyā tutor")}</strong><small>{t(message.provider)}</small></div></div>
-        <div className="answer-section"><p className="eyebrow">{message.error?(en?'REQUEST FAILED':'PERMINTAAN GAGAL'):message.live?(en?'LIVE INFERENCE':'INFERENSI LANGSUNG'):(en?'LEARNING RESPONSE':'RESPONS PEMBELAJARAN')}</p><h3>{message.live||message.error?t(message.topic):message.topic}</h3><p>{message.error ? t(message.text) : message.text}</p></div>
+        <div className="answer-section"><p className="eyebrow">{message.error?(en?'REQUEST FAILED':'PERMINTAAN GAGAL'):message.live?(en?'LIVE INFERENCE':'INFERENSI LANGSUNG'):(en?'LEARNING RESPONSE':'RESPONS PEMBELAJARAN')}</p><h3>{message.live||message.error?t(message.topic):message.topic}</h3>{message.live&&!message.error?<RichAnswer85 text={message.text}/>:<p>{message.error?t(message.text):message.text}</p>}</div>
         {message.steps&&<div className="answer-section steps"><p className="eyebrow">{t("STEP BY STEP")}</p>{message.steps.map((step,i)=><div key={i}><span>{i+1}</span><p>{step}</p></div>)}</div>}
         {message.example&&<div className="formula-card"><span>{message.example}</span></div>}
         {message.error&&<p className="inline-alert" role="alert"><CircleHelp size={16}/><span>{t(message.error)}</span></p>}
@@ -1235,7 +1220,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
         <button className="primary-button" disabled={!firebaseConfigured||running} onClick={()=>void runLive()}><BrainCircuit size={17}/>{t(running?'Running on Firebase...':'Run real inference test')}</button>
         {preference === 'On-device only' && <p>{t(isAndroid83()?'On-device mode depends on Android device support and a ready local model. This mode never claims cloud fallback as local success.':'On-device mode needs compatible Chrome Desktop (139+), Prompt API enabled, and local model download. This mode never claims cloud fallback as local success.')}</p>}
         {running&&<p role="status">{progress===null?t('Preparing or requesting a response...'):`${t('Local model download:')} ${Math.round(progress*100)}%`}</p>}
-        {liveResult&&<div className="live-result" role="status" data-elk-provider={liveProvider.split(" · ")[0]} data-elk-live="true"><strong>{t("Verified provider:")} {liveProvider}</strong><p>{liveResult}</p></div>}
+        {liveResult&&<div className="live-result" role="status" data-elk-provider={liveProvider.split(" · ")[0]} data-elk-live="true"><strong>{t("Verified provider:")} {liveProvider}</strong><RichAnswer85 text={liveResult}/></div>}
         {liveError&&<div className="inline-alert" role="alert"><CircleHelp size={17}/><span>{liveError}</span></div>}
       </section>
     </main>
@@ -1442,7 +1427,7 @@ function SettingsPage({dark,setDark,setPage,reducedMotion,setReducedMotion}: {da
       {panel==='language'&&<><p>{t("Change the interface language instantly. Your preference remains after a refresh. Original PDF text and AI outputs are not automatically translated.")}</p><div className="settings-section"><h3>{t("Preferred language")}</h3><div className="language-options">{(['English','Bahasa Indonesia'] as const).map(item=><button key={item} onClick={()=>setLanguage(item)} className={language===item?'active':''} aria-pressed={language===item}><span><strong>{item}</strong><small>{item==='English'?'Original demo content':'Language applied to the interface'}</small></span>{language===item&&<Check size={18}/>}</button>)}</div><p className="setting-note">{t("Arabic terminology may appear in lessons. Arabic AI support is not guaranteed.")}</p></div></>}
       {panel==='privacy'&&<><p>{uiLanguage==='id'?'Data belajar tetap lokal di browser kecuali kamu membuat cadangan akun secara eksplisit. Foto tidak diunggah oleh pemindai.':'Learning data remains browser-local unless you explicitly back it up in your account. Photos are not uploaded by the scanner.'}</p><div className="settings-section"><h3>{t("Your control")}</h3><p>{t("When Firebase AI Logic is configured, prompts can be processed locally or in the cloud according to model availability and inference preference. Check the verified provider label after each request.")}</p><button className="secondary-button" onClick={()=>setPage('hybrid')}>{t("Inspect AI inference settings")} <ChevronRight size={16}/></button><hr/><button className="reset-data-button" onClick={resetLocalData}><X size={16}/> {t("Delete all locally saved learning data")}</button></div></>}
       {panel==='accessibility'&&<><p>{t("Comfortable reading controls and motion preferences are saved locally.")}</p><div className="settings-section"><h3>{t("Reading text")}</h3><button className="setting-switch" onClick={()=>setLargeText(!largeText)} aria-pressed={largeText}><span>{t("Large textbook text")}</span><strong>{t(largeText?'Enabled':'Disabled')}</strong></button><h3>{t("Motion")}</h3><button className="setting-switch" onClick={()=>setReducedMotion(!reducedMotion)} aria-pressed={reducedMotion}><span>{t("Reduce interface animation")}</span><strong>{t(reducedMotion?'Enabled':'Disabled')}</strong></button><p className="setting-note">{t("System reduced-motion preference is always respected.")}</p></div></>}
-      <div className="settings-brand-panel"><BrandMark size="md" showTagline/><div><Badge>{t("About El-Kīmiyā")}</Badge><p>{uiLanguage==='id'?'Platform belajar kimia AI hibrida · akun opsional':'Hybrid AI chemistry learning platform · optional accounts'}</p></div></div>
+      <div className="settings-brand-panel"><BrandMark size="md" showTagline/><div><Badge>{t("About El-Kīmiyā")}</Badge><p>{uiLanguage==='id'?'Platform belajar kimia AI hibrida · ruang belajar akun':'Hybrid AI chemistry learning platform · account workspace'}</p></div></div>
     </section>
   </main>;
 }
@@ -1455,45 +1440,6 @@ function ScanPage({ setPage, addNote, addCard, notify, askAbout }: {
   askAbout:(prompt:string)=>void;
 }) {
   return <ScanStudioV69 setPage={setPage} addNote={addNote} addCard={addCard} notify={notify} askAbout={askAbout} />;
-}
-
-// Same learner routes as desktop, including special reader and scanner screens.
-function MobileBottomNav({ page, setPage, showMenu }: { page: Page; setPage: (p: Page) => void; showMenu: () => void }) {
-  const {language}=useLanguage(); const en=language==='en';
-  const items: { id: Page; label: string; icon: typeof Home }[] = [
-    { id: "dashboard", label: en?"Home":"Dasbor", icon: Home },
-    { id: "library", label: en?"Library":"Pustaka", icon: Library },
-    { id: "scan", label: en?"Scan":"Pindai", icon: Camera },
-    { id: "tutor", label: "AI Tutor", icon: BrainCircuit },
-  ];
-  return <nav className="mobile-nav" aria-label={en?"Workspace navigation":"Navigasi ruang belajar"}>
-    {items.map(({id,label,icon:Icon})=><button type="button" key={id} className={page===id?"active":""} aria-current={page===id?"page":undefined} onClick={()=>setPage(id)}><span className={id==="scan"?"scan-nav-icon":""}><Icon size={20}/></span><small>{label}</small></button>)}
-    <button type="button" onClick={showMenu} aria-label={en?"All features":"Semua fitur"} aria-haspopup="dialog"><Menu size={22}/><small>Menu</small></button>
-  </nav>;
-}
-function MobileFeatureMenu83({page,setPage,open,close}:{page:Page;setPage:(p:Page)=>void;open:boolean;close:()=>void}) {
-  const {language}=useLanguage(); const en=language==='en';
-  const ref=useRef<HTMLDialogElement>(null);
-  const [query,setQuery]=useState('');
-  useEffect(()=>{const dialog=ref.current;if(!dialog)return;if(open&&!dialog.open){setQuery('');dialog.showModal();}else if(!open&&dialog.open){dialog.close();}},[open]);
-  const labels: Partial<Record<Page,[string,string]>> = {
-    dashboard:["Dasbor","Dashboard"],mission:["Misi Penelitian","Research Mission"],library:["Perpustakaan Saya","My Library"],
-    faith:["Kimia & Keimanan","Chemistry & Faith"],tutor:["Tutor Kimia AI","AI Chemistry Tutor"],explorer:["Eksplorasi Kimia","Chemistry Explorer"],
-    molecules:["Laboratorium AI Molekul","Molecular Intelligence Lab"],practice:["Laboratorium Latihan","Practice Lab"],
-    flashcards:["Kartu Hafalan","Flashcards"],progress:["Progres Belajar","Learning Progress"],notes:["Catatan Tersimpan","Saved Notes"],
-    reader:["Pembaca Buku","Book Reader"],scan:["Pindai","Scan"],hybrid:["Status Mesin AI","AI Engine Status"],settings:["Pengaturan","Settings"],profile:["Profil & Akun","Profile & Account"],about:["Tentang El-Kīmiyā","About El-Kīmiyā"]
-  };
-  const items: typeof navItems = [...navItems,
-    {id:"reader",label:"Book Reader",icon:BookOpen},{id:"scan",label:"Scan",icon:Camera},{id:"hybrid",label:"AI Engine",icon:Zap},
-    {id:"settings",label:"Settings",icon:Settings},{id:"profile",label:"Profile",icon:User},{id:"about",label:"About",icon:CircleHelp}
-  ];
-  const navigate=(id:Page)=>{close();setPage(id);};
-  return <dialog ref={ref} className="v83-feature-dialog" aria-labelledby="v83-menu-title" onCancel={close} onClose={close}>
-    <div className="v83-menu-head"><h2 id="v83-menu-title">{en?"Explore all features":"Semua fitur"}</h2><button type="button" className="icon-button" onClick={close} aria-label={en?"Close menu":"Tutup menu"}><X size={22}/></button></div>
-    <label className="v83-menu-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={en?"Find a feature…":"Cari fitur…"} aria-label={en?"Find a feature":"Cari fitur"}/></label>
-    <div className="v83-menu-grid">{items.filter(item=>(labels[item.id]?.join(' ')||item.label).toLowerCase().includes(query.trim().toLowerCase())).map(({id,label,icon:Icon})=><button type="button" key={id} className={page===id?"active":""} aria-current={page===id?"page":undefined} onClick={()=>navigate(id)}><Icon size={19}/><span>{labels[id]?.[en?1:0]||label}</span></button>)}</div>
-    <div className="v83-menu-footer"><button type="button" className="secondary-button" onClick={()=>navigate('landing')}><Home size={17}/>{en?"Back to homepage":"Kembali ke halaman utama"}</button><SessionExit go={()=>navigate('landing')}/></div>
-  </dialog>;
 }
 
 function SimplePage({ type, setPage, notes, deleteNote, notify }: {
@@ -1511,20 +1457,25 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
 export default function App() { return <SessionBoundary><WorkspaceApp/></SessionBoundary>; }
 
 function WorkspaceApp() {
-  const { language } = useLanguage();
-  void language;
+  useLanguage();
   const validPages: Page[] = ['landing','onboarding','guest','mission','dashboard','library','faith','reader','tutor','hybrid','practice','explorer','molecules','flashcards','progress','notes','settings','scan','profile','about','account','register','reset','moduler'];
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const {role}=usePlatform();
   const [requestedPage,setCurrentPage] = useState<Page>(hashPage);
-  const [menu83,setMenu83] = useState(false);
+  const [menu85,setMenu85] = useState(false);
+  const [mobile,setMobile]=useState(()=>window.matchMedia('(max-width: 900px)').matches);
+  useEffect(()=>{
+    const query=window.matchMedia('(max-width: 900px)');
+    const change=()=>{setMobile(query.matches);if(!query.matches)setMenu85(false)};
+    query.addEventListener('change',change);change();
+    return ()=>query.removeEventListener('change',change);
+  },[]);
   const [session83] = useState(()=>globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
   const page=resolveRoute(requestedPage,role) as Page;
   useEffect(()=>writeGuest(false),[]);
   useEffect(()=>{
     if(requestedPage!==page){history.replaceState({},'',`#${page}`);setCurrentPage(page);}
   },[requestedPage,page]);
-  const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
   const [dark,setDark] = useStoredState('elk.dark',window.matchMedia('(prefers-color-scheme: dark)').matches);
   useLayoutEffect(()=>{document.documentElement.dataset.elkTheme=dark?'dark':'light'},[dark]);
   const [reducedMotion,setReducedMotion] = useStoredState('elk.reduceMotion',false);
@@ -1536,11 +1487,11 @@ function WorkspaceApp() {
   const [toast,setToast] = useState('');
   const [initialPrompt,setInitialPrompt] = useState('');
   const setPage=(next:Page) => {
-    setMenu83(false);
+    setMenu85(false);
     if(next!==requestedPage){history.pushState({},'',`#${next}`);setCurrentPage(next);window.scrollTo({top:0,behavior:'auto'});}
   };
   const notify=(message:string)=>setToast(message);
-  useEffect(()=>{const handler=()=>setCurrentPage(hashPage());window.addEventListener('popstate',handler);window.addEventListener('hashchange',handler);return()=>{window.removeEventListener('popstate',handler);window.removeEventListener('hashchange',handler)}},[]);
+  useEffect(()=>{const handler=()=>{setMenu85(false);setCurrentPage(hashPage())};window.addEventListener('popstate',handler);window.addEventListener('hashchange',handler);return()=>{window.removeEventListener('popstate',handler);window.removeEventListener('hashchange',handler)}},[]);
   useEffect(()=>{if(!toast)return;const timer=window.setTimeout(()=>setToast(''),3500);return()=>window.clearTimeout(timer)},[toast]);
   useEffect(()=>{const handler=(event:KeyboardEvent)=>{if(event.key==='/'&&!(event.target instanceof HTMLInputElement)&&!(event.target instanceof HTMLTextAreaElement)){event.preventDefault();document.querySelector<HTMLInputElement>('.global-search input')?.focus()}if(event.key==='Escape')setToast('')};document.addEventListener('keydown',handler);return()=>document.removeEventListener('keydown',handler)},[]);
   const addNote=(title:string,content:string,source:string)=>{setNotes(prev=>[createNote(title,content,source),...prev]);notify('Saved locally — open Saved Notes to view');};
@@ -1552,7 +1503,7 @@ function WorkspaceApp() {
     if(page==='about')return <AboutPage/>;
     if(page==='account'||page==='register'||page==='reset')return <AuthPage81 key={page} mode={page} go={setPage} dark={dark} setDark={setDark}/>;
     if(page==='moduler')return <ModulerWorkspace81 dark={dark} setDark={setDark} onHome={()=>setPage('landing')}/>;
-    if(page==='landing')return <LandingPage signIn={()=>setPage('account')} start={()=>setPage(role==='guest'?'account':role==='moduler'?'moduler':'dashboard')} guest={()=>setPage('guest')} openFaith={()=>setPage(role==='guest'?'account':'faith')} openHybrid={()=>setPage(role==='guest'?'account':'hybrid')} openScan={()=>setPage(role==='guest'?'account':'scan')}/>;
+    if(page==='landing')return <LandingPage dark={dark} setDark={setDark} signIn={()=>setPage('account')} start={()=>setPage(role==='guest'?'account':role==='moduler'?'moduler':'dashboard')} guest={()=>setPage('guest')} openFaith={()=>setPage(role==='guest'?'account':'faith')} openHybrid={()=>setPage(role==='guest'?'account':'hybrid')} openScan={()=>setPage(role==='guest'?'account':'scan')}/>;
     if(page==='guest')return <GuestPreview82 onHome={()=>setPage('landing')} onLogin={()=>setPage('account')} onRegister={()=>setPage('register')} dark={dark} setDark={setDark}/>;
     if(page==='mission')return <ResearchMissionV67 onGo={setPage} onSaveNote={addNote}/>;
     if(page==='dashboard')return <DashboardRealV65 onGo={setPage}/>;
@@ -1572,12 +1523,21 @@ function WorkspaceApp() {
     if(page==='notes')return <SimplePage type="notes" setPage={setPage} notes={notes} deleteNote={deleteNote} notify={notify}/>;
     return <Dashboard setPage={setPage}/>;
   })();
-  if(page==='landing'||page==='guest'||isAuthRoute(page)||page==='moduler')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
-  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion} data-elk-ui-v84={role==='user'?'ready':undefined} data-elk-ai-v83={role==='user'?'learner':undefined} data-elk-ai-session={session83}>
-    <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
-    <div className="app-shell">{(page==='reader'||page==='scan')&&<div className="v82-special-nav"><button type="button" className="v83-menu-trigger secondary-button" onClick={()=>setMenu83(true)} aria-label={language==='en'?'All features':'Semua fitur'}><Menu size={18}/>Menu</button><button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/>{language==="id"?"Beranda":"Homepage"}</button><SessionExit go={()=>setPage('landing')}/></div>}{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
-    {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage} showMenu={()=>setMenu83(true)}/>}
-    <MobileFeatureMenu83 page={page} setPage={setPage} open={menu83} close={()=>setMenu83(false)}/>
+  if(page==='landing'||page==='guest'||isAuthRoute(page))return <div className={dark?'app dark':'app'} data-elk-ui-v85="public" data-elk-page={page} data-reduce-motion={reducedMotion}>{content}</div>;
+  if(page==='moduler')return <div className={dark?'app dark':'app'} data-elk-page={page} data-reduce-motion={reducedMotion}>{content}</div>;
+  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion} data-elk-page={page} data-elk-ui-v85={role==='user'?'ready':undefined} data-elk-ui-v84={role==='user'?'ready':undefined} data-elk-ai-v83={role==='user'?'learner':undefined} data-elk-ai-session={session83}>
+    <Sidebar page={page} setPage={setPage} mobile={mobile} open={menu85} close={()=>setMenu85(false)}/>
+    <div className="app-shell">
+      {(page==='reader'||page==='scan')?<div className="v82-special-nav v85-special-nav">
+        {mobile&&<DrawerToggle85 open={menu85} showMenu={()=>setMenu85(true)}/>}
+        <strong>{t(page==='reader'?"Book Reader":"Scan")}</strong>
+        <LanguageSwitch/>
+        <button type="button" className="icon-button" data-elk-theme-toggle onClick={()=>setDark(!dark)} aria-label={t("Toggle theme")}>{dark?<Sun size={19}/>:<Moon size={19}/>}</button>
+        {!mobile&&<button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={t("Back to homepage")}><Home size={17}/>{t("Homepage")}</button>}
+        {!mobile&&<SessionExit go={()=>setPage('landing')}/>}
+      </div>:<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline} mobile={mobile} menuOpen={menu85} showMenu={()=>setMenu85(true)}/>}
+      <div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div>
+    </div>
     {toast&&<div className="toast" role="status"><Check size={17}/><span>{t(toast)}</span><button onClick={()=>setToast('')} aria-label={t("Dismiss notification")}><X size={15}/></button></div>}
   </div>;
 }

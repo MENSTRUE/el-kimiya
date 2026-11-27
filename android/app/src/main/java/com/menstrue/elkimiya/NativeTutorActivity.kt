@@ -94,7 +94,7 @@ class NativeTutorActivity : ComponentActivity() {
             val dark = resolveDark(this@NativeTutorActivity, themeMode)
             val palette = elKimiyaPalette(dark)
             val scheme = if (dark) darkColorScheme(
-                primary = Color(0xFFB5D7E2), onPrimary = Color(0xFF0C1E30),
+                primary = Color(0xFFA8D4DF), onPrimary = Color(0xFF122434),
                 background = palette.canvas, surface = palette.surface,
                 onSurface = palette.title, onBackground = palette.title
             ) else lightColorScheme(

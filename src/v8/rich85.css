@@ -1,0 +1,83 @@
+/* In answer content only; inherit the active learner theme and never widen the app shell. */
+.answer-section .rich-answer85 {
+  min-inline-size:0; max-inline-size:100%; color:inherit;
+  font-size:clamp(.875rem, .82rem + .25vw, 1rem); line-height:1.75;
+  overflow-wrap:anywhere; word-break:normal;
+}
+.rich-answer85 > :first-child { margin-block-start:0 !important; }
+.rich-answer85 > :last-child { margin-block-end:0 !important; }
+.answer-section .rich-answer85 p,
+.answer-section .rich-answer85 li,
+.answer-section .rich-answer85 th,
+.answer-section .rich-answer85 td {
+  font-size:inherit; line-height:inherit; color:inherit; white-space:pre-wrap;
+}
+.rich-answer85 p { margin:.45em 0 .85em; }
+.answer-section .rich-answer85 .rich85-heading {
+  font-family:inherit; color:inherit; font-weight:750; letter-spacing:normal;
+  text-transform:none; line-height:1.35; font-size:1.12em; margin:1.15em 0 .45em;
+}
+.answer-section .rich-answer85 .rich85-heading[data-level="1"] { font-size:1.3em; }
+.answer-section .rich-answer85 .rich85-heading[data-level="2"] { font-size:1.19em; }
+.rich-answer85 strong { font-weight:750; color:inherit; }
+.rich-answer85 em { font-style:italic; }
+.rich-answer85 ul, .rich-answer85 ol {
+  padding-inline-start:1.45em; margin:.35em 0 .85em; list-style-position:outside;
+}
+.rich-answer85 ul { list-style-type:disc; }
+.rich-answer85 ol { list-style-type:decimal; }
+.rich-answer85 li { margin:.24em 0; display:list-item; }
+.rich-answer85 li > p { margin:.13em 0; }
+.rich-answer85 li > ul, .rich-answer85 li > ol { margin:.25em 0; }
+.rich-answer85 hr { border:0; border-block-start:1px solid color-mix(in srgb, currentColor 26%, transparent); margin:1em 0; }
+.rich-answer85 blockquote {
+  margin:.8em 0; border-inline-start:3px solid color-mix(in srgb,currentColor 38%, transparent);
+  padding-inline-start:.9em;
+}
+.rich-answer85 code {
+  color:inherit; font: .92em/1.55 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  background:color-mix(in srgb,currentColor 8%,transparent); border-radius:.25em;
+  padding:.12em .28em; overflow-wrap:anywhere; white-space:pre-wrap;
+}
+.rich-answer85 .rich85-codeblock {
+  margin:.8em 0; border:1px solid color-mix(in srgb,currentColor 25%,transparent);
+  border-radius:8px; background:color-mix(in srgb,currentColor 5%,transparent);
+  max-inline-size:100%; min-inline-size:0;
+}
+.rich85-code-label { padding:.45em .8em; border-block-end:1px solid color-mix(in srgb,currentColor 18%,transparent); font-size:.8em; }
+.rich-answer85 pre {
+  overflow-x:auto; max-inline-size:100%; margin:0; padding:.8em;
+  line-height:1.5; white-space:pre; scrollbar-width:thin;
+}
+.rich-answer85 pre code { padding:0; background:none; white-space:pre; overflow-wrap:normal; }
+.rich85-table-scroll, .rich85-display-math { max-inline-size:100%; min-inline-size:0; overflow-x:auto; margin:.8em 0; scrollbar-width:thin; }
+.rich-answer85 table { width:100%; border-collapse:collapse; margin:0; font-size:.95em; }
+.rich-answer85 th, .rich-answer85 td {
+  border:1px solid color-mix(in srgb,currentColor 28%,transparent);
+  padding:.55em .7em; vertical-align:top; min-inline-size:4.25em;
+}
+.rich-answer85 th { font-weight:750; background:color-mix(in srgb,currentColor 8%,transparent); }
+/* KaTeX fonts are bundled from the package, with no remote font requests. */
+.rich-answer85 .katex { font-size:1.04em; color:inherit; }
+.rich-answer85 .katex-display {
+  max-inline-size:100%; min-inline-size:0; overflow-x:auto; overflow-y:hidden;
+  margin:.8em 0; padding:.55em .45em; scrollbar-width:thin;
+  background:color-mix(in srgb,currentColor 5%,transparent); border-radius:.45em;
+}
+.rich-answer85 .katex-display > .katex { display:inline-block; min-inline-size:max-content; }
+.rich-answer85 :not(.katex-display) > .katex {
+  display:inline-block; max-inline-size:100%; overflow-x:auto; overflow-y:hidden;
+  vertical-align:middle; padding:.16em 0; scrollbar-width:thin;
+}
+.rich-answer85 .katex, .rich-answer85 .katex * { overflow-wrap:normal; word-break:normal; }
+.rich-answer85 .katex-error, .rich-answer85 .rich85-plain {
+  color:inherit !important; white-space:pre-wrap; overflow-wrap:anywhere;
+}
+.rich-answer85 .rich85-inert-link { text-decoration:underline; text-underline-offset:.15em; }
+.rich-answer85 .rich85-inert-image { font-style:italic; }
+.rich-answer85 .rich85-plain { min-inline-size:0; max-inline-size:100%; }
+@media (max-width:480px) {
+  .answer-section .rich-answer85 { font-size:.9rem; line-height:1.7; }
+  .rich-answer85 th, .rich-answer85 td { padding:.4em .5em; }
+  .rich-answer85 ul, .rich-answer85 ol { padding-inline-start:1.25em; }
+}

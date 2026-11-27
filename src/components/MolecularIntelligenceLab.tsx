@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Atom, ArrowRight, BrainCircuit, BookOpen, CheckCircle2, ChevronDown, ExternalLink, FlaskConical, LoaderCircle, Search, ShieldCheck, Sparkles, TriangleAlert, X } from 'lucide-react';
 import { compoundImage, compoundLink, findCompound, makeResearchPrompt, type Compound, type ComparisonMode } from '../lib/pubchem';
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
-import { useLanguage } from '../lib/language';
+import { useLanguage, t } from '../lib/language';
+import { RichAnswer85 } from '../v8/RichAnswer85';
 import { MolecularBackendPanel } from './MolecularBackendPanel';
 import { MolecularStudioV60 } from './MolecularStudioV60';
 import { backendAvailableHere } from '../lib/molecularBackend';
@@ -111,12 +112,12 @@ export function MolecularIntelligenceLab() {
     <section className="mi39-card mi39-ai">
       <div className="mi39-section-line"><span>{words.step2}</span><span><Sparkles size={15}/> Firebase</span></div>
       <div className="mi39-ai-options"><div><label>{words.mode}</label><div className="mi39-pills"><button className={mode==='explain'?'selected':''} onClick={()=>setMode('explain')}>{words.explain}</button><button className={mode==='compare'?'selected':''} onClick={()=>setMode('compare')}>{words.compare}</button><button className={mode==='quiz'?'selected':''} onClick={()=>setMode('quiz')}>{words.quiz}</button></div></div>
-        <label className="mi39-pref">{words.aiRoute}<span><select value={preference} onChange={e=>setPreference(e.target.value as InferencePreference)}>{choices.map(x=><option value={x} key={x}>{x}</option>)}</select><ChevronDown size={16}/></span></label>
+        <label className="mi39-pref">{words.aiRoute}<span><select value={preference} onChange={e=>setPreference(e.target.value as InferencePreference)}>{choices.map(x=><option value={x} key={x}>{t(x)}</option>)}</select><ChevronDown size={16}/></span></label>
       </div>
       <button className="mi39-button primary mi39-ai-run" onClick={()=>void launchAI()} disabled={!compounds.length||aiBusy||!firebaseConfigured}>{aiBusy?<LoaderCircle size={17} className="mi39-spin"/>:<BrainCircuit size={17}/>} {aiBusy?words.aiWorking:words.ask}<ArrowRight size={17}/></button>
       {!firebaseConfigured&&<p className="mi39-alert"><TriangleAlert size={16}/>{words.unavailable}</p>}
       {aiError&&<p className="mi39-alert" role="alert"><TriangleAlert size={16}/>{aiError}</p>}
-      {answer&&<article className="mi39-answer"><div><CheckCircle2 size={18}/><strong>{words.status}: {answer.provider}</strong><small>{answer.model}</small></div><pre>{answer.text}</pre><p>{words.caveat}</p></article>}
+      {answer&&<article className="mi39-answer"><div><CheckCircle2 size={18}/><strong>{words.status}: {answer.provider}</strong><small>{answer.model}</small></div><RichAnswer85 text={answer.text}/><p>{words.caveat}</p></article>}
     </section>
     <footer className="mi39-footer"><ShieldCheck size={19}/><div><strong>{words.noRisk}</strong><p>{words.caveat}</p><a href="https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest" target="_blank" rel="noopener noreferrer"><BookOpen size={15}/> {words.link}</a></div></footer>
   </main>;

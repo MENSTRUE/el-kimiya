@@ -3,12 +3,11 @@ const root=process.argv[2]||process.cwd(), read=p=>fs.readFileSync(path.join(roo
 const app=read('src/App.tsx'), routes=read('src/v8/routes81.ts'), kotlin=read('android/app/src/main/java/com/menstrue/elkimiya/NativeAiBridge83.kt'), main=read('android/app/src/main/java/com/menstrue/elkimiya/MainActivity.kt'), hybrid=read('src/lib/hybrid.ts');
 const expected=[...routes.match(/const learnerRoutes = new Set\(\[(.*?)\]\)/)[1].matchAll(/'([^']+)'/g)].map(x=>x[1]).sort();
 const desktop=app.slice(app.indexOf('const navItems:'),app.indexOf('const books ='));
-const menu=app.slice(app.indexOf('const items: typeof navItems ='),app.indexOf('const navigate=(id:Page)'));
-const actual=[...desktop.matchAll(/id: "([^"]+)"/g),...menu.matchAll(/id:"([^"]+)"/g)].map(x=>x[1]).sort();
+const actual=[...desktop.matchAll(/id: "([^"]+)"/g)].map(x=>x[1]).sort();
 assert.deepEqual(actual,expected);
 const native=[...kotlin.match(/private val routes = setOf\((.*?)\)/)[1].matchAll(/"([^"]+)"/g)].map(x=>x[1]).sort();assert.deepEqual(native,expected);
 assert(app.includes("data-elk-ai-v83={role==='user'?'learner':undefined}"));
-assert(app.includes("showMenu={()=>setMenu83(true)}")&&app.includes("v83-menu-trigger"));
+assert(app.includes("data-elk-route={item.id}")&&app.includes("data-elk-drawer-toggle")&&!app.includes("MobileBottomNav"));
 assert(!app.includes('<button className="mobile-tutor-fab"'));
 assert(app.includes("message.error?(en?'Failed':'Gagal')"));
 assert(hybrid.indexOf('if (isAndroid83()) return runNativeAi83')<hybrid.indexOf('const ai = getAI('));

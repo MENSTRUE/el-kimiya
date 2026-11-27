@@ -44,19 +44,19 @@ data class ElKimiyaPalette(
 )
 
 fun elKimiyaPalette(dark: Boolean) = if (dark) ElKimiyaPalette(
-    canvas = Color(0xFF0C1E30), surface = Color(0xFF132E43), surfaceAlt = Color(0xFF1C3C52),
-    primary = Color(0xFFB5D7E2), title = Color(0xFFF3F5F1), secondary = Color(0xFFC0D2DC),
-    border = Color(0xFF385364), accent = Color(0xFFF2E4C9)
+    canvas = Color(0xFF122434), surface = Color(0xFF1B3445), surfaceAlt = Color(0xFF28495B),
+    primary = Color(0xFFA8D4DF), title = Color(0xFFEDF5F7), secondary = Color(0xFFC2D6DF),
+    border = Color(0xFF587583), accent = Color(0xFFF2E4C9)
 ) else ElKimiyaPalette(
-    canvas = Color(0xFFF8F7F2), surface = Color.White, surfaceAlt = Color(0xFFEAF0EF),
-    primary = Color(0xFF133B55), title = Color(0xFF112F46), secondary = Color(0xFF5B7380),
-    border = Color(0xFFD8E2E5), accent = Color(0xFF234D69)
+    canvas = Color(0xFFF7F7F2), surface = Color(0xFFFFFEFA), surfaceAlt = Color(0xFFEDF2EF),
+    primary = Color(0xFF204F63), title = Color(0xFF16384B), secondary = Color(0xFF506977),
+    border = Color(0xFFCBD9D8), accent = Color(0xFF234D69)
 )
 
 @Suppress("DEPRECATION")
 fun Activity.applyElKimiyaSystemBars(dark: Boolean) {
     // Android 15 may draw system bars edge-to-edge. safeDrawing is applied in Compose.
-    val color = if (dark) AndroidColor.rgb(12, 30, 48) else AndroidColor.rgb(248, 247, 242)
+    val color = if (dark) AndroidColor.rgb(18, 36, 52) else AndroidColor.rgb(247, 247, 242)
     window.decorView.setBackgroundColor(color)
     window.statusBarColor = color
     window.navigationBarColor = color

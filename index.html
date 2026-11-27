@@ -1,15 +1,63 @@
 <!doctype html>
-<html lang="<!-- figma:lang -->">
+<html lang="<!-- figma:lang -->" data-elk-release="8.5">
   <head>
     <!-- figma:head-start -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><!-- figma:title --></title>
+    <script>
+      // First paint: apply the stored theme before loading any application CSS.
+      (function () {
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var lang = 'id';
+        try {
+          var saved = localStorage.getItem('elk.dark');
+          if (saved === 'true' || saved === 'false') dark = saved === 'true';
+          if (localStorage.getItem('elk.language') === 'en') lang = 'en';
+        } catch (_) {}
+        document.documentElement.dataset.elkTheme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.elkBootLang = lang;
+        document.documentElement.lang = lang;
+      })();
+    </script>
+    <style>
+      html{--elk-boot-canvas:#f7f7f2;--elk-boot-ink:#16384b;--elk-boot-muted:#506977;--elk-boot-spinner:#204f63;color-scheme:light;background:var(--elk-boot-canvas);min-height:100%}
+      html[data-elk-theme=dark]{--elk-boot-canvas:#122434;--elk-boot-ink:#edf5f7;--elk-boot-muted:#c2d6df;--elk-boot-spinner:#a8d4df;color-scheme:dark}
+      html body{margin:0;background:var(--elk-boot-canvas);min-height:100vh;min-height:100dvh}
+      #root{min-height:100vh;min-height:100dvh;background:var(--elk-boot-canvas)}
+      #elk-boot85{box-sizing:border-box;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px;background:var(--elk-boot-canvas);color:var(--elk-boot-ink);font:400 16px/1.5 system-ui,sans-serif;text-align:center}
+      .elk-boot85-inner{display:flex;flex-direction:column;align-items:center;gap:15px;max-width:360px}
+      #elk-boot85 img{display:block;width:94px;height:94px;object-fit:contain}
+      #elk-boot85 strong{font-size:30px;line-height:1.2}
+      #elk-boot85 p{margin:0;color:var(--elk-boot-muted)}
+      #elk-boot85 .elk-boot85-en,#elk-boot85 .elk-boot85-white{display:none}
+      html[data-elk-boot-lang=en] #elk-boot85 .elk-boot85-id{display:none}
+      html[data-elk-boot-lang=en] #elk-boot85 .elk-boot85-en{display:block}
+      html[data-elk-theme=dark] #elk-boot85 .elk-boot85-navy{display:none}
+      html[data-elk-theme=dark] #elk-boot85 .elk-boot85-white{display:block}
+      .elk-boot85-spinner{margin-top:12px;width:30px;height:30px;border:3px solid color-mix(in srgb,var(--elk-boot-spinner) 25%,transparent);border-top-color:var(--elk-boot-spinner);border-radius:50%;animation:elk-boot85-spin .9s linear infinite}
+      @keyframes elk-boot85-spin{to{transform:rotate(360deg)}}
+      @media(prefers-reduced-motion:reduce){.elk-boot85-spinner{animation:none}}
+    </style>
     <!-- figma:head-end -->
   </head>
   <body>
     <!-- figma:body-start -->
-    <div id="root"></div>
+    <div id="root">
+      <main id="elk-boot85" role="status" aria-live="polite" aria-busy="true">
+        <div class="elk-boot85-inner">
+          <img class="elk-boot85-navy" src="/brand/el-kimiya-approved-logo.svg" alt="" />
+          <img class="elk-boot85-white" src="/brand/el-kimiya-approved-logo-white.svg" alt="" />
+          <strong>El-Kīmiyā</strong>
+          <p class="elk-boot85-id">Pahami kimia. Di mana saja.</p>
+          <p class="elk-boot85-en">Understand chemistry. Anywhere.</p>
+          <span class="elk-boot85-spinner" aria-hidden="true"></span>
+          <p class="elk-boot85-id">Menyiapkan ruang belajar…</p>
+          <p class="elk-boot85-en">Preparing your learning space…</p>
+        </div>
+      </main>
+    </div>
+    <noscript>El-Kīmiyā requires JavaScript / El-Kīmiyā memerlukan JavaScript.</noscript>
     <script type="module" src="/src/main.tsx"></script>
     <!-- figma:body-end -->
   </body>

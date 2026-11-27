@@ -1,7 +1,8 @@
 import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useEffect, useMemo, useState } from 'react';
 import { Atom, Beaker, BrainCircuit, Download, Droplets, FlaskConical, Info, LoaderCircle, RotateCcw, ShieldCheck, Target, TrendingUp } from 'lucide-react';
-import { useLanguage } from '../lib/language';
+import { useLanguage, t } from '../lib/language';
+import { RichAnswer85 } from '../v8/RichAnswer85';
 import { ExperimentGlassV66 } from './ExperimentGlassV66'; // ELKIMIYA_V66_LIQUID_FIXED
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
 import { evaluateTitration, summarizeRuns, SYNTHETIC_SCENARIOS, validateScenario, type SyntheticScenario } from '../lib/petroExperimentV62';
@@ -149,12 +150,12 @@ export function PetrochemicalExperimentLabV62() {
           <p className="petro62-small">{tx('AI hanya menjelaskan perhitungan dan ketidakpastian; bukan mengesahkan hasil percobaan industri.',
             'AI explains the calculation and its uncertainty; it cannot validate a physical industrial experiment.')}</p>
           <select aria-label={tx('Pilih rute inferensi','Select inference route')} value={aiPreference} onChange={e => setAiPreference(e.target.value as InferencePreference)}>
-            <option value="Prefer on-device">Prefer on-device</option><option value="On-device only">On-device only</option><option value="Prefer cloud">Prefer cloud</option><option value="Cloud only">Cloud only</option>
+            {(["Prefer on-device","On-device only","Prefer cloud","Cloud only"] as const).map(mode=><option value={mode} key={mode}>{t(mode)}</option>)}
           </select>
           <button type="button" onClick={() => void askAi()} disabled={!result || !firebaseConfigured || aiBusy} className="petro62-ask">{aiBusy ? <LoaderCircle size={16} className="petro62-spinner"/> : <BrainCircuit size={16}/>} {tx('Jelaskan hasil percobaan', 'Explain this experiment')}</button>
           {!firebaseConfigured && <p className="petro62-warning">{tx('Firebase belum dikonfigurasi di browser ini. Simulasi matematika tetap berfungsi.','Firebase is not configured. The math sandbox still works.')}</p>}
           {aiError && <p role="alert" className="petro62-warning">{aiError}</p>}
-          {aiOutput && <div className="petro62-answer"><strong>Firebase AI Logic · {aiOutput.provider}</strong><p>{aiOutput.text}</p></div>}
+          {aiOutput && <div className="petro62-answer"><strong>Firebase AI Logic · {aiOutput.provider}</strong><RichAnswer85 text={aiOutput.text}/></div>}
         </div>
       </div>
     </div>}

@@ -94,11 +94,13 @@ import org.json.JSONObject
 import java.util.Locale
 
 private const val WEB_ROOT = "https://el-kimiya.vercel.app/"
+private const val WEB_RELEASE_85 = "8.5"
+private const val MAX_PAINT_WAIT_85 = 30000L
 private const val WEB_HOST = "el-kimiya.vercel.app"
 private const val WEB_ORIGIN = "https://el-kimiya.vercel.app"
 private const val MAX_BLOB_BYTES = 2 * 1024 * 1024
 private val AppNavy = Color(0xFF103954)
-private val AppCanvas = Color(0xFFF8F7F2)
+private val AppCanvas = Color(0xFFF7F7F2)
 
 /** No addJavascriptInterface: AndroidX WebMessage listener is HTTPS-origin scoped. */
 class MainActivity : ComponentActivity() {
@@ -114,8 +116,12 @@ class MainActivity : ComponentActivity() {
     private var cameraRequest: PermissionRequest? = null
     private var reportBytes: ByteArray? = null
     private var reportFilename: String = "ElKimiya_Report.json"
-    // ELKIMIYA_V84_NATIVE_SPLASH: full window canvas until first document completes.
+    // ELKIMIYA_V85_NATIVE_SPLASH: full canvas until the current web document has painted.
     private var firstDocument84 by mutableStateOf(true)
+    private var document85 = 0L
+    private var paintWaitEpoch85 = -1L
+    private var staleWeb85 by mutableStateOf(false)
+    private var backInFlight85 = false
     private var busy by mutableStateOf(true)
     private var errorLoading by mutableStateOf(false)
     private var themeMode by mutableStateOf(ThemeMode.SYSTEM)
@@ -150,8 +156,8 @@ class MainActivity : ComponentActivity() {
             try {
                 contentResolver.openOutputStream(uri)?.use { it.write(bytes) }
                     ?: error("Tidak dapat membuka tujuan penyimpanan")
-                toast("Laporan tersimpan")
-            } catch (e: Exception) { toast("Gagal menyimpan: ${e.localizedMessage}") }
+                toast(tr85("Laporan tersimpan","Report saved"))
+            } catch (e: Exception) { toast(tr85("Gagal menyimpan laporan","Could not save the report")) }
         }
     }
 
@@ -174,23 +180,36 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val view = browser
-                if (view?.canGoBack() == true) view.goBack() else finish()
+                if (backInFlight85 || isFinishing || isDestroyed) return
+                if (view == null || !originAllowed(Uri.parse(view.url ?: ""))) {
+                    if (view?.canGoBack() == true) view.goBack() else finish()
+                    return
+                }
+                backInFlight85 = true
+                val script = """(() => {const close = document.querySelector('[data-elk-drawer-open="true"] [data-elk-drawer-close]');if(!close)return false;close.click();return true;})()"""
+                view.evaluateJavascript(script) { result ->
+                    backInFlight85 = false
+                    if (browser !== view || isFinishing || isDestroyed) return@evaluateJavascript
+                    if (result != "true") {
+                        if (view.canGoBack()) view.goBack() else finish()
+                    }
+                }
             }
         })
         setContent {
             val dark = resolveDark(this@MainActivity, themeMode)
             val palette = elKimiyaPalette(dark)
             val colors = if (dark) darkColorScheme(
-                primary = palette.primary, background = palette.canvas, surface = palette.surface,
+                primary = palette.primary, onPrimary = palette.canvas, background = palette.canvas, surface = palette.surface,
                 onSurface = palette.title, onBackground = palette.title
-            ) else lightColorScheme(primary = palette.primary, background = palette.canvas, surface = palette.surface)
+            ) else lightColorScheme(primary = palette.primary, onPrimary = Color.White, background = palette.canvas, surface = palette.surface, onBackground = palette.title, onSurface = palette.title)
             SideEffect { applyElKimiyaSystemBars(dark) }
             MaterialTheme(colorScheme = colors) {
                 Box(
                     modifier = Modifier.fillMaxSize().background(palette.canvas)
                         .windowInsetsPadding(WindowInsets.safeDrawing)
                 ) {
-                    // The React website already has its own header and 5-tab mobile nav.
+                    // React owns the app header and responsive navigation drawer.
                     // Do NOT draw another native toolbar above that header.
                     AndroidView(factory = { newBrowser() }, modifier = Modifier.fillMaxSize())
 
@@ -227,9 +246,18 @@ class MainActivity : ComponentActivity() {
                                 contentDescription = "Logo El-Kīmiyā",
                                 modifier = Modifier.size(56.dp)
                             )
-                            Text(if (languageMode == "en") "Connection to El-Kīmiyā interrupted" else "Koneksi ke El-Kīmiyā terputus", fontWeight = FontWeight.Bold, color = palette.title)
-                            Text(if (languageMode == "en") "Web content requires a connection. Retry or open in Chrome." else "Materi web memerlukan koneksi. Coba ulang atau buka di Chrome.")
-                            Button(onClick = { errorLoading = false; browser?.loadUrl(WEB_ROOT) }) {
+                            Text(
+                                if (staleWeb85) tr85("Pembaruan web belum tersedia", "Web update not yet available")
+                                else tr85("Koneksi ke El-Kīmiyā terputus", "Connection to El-Kīmiyā interrupted"),
+                                fontWeight = FontWeight.Bold, color = palette.title,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                            Text(
+                                if (staleWeb85) tr85("Versi web V8.5 belum diterima. Tunggu deployment Vercel, lalu coba lagi.", "Web release V8.5 has not arrived. Wait for the Vercel deployment, then retry.")
+                                else tr85("Periksa koneksi dan coba lagi. Materi serta akun tetap tersimpan.", "Check the connection and retry. Your learning data and account remain saved."),
+                                color = palette.secondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                            Button(onClick = { errorLoading = false; staleWeb85 = false; reloadLatestWeb() }) {
                                 Text(if (languageMode == "en") "Retry" else "Coba lagi")
                             }
                             OutlinedButton(onClick = { openExternally(Uri.parse(WEB_ROOT)) }) {
@@ -278,15 +306,15 @@ class MainActivity : ComponentActivity() {
         val view = browser ?: return
         val uri = Uri.parse(view.url ?: WEB_ROOT)
         if (!originAllowed(uri)) {
-            toast("Muat ulang hanya tersedia pada halaman El-Kīmiyā")
+            toast(tr85("Muat ulang hanya tersedia pada halaman El-Kīmiyā","Reload is only available on El-Kīmiyā"))
             return
         }
         val fragment = uri.encodedFragment?.let { "#$it" } ?: ""
         val nonce = System.currentTimeMillis()
         view.stopLoading()
         view.clearCache(true) // HTTP cache only; no cookies, WebStorage or offline notes are erased.
-        view.loadUrl("${WEB_ROOT}?elk_android=v32&refresh=$nonce$fragment")
-        toast("Mengambil website terbaru; tunggu sampai Vercel Ready")
+        view.loadUrl("${WEB_ROOT}?elk_release=$WEB_RELEASE_85&refresh=$nonce$fragment")
+        toast(tr85("Mengambil website terbaru…","Fetching the latest website…"))
     }
 
     private fun installThemeStartScript(view: WebView) {
@@ -309,7 +337,7 @@ class MainActivity : ComponentActivity() {
         browser?.loadUrl(url)
     }
 
-    private fun originAllowed(uri: Uri?): Boolean = uri != null &&
+    private fun originAllowed(uri: Uri?): Boolean = uri != null && uri.userInfo == null &&
         uri.scheme.equals("https", ignoreCase = true) && uri.host.equals(WEB_HOST, ignoreCase = true) &&
         (uri.port == -1 || uri.port == 443)
 
@@ -317,9 +345,9 @@ class MainActivity : ComponentActivity() {
     private fun newBrowser(): WebView = WebView(this).apply {
         browser = this
         setBackgroundColor(if (resolveDark(this@MainActivity, themeMode))
-            android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.rgb(248, 247, 242))
+            android.graphics.Color.rgb(18, 36, 52) else android.graphics.Color.rgb(247, 247, 242))
         settings.javaScriptEnabled = true
-        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3 ElKimiyaRelease/8.4"
+        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3 ElKimiyaRelease/8.5"
         nativeAI83?.invalidate()
         nativeAI83 = NativeAiBridge83(this@MainActivity, this).also { it.install() }
         // React provides its own dark design; never invert its colors algorithmically.
@@ -367,15 +395,29 @@ class MainActivity : ComponentActivity() {
                 pageEpoch++
                 openingNative = false
                 NativeTutorAccess.revoke()
+                document85++
+                paintWaitEpoch85 = -1L
+                firstDocument84 = true
+                staleWeb85 = false
                 busy = true
                 errorLoading = false
+                val epoch85 = document85
+                // Network hangs must end in a genuine retry state, not an infinite splash.
+                view.postDelayed({
+                    if (currentDocument85(view, epoch85) && busy) {
+                        busy = false
+                        errorLoading = true
+                    }
+                }, MAX_PAINT_WAIT_85)
             }
             override fun onPageFinished(view: WebView, url: String?) {
-                firstDocument84 = false
-                busy = false
-                if (originAllowed(Uri.parse(url ?: ""))) {
+                super.onPageFinished(view, url)
+                if (originAllowed(Uri.parse(url ?: "")) && currentDocument85(view, document85) && busy) {
                     injectDownloadSupport(view)
-                    // V8.2: the website owns its stored appearance; do not force a reload.
+                    if (paintWaitEpoch85 != document85) {
+                        paintWaitEpoch85 = document85
+                        waitForWebPaint85(view, document85)
+                    }
                 }
             }
             override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
@@ -431,7 +473,7 @@ class MainActivity : ComponentActivity() {
                     chooseFile.launch(intent)
                 } catch (e: ActivityNotFoundException) {
                     pickerCallback?.onReceiveValue(null); pickerCallback = null
-                    toast("Pemilih file tidak tersedia")
+                    toast(tr85("Pemilih file tidak tersedia","File picker unavailable"))
                 }
                 return true
             }
@@ -450,7 +492,7 @@ class MainActivity : ComponentActivity() {
         }
         setDownloadListener(DownloadListener { url, _, contentDisposition, mimeType, _ ->
             val uri = Uri.parse(url)
-            if (!originAllowed(uri)) { toast("Unduhan eksternal dibuka di Chrome"); openExternally(uri); return@DownloadListener }
+            if (!originAllowed(uri)) { toast(tr85("Unduhan eksternal dibuka di Chrome","External download opens in Chrome")); openExternally(uri); return@DownloadListener }
             val filename = safeFilename(URLUtil.guessFileName(url, contentDisposition, mimeType))
             try {
                 val request = DownloadManager.Request(uri).apply {
@@ -460,11 +502,51 @@ class MainActivity : ComponentActivity() {
                     setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
                 }
                 (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-                toast("Mengunduh $filename")
+                toast(tr85("Mengunduh $filename","Downloading $filename"))
             } catch (e: Exception) { openExternally(uri) }
         })
-        loadUrl(WEB_ROOT)
+        loadUrl("${WEB_ROOT}?elk_release=$WEB_RELEASE_85")
     }
+
+    // Fullscreen Compose splash is removed only after React has committed visible content.
+    // The HTML boot view and the session boundary use the same theme/canvas, so a
+    // legitimate pending account check never reveals a white WebView underneath.
+    private fun currentDocument85(view: WebView, epoch85: Long): Boolean =
+        browser === view && document85 == epoch85 && !isFinishing && !isDestroyed &&
+            originAllowed(Uri.parse(view.url ?: ""))
+
+    private fun waitForWebPaint85(view: WebView, epoch85: Long) {
+        if (!currentDocument85(view, epoch85) || !busy || errorLoading) return
+        val script = """
+            (() => {
+              if(document.documentElement.getAttribute('data-elk-release') !== '$WEB_RELEASE_85') return 'stale';
+              const root=document.getElementById('root');
+              const child=root && root.firstElementChild;
+              return child && child.id !== 'elk-boot85' && child.getBoundingClientRect().height > 0 ? 'ready' : 'pending';
+            })()
+        """.trimIndent()
+        view.evaluateJavascript(script) { state ->
+            if (!currentDocument85(view, epoch85) || !busy || errorLoading) return@evaluateJavascript
+            when (state) {
+                "\"ready\"" -> view.postVisualStateCallback(epoch85, object : WebView.VisualStateCallback() {
+                    override fun onComplete(requestId: Long) {
+                        if (currentDocument85(view, epoch85) && busy && !errorLoading && requestId == epoch85) {
+                            firstDocument84 = false
+                            busy = false
+                        }
+                    }
+                })
+                "\"stale\"" -> {
+                    staleWeb85 = true
+                    busy = false
+                    errorLoading = true
+                }
+                else -> view.postDelayed({ waitForWebPaint85(view, epoch85) }, 200L)
+            }
+        }
+    }
+
+    private fun tr85(id: String, en: String): String = if (languageMode == "en") en else id
 
     private fun safeFilename(value: String): String = value
         .replace(Regex("[^A-Za-z0-9._-]"), "_")
@@ -491,7 +573,7 @@ class MainActivity : ComponentActivity() {
                     }
                     if (packet.has("dark") && !packet.isNull("dark")) {
                         val dark = packet.optBoolean("dark")
-                        browser?.setBackgroundColor(if (dark) android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.rgb(248, 247, 242))
+                        browser?.setBackgroundColor(if (dark) android.graphics.Color.rgb(18, 36, 52) else android.graphics.Color.rgb(247, 247, 242))
                         if (dark != resolveDark(this, themeMode)) {
                             themeMode = if (dark) ThemeMode.DARK else ThemeMode.LIGHT
                             ElKimiyaPrefs.saveTheme(this, themeMode)
@@ -500,7 +582,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 "theme" -> {
-                    val chosen = if (packet.optBoolean("dark")) ThemeMode.DARK else ThemeMode.LIGHT
+                    val isDark = packet.optBoolean("dark")
+                    browser?.setBackgroundColor(if (isDark) android.graphics.Color.rgb(18, 36, 52) else android.graphics.Color.rgb(247, 247, 242))
+                    val chosen = if (isDark) ThemeMode.DARK else ThemeMode.LIGHT
                     if (themeMode != chosen) {
                         themeMode = chosen
                         ElKimiyaPrefs.saveTheme(this, chosen)
@@ -518,13 +602,13 @@ class MainActivity : ComponentActivity() {
                     val encoded = data.substring(pos + 8)
                     if (encoded.length > 2_800_000) return@withCurrentWorkspace
                     val bytes = Base64.decode(encoded, Base64.DEFAULT)
-                    if (bytes.size > MAX_BLOB_BYTES) { toast("File terlalu besar untuk ekspor aplikasi"); return@withCurrentWorkspace }
+                    if (bytes.size > MAX_BLOB_BYTES) { toast(tr85("File terlalu besar untuk ekspor aplikasi","File exceeds the app export limit")); return@withCurrentWorkspace }
                     reportFilename = name
                     reportBytes = bytes
                     saveReport.launch(name)
                 }
             }
-        } catch (_: Exception) { toast("Ekspor laporan tidak tersedia") }
+        } catch (_: Exception) { toast(tr85("Ekspor laporan tidak tersedia","Report export unavailable")) }
     }
 
     private fun injectDownloadSupport(view: WebView) {
@@ -583,13 +667,13 @@ class MainActivity : ComponentActivity() {
         try {
             val manager = getSystemService(Context.PRINT_SERVICE) as PrintManager
             manager.print("ElKimiya_Report", view.createPrintDocumentAdapter("ElKimiya"), PrintAttributes.Builder().build())
-        } catch (e: Exception) { toast("Cetak PDF gagal: ${e.localizedMessage}") }
+        } catch (e: Exception) { toast(tr85("Cetak PDF gagal","PDF printing failed")) }
     }
 
     private fun openExternally(uri: Uri) {
         if (uri.scheme != "https" && uri.scheme != "http" && uri.scheme != "mailto") return
         try { startActivity(Intent(Intent.ACTION_VIEW, uri)) }
-        catch (_: Exception) { toast("Tidak ada aplikasi untuk membuka tautan") }
+        catch (_: Exception) { toast(tr85("Tidak ada aplikasi untuk membuka tautan","No application can open the link")) }
     }
 
     private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

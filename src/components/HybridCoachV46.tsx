@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { ArrowRight, BrainCircuit, Check, ChevronDown, Cloud, Copy, Cpu, FlaskConical, Info, LoaderCircle, LockKeyhole, ShieldCheck, Sparkles, WifiOff } from 'lucide-react';
 import { useLanguage } from '../lib/language';
+import { RichAnswer85 } from '../v8/RichAnswer85';
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
 import '../hybrid-coach-v46.css';
 
@@ -173,7 +174,7 @@ export function HybridCoachV46({ lesson }: { lesson: CoachLesson }) {
         {copyStatus && <p className="v46-copy-note"><Check size={15}/>{copyStatus}</p>}
         <div className="v46-receipt-grid">{records.map(record => <article key={`${record.attempt}-${record.requested}`} className={`v46-receipt ${record.error ? 'has-error' : ''}`}>
           <div className="v46-receipt-header"><span className="v46-source-icon">{record.source === 'ON_DEVICE' ? <Cpu size={17}/> : record.source === 'IN_CLOUD' ? <Cloud size={17}/> : <LockKeyhole size={17}/>}</span><div><small>{tx('Mode diminta', 'Requested mode')}: {requestedModeText(record.requested)}</small><strong>{record.source === 'ON_DEVICE' ? tx('Perangkat · SDK', 'On-device · SDK') : record.source === 'IN_CLOUD' ? tx('Cloud · SDK', 'Cloud · SDK') : tx('Inferensi gagal', 'Inference failed')}</strong></div><span className="v46-time">{record.durationMs.toLocaleString()} ms</span></div>
-          {record.error ? <p className="v46-error">{record.error}</p> : <><p className="v46-model">{record.model}</p><p className="v46-answer">{record.reply}</p></>}
+          {record.error ? <p className="v46-error">{record.error}</p> : <><p className="v46-model">{record.model}</p><div className="v46-answer"><RichAnswer85 text={record.reply ?? ""}/></div></>}
         </article>)}</div>
       </div>}
       <p className="v46-ethics"><Info size={16}/>{tx('Umpan balik model bisa salah. Materi ini masih draft edukasi, bukan verifikasi pakar. AI tidak mengubah kelulusan atau membuka bab secara otomatis.', 'Model feedback can be wrong. Lessons are educational drafts, not expert certification. AI never changes a grade or automatically unlocks chapters.')}</p>

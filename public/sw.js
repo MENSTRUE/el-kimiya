@@ -1,9 +1,9 @@
 /* El-Kīmiyā offline app-shell cache. Educational content is local/browser-only.
    This does NOT cache cloud AI or enable Gemini Nano on unsupported browsers. */
-const CACHE_NAME = 'el-kimiya-app-shell-v4';
+const CACHE_NAME = 'el-kimiya-app-shell-v85';
 const CACHEABLE_ORIGINS = new Set([self.location.origin]);
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['/', '/index.html', '/manifest.webmanifest', '/brand/favicon-192.png'])).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['/', '/index.html', '/manifest.webmanifest', '/brand/favicon-192.png'].map(path => new Request(path, {cache:'reload'})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(Promise.all([
@@ -18,7 +18,7 @@ self.addEventListener('fetch', event => {
   if(!CACHEABLE_ORIGINS.has(url.origin)) return;
   if(url.pathname.startsWith('/api/') || url.pathname.includes('firebase')) return;
   if(request.mode === 'navigate') {
-    event.respondWith(fetch(request).then(response => {
+    event.respondWith(fetch(request, {cache:'no-store'}).then(response => {
       if(response.ok) { const copy=response.clone(); void caches.open(CACHE_NAME).then(cache=>cache.put('/index.html',copy)); }
       return response;
     }).catch(async()=> (await caches.match('/index.html')) || Response.error()));

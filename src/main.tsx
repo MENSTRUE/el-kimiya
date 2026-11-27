@@ -16,6 +16,7 @@ import './v8/access81.css'
 import './v8/access82.css'
 import './v8/mobile83.css'
 import './v8/visual84.css'
+import './v8/design85.css'
 
 // ELKIMIYA_V70_SYSTEM_THEME_BOOTSTRAP: on first visit only, respect system theme.
 // Never override a manual Light/Dark choice already stored by React or Android.

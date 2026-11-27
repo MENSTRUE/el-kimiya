@@ -5,7 +5,8 @@ import {
   Download, Droplets, FileDown, FlaskConical, GraduationCap, Info,
   LoaderCircle, NotebookPen, RotateCcw, ShieldCheck, Sparkles, Target, Trophy,
 } from 'lucide-react';
-import { useLanguage } from '../lib/language';
+import { useLanguage, t } from '../lib/language';
+import { RichAnswer85 } from '../v8/RichAnswer85';
 import { firebaseConfigured, runHybridInference, type InferencePreference, type InferenceResult } from '../lib/hybrid';
 import { ExperimentGlassV66 } from './ExperimentGlassV66';
 import {
@@ -121,11 +122,11 @@ export function ResearchMissionV67({onGo, onSaveNote}:{onGo:(page:Destination)=>
         {state.checked&&<p role="status" className={`mission67-feedback ${state.selectedAnswer===QUIZ_CORRECT?'good':'retry'}`}>{state.selectedAnswer===QUIZ_CORRECT?tx('Benar: satu tetes lebih besar menyumbang perubahan numerik lebih besar, sehingga resolusinya lebih kasar.','Correct: a larger drop produces a larger numeric increment, giving coarser resolution.'):tx('Belum tepat. Perhatikan nilai resolusi pada tabel dan coba lagi.','Not quite. Compare the resolution values in the table and try again.')}</p>}
         <label className="mission67-reflection">{tx('Tuliskan interpretasi dan batasan percobaan (minimum 20 karakter)','Write your interpretation and a model limitation (at least 20 characters)')}<textarea value={state.reflection} maxLength={1200} rows={4} onChange={e=>setState(s=>({...s,reflection:e.target.value,finished:false}))} placeholder={tx('Contoh: Ukuran tetes yang lebih kecil menghasilkan langkah perubahan lebih halus, tetapi model ini tidak memperhitungkan ketidakpastian fisik…','For example: Smaller drops produce finer increments, but this model omits real measurement uncertainty…')}/><small>{state.reflection.trim().length}/20 {tx('karakter minimum','minimum characters')}</small></label>
         <div className="mission67-ai"><div><BrainCircuit size={21}/><strong>{tx('Pembimbing Hybrid AI (opsional)','Hybrid AI research mentor (optional)')}</strong></div><p>{tx('Jawaban dihasilkan melalui Firebase AI Logic jika tersedia. Hasil yang dilaporkan menunjukkan jalur inferensi sebenarnya, bukan klaim lokal palsu.','Responses use Firebase AI Logic where available. The recorded inference route is reported from the SDK, not invented.')}</p>
-          <select aria-label={tx('Preferensi inferensi','Inference preference')} value={preference} onChange={e=>setPreference(e.target.value as InferencePreference)}><option>Prefer on-device</option><option>On-device only</option><option>Prefer cloud</option><option>Cloud only</option></select>
+          <select aria-label={tx('Preferensi inferensi','Inference preference')} value={preference} onChange={e=>setPreference(e.target.value as InferencePreference)}>{(["Prefer on-device","On-device only","Prefer cloud","Cloud only"] as const).map(mode=><option key={mode} value={mode}>{t(mode)}</option>)}</select>
           <button type="button" disabled={!firebaseConfigured||busy||!state.trials.length} onClick={()=>void askAI()}>{busy?<LoaderCircle size={17}/>:<Sparkles size={17}/>} {busy?tx('Memproses…','Processing…'):tx('Analisis dengan Hybrid AI','Analyze with Hybrid AI')}</button>
           {!firebaseConfigured&&<p className="mission67-warning">{tx('Firebase belum lengkap. Misi tetap dapat diselesaikan tanpa AI.','Firebase is not configured. You can still complete the mission without AI.')}</p>}
           {aiError&&<p role="alert" className="mission67-warning">{aiError}</p>}
-          {aiResult&&<div className="mission67-ai-answer"><strong>{aiResult.provider} · {aiResult.model}</strong><p>{aiResult.text}</p></div>}
+          {aiResult&&<div className="mission67-ai-answer"><strong>{aiResult.provider} · {aiResult.model}</strong><RichAnswer85 text={aiResult.text}/></div>}
         </div>
         <button className="mission67-primary" type="button" onClick={()=>setStep(4)}>{tx('Siapkan laporan','Prepare report')}<ArrowRight size={17}/></button>
       </section>}

@@ -26,8 +26,8 @@ export function SessionBoundary({children}:{children:ReactNode}) {
   let dark=window.matchMedia('(prefers-color-scheme: dark)').matches;
   try { const saved=window.localStorage.getItem('elk.dark'); if(saved!==null) dark=saved==='true'; } catch { /* optional */ }
   return (
-    <div className={dark?'app dark':'app'}>
-      <main className="v81-session v84-session-splash" aria-busy={!roleIssue}>
+    <div data-elk-splash="true" className={dark?'app dark':'app'}>
+      <main className="v81-session v84-session-splash v85-splash" aria-busy={!roleIssue}>
         <section className="v84-session-inner">
           <BrandMark size="lg" showTagline/>
           <div className="v84-session-copy" role="status" aria-live="polite">
