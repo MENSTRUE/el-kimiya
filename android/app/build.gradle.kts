@@ -12,8 +12,9 @@ android {
         applicationId = "com.menstrue.elkimiya"
         minSdk = 26 // Required by firebase-ai-ondevice
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.3.0"
+        // ELKIMIYA_ANDROID_WEB_V82
+        versionCode = 3
+        versionName = "0.8.3"
     }
     buildTypes {
         release { isMinifyEnabled = false }

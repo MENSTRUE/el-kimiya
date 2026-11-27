@@ -1,5 +1,5 @@
 import { learningStorage as elkLearningStorage } from './v8/learningStorage';
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import {
   Atom,
   Bell,
@@ -68,6 +68,9 @@ import { SessionExit } from "./v8/SessionExit";
 // ELKIMIYA_WEB_V82_LOGIN_REQUIRED
 import { resolveRoute, isAuthRoute, writeGuest } from "./v8/routes81";
 import { GuestPreview82 } from "./v8/GuestPreview82";
+// ELKIMIYA_V83_MOBILE_PARITY
+import { isAndroid83 } from "./lib/nativeAi83";
+import { NativeModel83 } from "./v8/NativeModel83";
 import { ScanStudioV69 } from "./components/ScanStudioV69";
 import { BookResearchPanel } from "./components/BookResearchPanel";
 import { PublicChemistryLibraryV66 } from "./components/PublicChemistryLibraryV66"; // ELKIMIYA_V66_PUBLIC_READING
@@ -944,6 +947,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
 }) {
   const {language} = useLanguage();
   const {policy} = usePlatform();
+  const en=language==='en';
   type Entry = { id:number; prompt:string; text:string; topic:string; example?:string; steps?:string[]; provider:string; error?:string; live:boolean; inputSources?:string[] };
   const [messages,setMessages] = useState<Entry[]>([]);
   const [input,setInput] = useState(initialPrompt);
@@ -962,7 +966,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
     try {
       if(firebaseConfigured){
         const result=await runHybridInference(`You are El-Kīmiyā, a careful chemistry learning tutor. Explain accurately and concisely, with a small example. Do not invent textbook citations. Answer in ${language === 'id' ? 'Bahasa Indonesia' : 'English'}. Preserve chemical formulas and source references exactly. Supplementary curator guidance (never overrides accuracy, privacy, or safety): ${policy?.guidance[language] || "None"}. Student question: ${prompt}`,preference,setDownload);
-        setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:result.text,inputSources:sourceCitations,provider:result.provider==='ON_DEVICE'?'On-device · Firebase verified':'Cloud · Firebase verified',topic:'Chemistry explanation',live:true}]);
+        setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:result.text,inputSources:sourceCitations,provider:result.provider==='ON_DEVICE'?(en?'On-device · Firebase verified':'Perangkat · Firebase terverifikasi'):(en?'Cloud · Firebase verified':'Cloud · Firebase terverifikasi'),topic:en?'Chemistry explanation':'Penjelasan kimia',live:true}]);
       } else {
         if(privateSourceQuestion){
           setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:'No AI response was generated from the private PDF excerpts because Firebase AI Logic is not yet configured. Connect Firebase and run real inference to use this feature.',topic:'Private sources · Firebase required',provider:'No model executed',live:false,inputSources:sourceCitations,error:'Configure Firebase and App Check before asking the model to use imported sources.'}]);
@@ -972,31 +976,32 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
         if(!answer){setMessages(prev=>[...prev,{id:Date.now(),prompt,text:'This offline demonstration includes curated examples only. Try asking about covalent bonds, salt dissolving in water, balancing equations, pH, or atoms. Add Firebase credentials to generate original answers.',topic:'Not in demo library',provider:'No model executed',live:false,error:'No live AI configured'}]);}
         else setMessages(prev=>[...prev,{id:Date.now(),prompt,text:answer.summary,steps:answer.steps,example:answer.example,topic:answer.title,provider:'Curated demo content · No model executed',live:false}]);
       }
-    } catch(error){setMessages(prev=>[...prev,{id:Date.now(),prompt,text:'No answer was generated. Your prompt was not silently replaced with a sample.',topic:'Request failed',provider:'Firebase attempted · No provider confirmed',live:false,error:error instanceof Error?error.message:String(error)}]);}
+    } catch(error){setMessages(prev=>[...prev,{id:Date.now(),prompt,text:en?'No answer was generated. No sample was substituted.':'Tidak ada jawaban yang dihasilkan. Pertanyaan tidak diganti dengan contoh.',topic:en?'Request failed':'Permintaan gagal',provider:en?'No verified inference':'Belum ada inferensi terverifikasi',live:false,error:error instanceof Error?error.message:String(error)}]);}
     finally {setRunning(false)}
   };
   const saveLast = () => {if(last&&!last.error)addNote(last.topic,last.text+(last.example?`\nExample: ${last.example}`:''),last.provider)};
   const createLastCard = () => {if(last&&!last.error)addCard({id:`tutor-${Date.now()}`,topic:last.topic,question:last.prompt,answer:last.text,detail:last.example||last.provider})};
   return <main className="tutor-page">
+    <div className="v83-tutor-tools"><button className="secondary-button" onClick={()=>setPage('library')}><BookOpen size={16}/>{en?'Study sources':'Sumber belajar'}</button><button className="secondary-button" onClick={()=>setPage('hybrid')}><Zap size={16}/>{en?'AI engine':'Mesin AI'}</button></div>
     <aside className="tutor-context"><p className="eyebrow">{t("Learning context")}</p><div className="current-book"><span className="cover-blue">H₂O</span><div><strong>{t("Foundations of Chemistry")}</strong><small>{t("Original demonstration lesson")}</small></div></div>
       <button onClick={()=>setPage('library')}><BookOpen size={17}/> {t("Open study source")} <ChevronRight size={16}/></button>
       <button className="context-setting" onClick={()=>setGrounded(!grounded)} aria-pressed={grounded}><span><Bookmark size={16}/> {t("Show source reminders")}</span><i className={`toggle ${grounded?'on':''}`}/></button>
       {grounded&&<div className="privacy-note"><BrainCircuit size={18}/><p><strong>{t("Sources are labeled")}</strong>{t("Live AI answers are not textbook citations. Verify chemistry against reputable references.")}</p></div>}
     </aside>
     <section className="conversation">
-      {messages.length===0?<div className="tutor-welcome"><div className="large-ai-orb"><BrainCircuit size={28}/></div><Badge>{firebaseConfigured?'Firebase AI Logic configured':'Interactive curated demo'}</Badge><h2>{t("What would you like to")}<br/>{t("understand today?")}</h2><p>{firebaseConfigured?'Ask a question. Each response shows which inference provider actually responded.':'Try one of the supported questions. Live generation requires Firebase configuration.'}</p>
-        <div className="prompt-grid">{['Explain ionic and covalent bonds.','Why does salt dissolve in water?','Help me balance an equation.','Explain pH with an everyday example.'].map(prompt=><button key={prompt} onClick={()=>void ask(prompt)}><span>{prompt}</span><ChevronRight size={17}/></button>)}</div></div>
+      {messages.length===0?<div className="tutor-welcome"><div className="large-ai-orb"><BrainCircuit size={28}/></div><Badge>{firebaseConfigured?(isAndroid83()?'Firebase AI · Android':'Firebase AI · Web'):(en?'Interactive curated demo':'Demo terkurasi')}</Badge><h2>{t("What would you like to")}<br/>{t("understand today?")}</h2><p>{firebaseConfigured?(en?'Ask a question. Each response shows its actual inference source.':'Ajukan pertanyaan. Setiap respons menampilkan sumber inferensi aktual.'):(en?'Live generation requires Firebase configuration.':'Inferensi langsung memerlukan konfigurasi Firebase.')}</p>
+        <div className="prompt-grid">{(en?['Explain ionic and covalent bonds.','Why does salt dissolve in water?','Help me balance an equation.','Explain pH with an everyday example.']:['Jelaskan ikatan ionik dan kovalen.','Mengapa garam larut dalam air?','Bantu setarakan persamaan reaksi.','Jelaskan pH dengan contoh sehari-hari.']).map(prompt=><button key={prompt} onClick={()=>void ask(prompt)}><span>{prompt}</span><ChevronRight size={17}/></button>)}</div></div>
       :<div className="answer-thread" aria-live="polite">{messages.map(message=><div className="thread-pair" key={message.id}><div className="user-message">{message.prompt}</div><div className="ai-answer">
         <div className="answer-intro"><span className="ai-orb"><BrainCircuit size={17}/></span><div><strong>{t("El-Kīmiyā tutor")}</strong><small>{message.provider}</small></div></div>
-        <div className="answer-section"><p className="eyebrow">{message.live?'LIVE INFERENCE':'LEARNING RESPONSE'}</p><h3>{message.topic}</h3><p>{message.text}</p></div>
+        <div className="answer-section"><p className="eyebrow">{message.error?(en?'REQUEST FAILED':'PERMINTAAN GAGAL'):message.live?(en?'LIVE INFERENCE':'INFERENSI LANGSUNG'):(en?'LEARNING RESPONSE':'RESPONS PEMBELAJARAN')}</p><h3>{message.topic}</h3><p>{message.text}</p></div>
         {message.steps&&<div className="answer-section steps"><p className="eyebrow">{t("STEP BY STEP")}</p>{message.steps.map((step,i)=><div key={i}><span>{i+1}</span><p>{step}</p></div>)}</div>}
         {message.example&&<div className="formula-card"><span>{message.example}</span></div>}
-        {message.error&&<p className="inline-alert" role="alert"><CircleHelp size={16}/>{message.error}</p>}
-        <div className="source-box"><div><strong>{t("Transparency")}</strong><Badge variant="neutral">{message.live?'Firebase response':'Demo content'}</Badge></div><p>{message.provider}</p>{message.inputSources?.length?<div className="input-source-citations"><small>{t("Source excerpts supplied by this user (PDF pages, not externally fact-checked):")}</small>{message.inputSources.map((citation,index)=><small key={index}>{citation}</small>)}</div>:<span>{t("No verified book/page citation provided.")}</span>}</div>
+        {message.error&&<p className="inline-alert" role="alert"><CircleHelp size={16}/><span>{message.error}</span></p>}
+        <div className="source-box"><div><strong>{t("Transparency")}</strong><Badge variant="neutral">{message.error?(en?'Failed':'Gagal'):message.live?(en?'Firebase response':'Respons Firebase'):(en?'Demo content':'Konten demo')}</Badge></div><p>{message.provider}</p>{message.inputSources?.length?<div className="input-source-citations"><small>{t("Source excerpts supplied by this user (PDF pages, not externally fact-checked):")}</small>{message.inputSources.map((citation,index)=><small key={index}>{citation}</small>)}</div>:<span>{t("No verified book/page citation provided.")}</span>}</div>
         {!message.error&&<div className="answer-actions"><button onClick={()=>addNote(message.topic,message.text,message.provider)}><NotebookPen size={16}/> {t("Save explanation")}</button><button onClick={()=>addCard({id:`generated-${Date.now()}`,question:message.prompt,answer:message.text,detail:message.example||message.provider,topic:message.topic})}><Layers3 size={16}/> {t("Make flashcard")}</button><button onClick={()=>setPage('practice')}><Target size={16}/> {t("Practice")}</button></div>}
       </div></div>)}</div>}
-      {running&&<div className="tutor-running" role="status"><span className="loading-dots"/> {download===null?'Requesting a model response...':`Preparing local model: ${Math.round(download*100)}%`}</div>}
-      <div className="composer"><textarea value={input} onChange={event=>setInput(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();void ask()}}} placeholder="Ask a chemistry question..." aria-label="Chemistry question" rows={2}/><div><span><BrainCircuit size={14}/>{firebaseConfigured?`Firebase · ${preference}`:'Curated samples · Demo mode'}</span><button disabled={!input.trim()||running} onClick={()=>void ask()} aria-label="Send question"><ChevronRight size={19}/></button></div></div>
+      {running&&<div className="tutor-running" role="status"><span className="loading-dots"/> {download===null?(en?'Requesting a model response…':'Meminta respons model…'):`${en?'Preparing local model':'Menyiapkan model lokal'}: ${Math.round(download*100)}%`}</div>}
+      <div className="composer"><textarea value={input} onChange={event=>setInput(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();void ask()}}} placeholder={en?"Ask a chemistry question…":"Tanyakan tentang kimia…"} aria-label={en?"Chemistry question":"Pertanyaan kimia"} rows={2}/><div><span><BrainCircuit size={14}/>{firebaseConfigured?`Firebase · ${isAndroid83()?'Android':'Web'} · ${en?preference:({'Prefer on-device':'Utamakan perangkat','On-device only':'Hanya perangkat','Prefer cloud':'Utamakan cloud','Cloud only':'Hanya cloud'}[preference])}`:(en?'Curated samples · Demo mode':'Contoh terkurasi · Demo')}</span><button disabled={!input.trim()||running} onClick={()=>void ask()} aria-label={en?"Send question":"Kirim pertanyaan"}><ChevronRight size={19}/></button></div></div>
       {last&&!last.error&&<div className="tutor-inline-actions"><button onClick={saveLast}>{t("Save last response")}</button><button onClick={createLastCard}>{t("Review as flashcard")}</button></div>}
     </section>
     <aside className="tutor-references"><div className="panel-title"><div><p className="eyebrow">{t("Source transparency")}</p><h3>{t("Reference status")}</h3></div><BookMarked size={18}/></div>
@@ -1049,6 +1054,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
   };
   return (
     <main className="page hybrid-page">
+      <NativeModel83/>
       <section className="hybrid-intro">
         <Badge variant="gold">{t("Hybrid intelligence · Interactive demo")}</Badge>
         <h2>
@@ -1228,7 +1234,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
         {preference === 'On-device only' && <p>{t("On-device mode needs compatible Chrome Desktop (139+), Prompt API enabled, and local model download. This mode never claims cloud fallback as local success.")}</p>}
         {running&&<p role="status">{progress===null?'Preparing or requesting a response...':`Local model download: ${Math.round(progress*100)}%`}</p>}
         {liveResult&&<div className="live-result" role="status"><strong>{t("Verified provider:")} {liveProvider}</strong><p>{liveResult}</p></div>}
-        {liveError&&<div className="inline-alert" role="alert"><CircleHelp size={17}/>{liveError}</div>}
+        {liveError&&<div className="inline-alert" role="alert"><CircleHelp size={17}/><span>{liveError}</span></div>}
       </section>
     </main>
   );
@@ -1449,33 +1455,43 @@ function ScanPage({ setPage, addNote, addCard, notify, askAbout }: {
   return <ScanStudioV69 setPage={setPage} addNote={addNote} addCard={addCard} notify={notify} askAbout={askAbout} />;
 }
 
-function MobileBottomNav({ page, setPage }: { page: Page; setPage: (p: Page) => void }) {
+// Same learner routes as desktop, including special reader and scanner screens.
+function MobileBottomNav({ page, setPage, showMenu }: { page: Page; setPage: (p: Page) => void; showMenu: () => void }) {
+  const {language}=useLanguage(); const en=language==='en';
   const items: { id: Page; label: string; icon: typeof Home }[] = [
-    { id: "dashboard", label: "Home", icon: Home },
-    { id: "library", label: "Library", icon: Library },
+    { id: "dashboard", label: en?"Home":"Dasbor", icon: Home },
+    { id: "library", label: en?"Library":"Pustaka", icon: Library },
     { id: "scan", label: "Scan", icon: Camera },
-    { id: "practice", label: "Practice", icon: FlaskConical },
-    { id: "profile", label: "Profile", icon: User },
+    { id: "tutor", label: "AI Tutor", icon: BrainCircuit },
   ];
-  return (
-    <nav className="mobile-nav">
-      {items.map((item) => {
-        const Icon = item.icon;
-        return (
-          <button
-            key={item.id}
-            className={page === item.id ? "active" : ""}
-            onClick={() => setPage(item.id)}
-          >
-            <span className={item.id === "scan" ? "scan-nav-icon" : ""}>
-              <Icon size={20} />
-            </span>
-            <small>{t(item.label)}</small>
-          </button>
-        );
-      })}
-    </nav>
-  );
+  return <nav className="mobile-nav" aria-label={en?"Workspace navigation":"Navigasi ruang belajar"}>
+    {items.map(({id,label,icon:Icon})=><button type="button" key={id} className={page===id?"active":""} aria-current={page===id?"page":undefined} onClick={()=>setPage(id)}><span className={id==="scan"?"scan-nav-icon":""}><Icon size={20}/></span><small>{label}</small></button>)}
+    <button type="button" onClick={showMenu} aria-label={en?"All features":"Semua fitur"} aria-haspopup="dialog"><Menu size={22}/><small>Menu</small></button>
+  </nav>;
+}
+function MobileFeatureMenu83({page,setPage,open,close}:{page:Page;setPage:(p:Page)=>void;open:boolean;close:()=>void}) {
+  const {language}=useLanguage(); const en=language==='en';
+  const ref=useRef<HTMLDialogElement>(null);
+  const [query,setQuery]=useState('');
+  useEffect(()=>{const dialog=ref.current;if(!dialog)return;if(open&&!dialog.open){setQuery('');dialog.showModal();}else if(!open&&dialog.open){dialog.close();}},[open]);
+  const labels: Partial<Record<Page,[string,string]>> = {
+    dashboard:["Dasbor","Dashboard"],mission:["Misi Penelitian","Research Mission"],library:["Perpustakaan Saya","My Library"],
+    faith:["Kimia & Keimanan","Chemistry & Faith"],tutor:["Tutor Kimia AI","AI Chemistry Tutor"],explorer:["Eksplorasi Kimia","Chemistry Explorer"],
+    molecules:["Laboratorium AI Molekul","Molecular Intelligence Lab"],practice:["Laboratorium Latihan","Practice Lab"],
+    flashcards:["Kartu Hafalan","Flashcards"],progress:["Progres Belajar","Learning Progress"],notes:["Catatan Tersimpan","Saved Notes"],
+    reader:["Pembaca Buku","Book Reader"],scan:["Pindai","Scan"],hybrid:["Status Mesin AI","AI Engine Status"],settings:["Pengaturan","Settings"],profile:["Profil & Akun","Profile & Account"],about:["Tentang El-Kīmiyā","About El-Kīmiyā"]
+  };
+  const items: typeof navItems = [...navItems,
+    {id:"reader",label:"Book Reader",icon:BookOpen},{id:"scan",label:"Scan",icon:Camera},{id:"hybrid",label:"AI Engine",icon:Zap},
+    {id:"settings",label:"Settings",icon:Settings},{id:"profile",label:"Profile",icon:User},{id:"about",label:"About",icon:CircleHelp}
+  ];
+  const navigate=(id:Page)=>{close();setPage(id);};
+  return <dialog ref={ref} className="v83-feature-dialog" aria-labelledby="v83-menu-title" onCancel={close} onClose={close}>
+    <div className="v83-menu-head"><h2 id="v83-menu-title">{en?"Explore all features":"Semua fitur"}</h2><button type="button" className="icon-button" onClick={close} aria-label={en?"Close menu":"Tutup menu"}><X size={22}/></button></div>
+    <label className="v83-menu-search"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={en?"Find a feature…":"Cari fitur…"} aria-label={en?"Find a feature":"Cari fitur"}/></label>
+    <div className="v83-menu-grid">{items.filter(item=>(labels[item.id]?.join(' ')||item.label).toLowerCase().includes(query.trim().toLowerCase())).map(({id,label,icon:Icon})=><button type="button" key={id} className={page===id?"active":""} aria-current={page===id?"page":undefined} onClick={()=>navigate(id)}><Icon size={19}/><span>{labels[id]?.[en?1:0]||label}</span></button>)}</div>
+    <div className="v83-menu-footer"><button type="button" className="secondary-button" onClick={()=>navigate('landing')}><Home size={17}/>{en?"Back to homepage":"Kembali ke halaman utama"}</button><SessionExit go={()=>navigate('landing')}/></div>
+  </dialog>;
 }
 
 function SimplePage({ type, setPage, notes, deleteNote, notify }: {
@@ -1499,6 +1515,8 @@ function WorkspaceApp() {
   const hashPage = () => {const value=window.location.hash.slice(1) as Page;return validPages.includes(value)?value:'landing'};
   const {role}=usePlatform();
   const [requestedPage,setCurrentPage] = useState<Page>(hashPage);
+  const [menu83,setMenu83] = useState(false);
+  const [session83] = useState(()=>globalThis.crypto?.randomUUID?.() || Date.now().toString(36)+'-'+Math.random().toString(36).slice(2));
   const page=resolveRoute(requestedPage,role) as Page;
   useEffect(()=>writeGuest(false),[]);
   useEffect(()=>{
@@ -1515,6 +1533,7 @@ function WorkspaceApp() {
   const [toast,setToast] = useState('');
   const [initialPrompt,setInitialPrompt] = useState('');
   const setPage=(next:Page) => {
+    setMenu83(false);
     if(next!==requestedPage){history.pushState({},'',`#${next}`);setCurrentPage(next);window.scrollTo({top:0,behavior:'auto'});}
   };
   const notify=(message:string)=>setToast(message);
@@ -1551,11 +1570,11 @@ function WorkspaceApp() {
     return <Dashboard setPage={setPage}/>;
   })();
   if(page==='landing'||page==='guest'||isAuthRoute(page)||page==='moduler')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
-  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>
+  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion} data-elk-ai-v83={role==='user'?'learner':undefined} data-elk-ai-session={session83}>
     <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
-    <div className="app-shell">{(page==='reader'||page==='scan')&&<div className="v82-special-nav"><button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/>{language==="id"?"Beranda":"Homepage"}</button><SessionExit go={()=>setPage('landing')}/></div>}{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
-    <button className="mobile-tutor-fab" onClick={()=>setPage('tutor')} aria-label={t("Open chemistry tutor")}><BrainCircuit size={19}/></button>
-    {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage}/>}
+    <div className="app-shell">{(page==='reader'||page==='scan')&&<div className="v82-special-nav"><button type="button" className="v83-menu-trigger secondary-button" onClick={()=>setMenu83(true)} aria-label={language==='en'?'All features':'Semua fitur'}><Menu size={18}/>Menu</button><button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/>{language==="id"?"Beranda":"Homepage"}</button><SessionExit go={()=>setPage('landing')}/></div>}{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
+    {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage} showMenu={()=>setMenu83(true)}/>}
+    <MobileFeatureMenu83 page={page} setPage={setPage} open={menu83} close={()=>setMenu83(false)}/>
     {toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span><button onClick={()=>setToast('')} aria-label="Dismiss notification"><X size={15}/></button></div>}
   </div>;
 }

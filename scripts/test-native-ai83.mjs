@@ -1,0 +1,44 @@
+// Runs on Node 22.18+ (Node 24 recommended). No Firebase calls or credentials.
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
+import {createRequire} from 'node:module';
+import {readFileSync} from 'node:fs';
+const root=resolve(process.argv[2]||'.');
+globalThis.window={};
+globalThis.document={documentElement:{lang:'en'}};
+Object.defineProperty(globalThis,'navigator',{value:{userAgent:'WebView ElKimiyaAndroid/8.3'},configurable:true});
+let last;
+const bridge={postMessage(raw){last=JSON.parse(raw);},onmessage:null};
+window.ElKimiyaAI83=bridge;
+const source=resolve(root,'src/lib/nativeAi83.ts');
+const require=createRequire(resolve(root,'package.json'));
+let entry=pathToFileURL(source).href;
+try {
+  const ts=require('typescript');
+  const js=ts.transpileModule(readFileSync(source,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
+  entry='data:text/javascript;base64,'+Buffer.from(js).toString('base64');
+} catch(e) { if(e.code!=='MODULE_NOT_FOUND') throw e; }
+const {runNativeAi83,nativeModel83,isAndroid83}=await import(entry);
+const emit=(data)=>bridge.onmessage({data:JSON.stringify({id:last.id,...data})});
+assert.equal(isAndroid83(),true);
+let progress=[];
+let p=runNativeAi83('H2O?','Prefer on-device',v=>progress.push(v));
+assert.equal(last.kind,'generate');assert.equal(last.prompt,'H2O?');assert.equal(last.preference,'Prefer on-device');
+bridge.onmessage({data:'malformed'});bridge.onmessage({data:JSON.stringify({id:'wrong',kind:'error',code:'FAILED'})});
+emit({kind:'progress',fraction:0.42});emit({kind:'progress',fraction:2});
+emit({kind:'result',provider:'IN_CLOUD',model:'gemini-3.5-flash-lite',text:'A real response fixture.'});
+assert.deepEqual(await p,{provider:'IN_CLOUD',model:'gemini-3.5-flash-lite',text:'A real response fixture.'});assert.deepEqual(progress,[0.42,1]);
+p=runNativeAi83('H2O?','On-device only');emit({kind:'result',provider:'IN_CLOUD',model:'gemini',text:'Wrong provider'});await assert.rejects(p,/verified/);
+p=runNativeAi83('H2O?','Cloud only');emit({kind:'result',provider:'ON_DEVICE',model:'local',text:'Wrong provider'});await assert.rejects(p,/verified/);
+p=runNativeAi83('H2O?','Prefer cloud');emit({kind:'result',provider:'unknown',model:'fake',text:'No verified source'});await assert.rejects(p,/verified/);
+p=runNativeAi83('H2O?','Prefer cloud');emit({kind:'result',provider:'IN_CLOUD',model:'cloud',text:' '});await assert.rejects(p,/verified/);
+p=runNativeAi83('H2O?','Prefer cloud');emit({kind:'error',code:'APP_CHECK',text:'a raw secret'});await assert.rejects(p,e=>/App Check/.test(e.message)&&!e.message.includes('secret'));
+p=runNativeAi83('H2O?','Prefer cloud');emit({kind:'error',code:'ACCESS'});await assert.rejects(p,/session/);
+p=nativeModel83(false);assert.equal(last.kind,'status');emit({kind:'result',status:'DOWNLOADABLE'});assert.equal(await p,'DOWNLOADABLE');
+p=nativeModel83(true);assert.equal(last.kind,'download');emit({kind:'result',status:'AVAILABLE'});assert.equal(await p,'AVAILABLE');
+p=nativeModel83(false);emit({kind:'result',status:'FAKE'});await assert.rejects(p,/verified/);
+delete window.ElKimiyaAI83;assert.equal(isAndroid83(),true);
+await assert.rejects(runNativeAi83('H2O?','Prefer cloud'),/bridge unavailable/);
+Object.defineProperty(globalThis,'navigator',{value:{userAgent:'Chrome desktop'},configurable:true});assert.equal(isAndroid83(),false);
+console.log('[PASS] Native transport: correlation, progress, actual source validation, strict modes, errors, status, missing bridge, desktop detection.');

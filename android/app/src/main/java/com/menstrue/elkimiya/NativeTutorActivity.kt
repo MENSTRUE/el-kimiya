@@ -3,6 +3,7 @@
 package com.menstrue.elkimiya
 
 // ELKIMIYA_ANDROID_UI_AI_V3
+// ELKIMIYA_ANDROID_WEB_V82
 
 import android.os.Bundle
 import android.util.Log
@@ -79,6 +80,13 @@ private fun modelDescription(status: OnDeviceModelStatus, id: Boolean): String =
 class NativeTutorActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Fail closed on process restoration or an unauthorized native launch.
+        if (!NativeTutorAccess.allowed.value) { finish(); return }
+        lifecycleScope.launch {
+            NativeTutorAccess.allowed.collect { allowed ->
+                if (!allowed && !isFinishing) finish()
+            }
+        }
         setContent {
             var themeMode by remember { mutableStateOf(ElKimiyaPrefs.theme(this@NativeTutorActivity)) }
             var language by remember { mutableStateOf(ElKimiyaPrefs.language(this@NativeTutorActivity)) }
@@ -325,4 +333,9 @@ class NativeTutorActivity : ComponentActivity() {
             }
         }
     }
+    override fun onDestroy() {
+        if (!isChangingConfigurations) NativeTutorAccess.revoke()
+        super.onDestroy()
+    }
+
 }

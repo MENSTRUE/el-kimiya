@@ -6,6 +6,8 @@
  * public builds whenever a local debug token or debug=true is still configured.
  * The inference source comes from Firebase SDK, not UI simulations.
  */
+// ELKIMIYA_V83_NATIVE_AI
+import { isAndroid83, runNativeAi83 } from './nativeAi83';
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import {
   ReCaptchaEnterpriseProvider,
@@ -94,13 +96,14 @@ const modes: Record<InferencePreference, InferenceMode> = {
 
 function explainError(error: unknown, preference: InferencePreference): Error {
   const raw = error instanceof Error ? error.message : String(error);
+  const en = document.documentElement.lang === 'en';
   if (/app.?check|401|403|recaptcha/i.test(raw)) {
-    return new Error('App Check ditolak. Cek debug token terdaftar (localhost) atau domain Fraud Defense (Hosting). Detail: ' + raw);
+    return new Error(en?'Web App Check verification failed. Check the registered domain and provider in Firebase Console.':'Verifikasi App Check web gagal. Periksa domain dan provider yang terdaftar di Firebase Console.');
   }
   if (preference === 'On-device only') {
-    return new Error('Model lokal belum siap/kompatibel. Gunakan Chrome Desktop 139+, aktifkan Prompt API dan unduh model. Detail: ' + raw);
+    return new Error(en?'Local model unavailable. Check browser compatibility and the model download, or use Cloud only.':'Model lokal tidak tersedia. Periksa kompatibilitas browser dan unduhan model, atau gunakan Cloud only.');
   }
-  return error instanceof Error ? error : new Error(raw);
+  return new Error(en?'AI request failed. Check connectivity and Firebase configuration, then retry.':'Permintaan AI gagal. Periksa koneksi dan konfigurasi Firebase, lalu coba lagi.');
 }
 
 export async function runHybridInference(
@@ -112,6 +115,9 @@ export async function runHybridInference(
     throw new Error('Konfigurasi Firebase belum lengkap. Cek .env dan restart Vite.');
   }
   if (!prompt.trim()) throw new Error('Pertanyaan kimia tidak boleh kosong.');
+
+  // Native Android attestation and inference. Never silently retry through the Web SDK.
+  if (isAndroid83()) return runNativeAi83(prompt, preference, onProgress);
 
   try {
     const app = setupAppCheck();

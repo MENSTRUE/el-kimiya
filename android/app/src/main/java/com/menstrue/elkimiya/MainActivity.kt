@@ -3,6 +3,8 @@ package com.menstrue.elkimiya
 // ELKIMIYA_ANDROID_HYBRID_WEB_V1
 // ELKIMIYA_ANDROID_UI_V2_NATIVE_SHELL
 // ELKIMIYA_ANDROID_UI_AI_V3
+// ELKIMIYA_ANDROID_WEB_V82
+// ELKIMIYA_ANDROID_THEME_SYNC_V32
 // The public React learning product stays at its verified HTTPS origin.
 // A separate, native Kotlin screen continues to provide Firebase Hybrid AI.
 
@@ -100,6 +102,11 @@ private val AppCanvas = Color(0xFFF8F7F2)
 /** No addJavascriptInterface: AndroidX WebMessage listener is HTTPS-origin scoped. */
 class MainActivity : ComponentActivity() {
     private var browser: WebView? = null
+    private var languageMode by mutableStateOf("id")
+    // ELKIMIYA_ANDROID_NATIVE_AI_V83
+    private var nativeAI83: NativeAiBridge83? = null
+    private var pageEpoch = 0L
+    private var openingNative = false
     // ELKIMIYA_V69_CAMERA_CAPTURE: capture through Android Camera + private FileProvider URI.
     private var pickerCallback: ValueCallback<Array<Uri>>? = null
     private var capturedPhotoUri: Uri? = null
@@ -110,6 +117,7 @@ class MainActivity : ComponentActivity() {
     private var errorLoading by mutableStateOf(false)
     private var themeMode by mutableStateOf(ThemeMode.SYSTEM)
     private var themeStartScript: ScriptHandler? = null
+    private var lastSystemThemeDark: Boolean? = null
 
     private val cameraCapture = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val photo = if (result.resultCode == RESULT_OK) capturedPhotoUri else null
@@ -156,6 +164,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         themeMode = ElKimiyaPrefs.theme(this)
+        languageMode = ElKimiyaPrefs.language(this)
+        NativeTutorAccess.revoke()
+        lastSystemThemeDark = resolveDark(this, themeMode)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val view = browser
@@ -163,7 +174,6 @@ class MainActivity : ComponentActivity() {
             }
         })
         setContent {
-            var quickMenuExpanded by remember { mutableStateOf(false) }
             val dark = resolveDark(this@MainActivity, themeMode)
             val palette = elKimiyaPalette(dark)
             val colors = if (dark) darkColorScheme(
@@ -195,77 +205,20 @@ class MainActivity : ComponentActivity() {
                                 contentDescription = "Logo El-Kīmiyā",
                                 modifier = Modifier.size(56.dp)
                             )
-                            Text("Koneksi ke El-Kīmiyā terputus", fontWeight = FontWeight.Bold, color = palette.title)
-                            Text("Materi web memerlukan koneksi. Coba ulang atau buka di Chrome.")
+                            Text(if (languageMode == "en") "Connection to El-Kīmiyā interrupted" else "Koneksi ke El-Kīmiyā terputus", fontWeight = FontWeight.Bold, color = palette.title)
+                            Text(if (languageMode == "en") "Web content requires a connection. Retry or open in Chrome." else "Materi web memerlukan koneksi. Coba ulang atau buka di Chrome.")
                             Button(onClick = { errorLoading = false; browser?.loadUrl(WEB_ROOT) }) {
-                                Text("Coba lagi")
+                                Text(if (languageMode == "en") "Retry" else "Coba lagi")
                             }
                             OutlinedButton(onClick = { openExternally(Uri.parse(WEB_ROOT)) }) {
-                                Text("Buka di Chrome")
+                                Text(if (languageMode == "en") "Open in Chrome" else "Buka di Chrome")
                             }
                         }
                     }
 
-                    // Small native-only action. Replaces React's floating tutor button
-                    // inside this WebView; React bottom navigation remains visible.
-                    Box(
-                        modifier = Modifier.align(Alignment.BottomEnd)
-                            .padding(end = 14.dp, bottom = 100.dp)
-                    ) {
-                        Surface(
-                            color = if (dark) palette.surfaceAlt else AppNavy,
-                            shape = RoundedCornerShape(18.dp),
-                            shadowElevation = 8.dp
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                TextButton(onClick = {
-                                    startActivity(Intent(this@MainActivity, NativeTutorActivity::class.java))
-                                }) {
-                                    Image(
-                                        painterResource(R.drawable.elkimiya_logo_white),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                    Spacer(Modifier.size(7.dp))
-                                    Text("AI Native", color = Color.White, fontWeight = FontWeight.SemiBold)
-                                }
-                                IconButton(onClick = { quickMenuExpanded = true }) {
-                                    Text("⋮", color = Color.White, fontSize = 20.sp)
-                                }
-                            }
-                        }
-                        DropdownMenu(
-                            expanded = quickMenuExpanded,
-                            onDismissRequest = { quickMenuExpanded = false }
-                        ) {
-                            DropdownMenuItem(text = { Text("Kembali") }, onClick = {
-                                quickMenuExpanded = false
-                                if (browser?.canGoBack() == true) browser?.goBack()
-                                else toast("Sudah di halaman awal")
-                            })
-                            DropdownMenuItem(text = { Text("Beranda") }, onClick = {
-                                quickMenuExpanded = false
-                                navigate("landing")
-                            })
-                            DropdownMenuItem(text = { Text("Muat ulang") }, onClick = {
-                                quickMenuExpanded = false
-                                browser?.reload()
-                            })
-                            DropdownMenuItem(text = { Text("Simpan / cetak PDF") }, onClick = {
-                                quickMenuExpanded = false
-                                printCurrentPage()
-                            })
-                            DropdownMenuItem(text = { Text("Tema: ikut Samsung") }, onClick = {
-                                quickMenuExpanded = false; changeTheme(ThemeMode.SYSTEM)
-                            })
-                            DropdownMenuItem(text = { Text("Tema: terang") }, onClick = {
-                                quickMenuExpanded = false; changeTheme(ThemeMode.LIGHT)
-                            })
-                            DropdownMenuItem(text = { Text("Tema: gelap") }, onClick = {
-                                quickMenuExpanded = false; changeTheme(ThemeMode.DARK)
-                            })
-                        }
-                    }
+                    // V8.2: React remains the only navigation shell.
+                    // Learner-only native AI card is inserted by the trusted WebView bridge.
+
                 }
             }
         }
@@ -276,6 +229,7 @@ class MainActivity : ComponentActivity() {
         ElKimiyaPrefs.saveTheme(this, mode)
         browser?.let { installThemeStartScript(it) }
         val isDark = resolveDark(this, mode)
+        lastSystemThemeDark = isDark
         val view = browser ?: return
         if (!originAllowed(Uri.parse(view.url ?: ""))) return
         view.evaluateJavascript("(function(){localStorage.setItem('elk.dark','$isDark');location.reload();})();", null)
@@ -283,8 +237,34 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        val latest = ElKimiyaPrefs.theme(this)
-        if (themeMode != latest) changeTheme(latest)
+        val latestTheme = ElKimiyaPrefs.theme(this)
+        val latestLanguage = ElKimiyaPrefs.language(this)
+        val resolved = resolveDark(this, latestTheme)
+        if (themeMode == latestTheme && languageMode == latestLanguage && lastSystemThemeDark == resolved) return
+        lastSystemThemeDark = resolved
+        themeMode = latestTheme
+        languageMode = latestLanguage
+        val view = browser ?: return
+        installThemeStartScript(view)
+        if (!originAllowed(Uri.parse(view.url ?: ""))) return
+        val dark = resolveDark(this, latestTheme)
+        view.evaluateJavascript("try{localStorage.setItem('elk.dark','$dark');localStorage.setItem('elk.language','$latestLanguage');location.reload()}catch(e){}", null)
+    }
+
+    /** Network-first document reload. Clears HTTP cache, NEVER localStorage/user progress. */
+    private fun reloadLatestWeb() {
+        val view = browser ?: return
+        val uri = Uri.parse(view.url ?: WEB_ROOT)
+        if (!originAllowed(uri)) {
+            toast("Muat ulang hanya tersedia pada halaman El-Kīmiyā")
+            return
+        }
+        val fragment = uri.encodedFragment?.let { "#$it" } ?: ""
+        val nonce = System.currentTimeMillis()
+        view.stopLoading()
+        view.clearCache(true) // HTTP cache only; no cookies, WebStorage or offline notes are erased.
+        view.loadUrl("${WEB_ROOT}?elk_android=v32&refresh=$nonce$fragment")
+        toast("Mengambil website terbaru; tunggu sampai Vercel Ready")
     }
 
     private fun installThemeStartScript(view: WebView) {
@@ -292,9 +272,10 @@ class MainActivity : ComponentActivity() {
         themeStartScript = null
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             val dark = resolveDark(this, themeMode)
+            val language = if (languageMode == "en") "en" else "id"
             themeStartScript = WebViewCompat.addDocumentStartJavaScript(
                 view,
-                "try{localStorage.setItem('elk.dark','$dark')}catch(e){}",
+                "try{if(localStorage.getItem('elk.dark')===null)localStorage.setItem('elk.dark','$dark');if(localStorage.getItem('elk.language')===null)localStorage.setItem('elk.language','$language')}catch(e){}",
                 setOf(WEB_ORIGIN)
             )
         }
@@ -316,6 +297,9 @@ class MainActivity : ComponentActivity() {
         setBackgroundColor(if (resolveDark(this@MainActivity, themeMode))
             android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.WHITE)
         settings.javaScriptEnabled = true
+        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3"
+        nativeAI83?.invalidate()
+        nativeAI83 = NativeAiBridge83(this@MainActivity, this).also { it.install() }
         // React provides its own dark design; never invert its colors algorithmically.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
             WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, false)
@@ -357,6 +341,10 @@ class MainActivity : ComponentActivity() {
                 return uri.scheme != "about" && uri.scheme != "blob"
             }
             override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
+                nativeAI83?.invalidate()
+                pageEpoch++
+                openingNative = false
+                NativeTutorAccess.revoke()
                 busy = true
                 errorLoading = false
             }
@@ -364,14 +352,18 @@ class MainActivity : ComponentActivity() {
                 busy = false
                 if (originAllowed(Uri.parse(url ?: ""))) {
                     injectDownloadSupport(view)
-                    if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-                        val desired = resolveDark(this@MainActivity, themeMode)
-                        view.evaluateJavascript("(function(){if(localStorage.getItem('elk.dark')!=='$desired'){localStorage.setItem('elk.dark','$desired');location.reload()}})();", null)
-                    }
+                    // V8.2: the website owns its stored appearance; do not force a reload.
                 }
             }
+            override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+                nativeAI83?.invalidate()
+                pageEpoch++
+                openingNative = false
+                if (!nativeRouteAllowed(url)) NativeTutorAccess.revoke()
+            }
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                if (request.isForMainFrame) { busy = false; errorLoading = true }
+                if (request.isForMainFrame) { nativeAI83?.invalidate(); pageEpoch++; openingNative = false; NativeTutorAccess.revoke(); busy = false; errorLoading = true }
             }
         }
         webChromeClient = object : WebChromeClient() {
@@ -458,7 +450,31 @@ class MainActivity : ComponentActivity() {
     private fun processWebMessage(raw: String) {
         try {
             val packet = JSONObject(raw)
+            if (!originAllowed(Uri.parse(browser?.url ?: ""))) return
             when (packet.optString("kind")) {
+                "native-access" -> {
+                    if (!packet.optBoolean("allowed", false)) {
+                        pageEpoch++
+                        openingNative = false
+                        NativeTutorAccess.revoke()
+                    }
+                }
+                "native-ai" -> launchNativeTutor()
+                "preferences" -> {
+                    val chosenLanguage = packet.optString("language", "")
+                    if (chosenLanguage == "en" || chosenLanguage == "id") {
+                        languageMode = chosenLanguage
+                        ElKimiyaPrefs.saveLanguage(this, chosenLanguage)
+                    }
+                    if (packet.has("dark") && !packet.isNull("dark")) {
+                        val dark = packet.optBoolean("dark")
+                        if (dark != resolveDark(this, themeMode)) {
+                            themeMode = if (dark) ThemeMode.DARK else ThemeMode.LIGHT
+                            ElKimiyaPrefs.saveTheme(this, themeMode)
+                            lastSystemThemeDark = resolveDark(this, themeMode)
+                        }
+                    }
+                }
                 "theme" -> {
                     val chosen = if (packet.optBoolean("dark")) ThemeMode.DARK else ThemeMode.LIGHT
                     if (themeMode != chosen) {
@@ -467,18 +483,18 @@ class MainActivity : ComponentActivity() {
                         browser?.let { installThemeStartScript(it) }
                     }
                 }
-                "print" -> printCurrentPage()
-                "download" -> {
+                "print" -> withCurrentWorkspace { printCurrentPage() }
+                "download" -> withCurrentWorkspace {
                     val name = safeFilename(packet.optString("name", "ElKimiya_Report.json"))
                     val mime = packet.optString("mime").lowercase(Locale.ROOT)
-                    if (!(mime.startsWith("text/") || mime.startsWith("application/json"))) return
+                    if (!(mime.startsWith("text/") || mime.startsWith("application/json"))) return@withCurrentWorkspace
                     val data = packet.optString("data")
                     val pos = data.indexOf(";base64,")
-                    if (!data.startsWith("data:") || pos !in 5..80) return
+                    if (!data.startsWith("data:") || pos !in 5..80) return@withCurrentWorkspace
                     val encoded = data.substring(pos + 8)
-                    if (encoded.length > 2_800_000) return
+                    if (encoded.length > 2_800_000) return@withCurrentWorkspace
                     val bytes = Base64.decode(encoded, Base64.DEFAULT)
-                    if (bytes.size > MAX_BLOB_BYTES) { toast("File terlalu besar untuk ekspor aplikasi"); return }
+                    if (bytes.size > MAX_BLOB_BYTES) { toast("File terlalu besar untuk ekspor aplikasi"); return@withCurrentWorkspace }
                     reportFilename = name
                     reportBytes = bytes
                     saveReport.launch(name)
@@ -488,51 +504,53 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun injectDownloadSupport(view: WebView) {
-        // Captures programmatic <a download>.click() used by Research Mission.
-        // Works only if origin-scoped WebMessageListener is supported by Android WebView.
-        val code = """
-            (function () {
-              if (window.__elkAndroidReady) return;
-              window.__elkAndroidReady = true;
-              // The native AI pill replaces the duplicate React tutor FAB in APK only.
-              // The published website and its 5-tab navigation are unchanged.
-              var shellStyle = document.createElement('style');
-              shellStyle.id = 'elkimiya-android-shell-v2';
-              shellStyle.textContent = '.mobile-tutor-fab{display:none!important;}';
-              (document.head || document.documentElement).appendChild(shellStyle);
-              if (!window.ElKimiyaDownload || !window.ElKimiyaDownload.postMessage) return;
-              // Sync explicit React theme toggles back to the native screen.
-              var lastTheme = localStorage.getItem('elk.dark');
-              document.addEventListener('click', function () {
-                setTimeout(function () {
-                  var currentTheme = localStorage.getItem('elk.dark');
-                  if ((currentTheme === 'true' || currentTheme === 'false') && currentTheme !== lastTheme) {
-                    lastTheme = currentTheme;
-                    window.ElKimiyaDownload.postMessage(JSON.stringify({kind:'theme',dark:currentTheme==='true'}));
-                  }
-                }, 120);
-              }, true);
-              document.addEventListener('click', function (ev) {
-                var target = ev.target;
-                var a = target && target.closest ? target.closest('a[download]') : null;
-                if (!a || !a.href || !a.href.startsWith('blob:')) return;
-                ev.preventDefault(); ev.stopImmediatePropagation();
-                fetch(a.href).then(function(r){return r.blob();}).then(function(blob){
-                  if(blob.size > 2097152) { alert('Laporan melebihi batas 2 MB.'); return; }
-                  var reader = new FileReader();
-                  reader.onload = function () {
-                    window.ElKimiyaDownload.postMessage(JSON.stringify({
-                      kind:'download',name:a.getAttribute('download')||'ElKimiya_Report.json',
-                      mime:blob.type||'text/plain',data:reader.result
-                    }));
-                  };
-                  reader.readAsDataURL(blob);
-                }).catch(function(){alert('Gagal menyiapkan laporan. Gunakan browser Chrome.');});
-              }, true);
-              window.print = function(){ window.ElKimiyaDownload.postMessage(JSON.stringify({kind:'print'})); };
-            })();
-        """.trimIndent()
-        view.evaluateJavascript(code, null)
+        if (!originAllowed(Uri.parse(view.url ?: ""))) return
+        if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) return
+        try {
+            val code = assets.open("elkimiya_android_v82.js").bufferedReader(Charsets.UTF_8).use { it.readText() }
+            view.evaluateJavascript(code, null)
+        } catch (_: Exception) { NativeTutorAccess.revoke() }
+    }
+
+    private fun nativeRouteAllowed(raw: String?): Boolean {
+        val uri = Uri.parse(raw ?: "")
+        return originAllowed(uri) && (uri.path == "/" || uri.path.isNullOrEmpty()) &&
+                (uri.fragment == "tutor" || uri.fragment == "hybrid")
+    }
+
+    private fun launchNativeTutor() {
+        val view = browser ?: return
+        if (openingNative || busy || errorLoading || !nativeRouteAllowed(view.url)) return
+        if (NativeTutorAccess.allowed.value || isFinishing || isDestroyed) return
+        openingNative = true
+        val epoch = pageEpoch
+        view.evaluateJavascript("Boolean(window.__elkV82NativeAllowed && window.__elkV82NativeAllowed())") { result ->
+            openingNative = false
+            if (result != "true" || epoch != pageEpoch || browser !== view ||
+                !nativeRouteAllowed(view.url) || busy || errorLoading || isFinishing || isDestroyed) {
+                return@evaluateJavascript
+            }
+            NativeTutorAccess.grant()
+            try {
+                startActivity(Intent(this, NativeTutorActivity::class.java))
+            } catch (_: Exception) {
+                NativeTutorAccess.revoke()
+                toast(if (languageMode == "en") "Native tutor could not open" else "Tutor native gagal dibuka")
+            }
+        }
+    }
+
+    private fun withCurrentWorkspace(action: () -> Unit) {
+        val view = browser ?: return
+        if (!originAllowed(Uri.parse(view.url ?: "")) || busy || errorLoading) return
+        val epoch = pageEpoch
+        view.evaluateJavascript("Boolean(window.__elkV82WorkspaceAllowed && window.__elkV82WorkspaceAllowed())") { result ->
+            if (result == "true" && epoch == pageEpoch && browser === view &&
+                originAllowed(Uri.parse(view.url ?: "")) && !busy && !errorLoading && !isFinishing && !isDestroyed) {
+                try { action() }
+                catch (_: Exception) { toast(if (languageMode == "en") "Export unavailable" else "Ekspor laporan tidak tersedia") }
+            }
+        }
     }
 
     private fun printCurrentPage() {
@@ -553,6 +571,11 @@ class MainActivity : ComponentActivity() {
     private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     override fun onDestroy() {
+        nativeAI83?.invalidate()
+        nativeAI83 = null
+        pageEpoch++
+        openingNative = false
+        NativeTutorAccess.revoke()
         pickerCallback?.onReceiveValue(null)
         pickerCallback = null
         cameraRequest?.deny()
