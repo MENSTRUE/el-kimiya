@@ -1,0 +1,217 @@
+/* ELKIMIYA_V84_UI — shared Web + Android visual refinement.
+ * Loaded last; paired foreground/background colors avoid earlier light-only
+ * overrides. Brand assets, protected routes, PDF contents and AI data are unchanged.
+ */
+:root[data-elk-theme="dark"],:root[data-elk-theme="dark"] body{
+  background:#122434;color:#edf2ee;color-scheme:dark;
+}
+:root[data-elk-theme="light"],:root[data-elk-theme="light"] body{
+  background:#f8f7f3;color:#112f49;color-scheme:light;
+}
+.app .v84-session-splash{
+  min-height:100vh;min-height:100dvh;width:100%;padding:clamp(24px,5vw,60px);
+  display:grid;place-items:center;text-align:center;
+  background:radial-gradient(ellipse at 50% 42%,#fdfcf8 0%,#edf0ed 100%);color:#112f49;
+}
+.app.dark .v84-session-splash{
+  background:radial-gradient(ellipse at 50% 42%,#1b3445 0%,#122434 70%);color:#edf2ee;
+}
+.v84-session-inner{width:min(100%,470px);display:flex;flex-direction:column;align-items:center;gap:28px;overflow-wrap:anywhere}
+.v84-session-inner .brand-lockup{flex-direction:column;gap:16px;text-align:center}
+.v84-session-inner .brand-asset{height:clamp(78px,15vw,112px);max-width:100%;object-fit:contain}
+.v84-session-inner .brand-wordmark strong{font-size:clamp(28px,6vw,38px);white-space:normal}
+.v84-session-inner .brand-wordmark small{font-size:13px;opacity:1;white-space:normal;line-height:1.55}
+.v84-session-inner .brand-wordmark small[lang="ar"]{font-size:20px}
+.v84-session-copy{display:grid;justify-items:center;gap:12px}
+.v84-session-copy h2{font:500 clamp(22px,5vw,28px)/1.25 Georgia,serif;margin:0}
+.v84-session-copy p{color:#516778;font-size:14px;line-height:1.7;margin:0;max-width:40ch}
+.app.dark .v84-session-copy p{color:#c4d7df}
+.v84-session-spinner{display:block;width:32px;height:32px;border:3px solid #cadbdc;border-top-color:#315a66;border-radius:50%;animation:v84-spin .9s linear infinite}
+.app.dark .v84-session-spinner{border-color:#375566;border-top-color:#aad9df}
+@keyframes v84-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.v84-session-spinner{animation:none}}
+.v84-session-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;width:100%}
+.v84-session-actions button{min-height:44px}
+
+/* Readable controls, surface badges and text links. */
+.app.dark .secondary-button{background:#213b4d;color:#eef6f8;border-color:#526c7e}
+.app.dark .secondary-button:hover:not(:disabled){background:#34556b;color:#ffffff;border-color:#87b1c2}
+.app.dark .primary-button{background:#a8d4df;color:#102a3b;border-color:#a8d4df}
+.app.dark .primary-button:hover:not(:disabled){background:#c1e5ec;color:#102a3b}
+.app.dark .badge,.app.dark .engine-pill .badge{background:#284957;color:#d0edf2;border-color:#486c79}
+.app.dark .badge-gold{background:#4a3c2b;color:#ffe1a6;border-color:#806944}
+.app.dark .badge-neutral{background:#324553;color:#dce8ee;border-color:#566e7b}
+.app.dark .source-box .badge{background:#324553;color:#dce8ee}
+.app.dark .text-button,.app.dark .tutor-inline-actions button{color:#b1dce7}
+.app.dark .engine-pill{background:#253f50;color:#e1f0f5}
+.app.dark .engine-pill svg{color:#b4dce5}
+.app.dark .engine-pill.offline{background:#4a3c2b;color:#ffe1a6}
+.app.dark .toast{background:#284957;color:#f0f8fa}
+.app.dark .toast svg{color:#c4e6ed}
+.app.dark .v44-view-switch button,.app.dark .v45-back button{background:#28495b;color:#f1f8fa;border-color:#638393}
+.app.dark .v44-view-switch button.is-active{background:#a8d4df;color:#102a3b}
+.app.dark .v44-view-switch span{color:#c5d8e2}
+.app.dark .quiz-top>div .eyebrow,.app.dark .coefficient-lab .eyebrow,.app.dark .answer-section .eyebrow{color:#bfced7}
+.app.dark .elk-language-switch{background:#223c4e;color:#e1edf2;border-color:#526e7f}
+.app.dark .elk-language-switch button:not(.active){color:#c5d9e3}
+.app.dark .elk-language-switch button.active{background:#edc986;color:#30291d}
+.app.dark .icon-button,.app.dark .v81-icon{color:#e5f2f5}
+.app.dark .v83-menu-grid button:not(.active){background:#1b3445;color:#e5f0f4;border-color:#486579}
+.app.dark .v83-menu-grid button:hover{background:#294b5e;color:#f5fbfd}
+.app.dark .v83-feature-dialog::backdrop{background:#07121ce0}
+.app.dark .v83-menu-search input::placeholder{color:#bdd1db}
+.app.dark :is(.global-search,.notes-toolbar,.source-question,.composer) :is(input,textarea)::placeholder{color:#adbfca;opacity:1}
+.app.dark .inline-alert{background:#4b2929;color:#ffe0d8;border-color:#ae7065}
+.app.dark .inline-hint{background:#4a3c2b;color:#ffe4b5;border-color:#8f7449}
+.app .inline-alert,.app .inline-hint{overflow-wrap:anywhere;max-width:100%;min-width:0}
+.app .inline-alert span,.app .inline-hint span{min-width:0;overflow-wrap:anywhere}
+.app.dark .error-text{color:#ffb6aa}
+.app.dark .source-box{background:#1b3445;color:#edf4f6;border-color:#4d6979}
+.app.dark .source-box > span,.app.dark .input-source-citations small{color:#c6d9e2}
+.app.dark .source-box p{color:#d3e6ed!important}
+.app.dark .source-note,.app.dark .source-index-status,.app.dark .source-hits article small,.app.dark .source-book-pages,.app.dark .source-book-code,.app.dark .source-book>small{color:#bfd5dd}
+.app.dark .source-message,.app.dark .source-index code,.app.dark .source-topic-list span{background:#29485b;color:#e0eff4;border-color:#5a7989}
+.app.dark .source-action{background:#254457;color:#eff6f8;border-color:#628292}
+.app.dark .source-action.primary{background:#a8d4df;color:#102a3b;border-color:#a8d4df}
+.app.dark .source-viewer>div{background:#1b3445;color:#eaf5f8}
+.app.dark .source-local-count{color:#b3ded1}
+/* PDF reader remains on original document colors; no PDF or logo inversion. */
+.app.dark .passage-select{background:#213c4e;color:#eef6f8;border-color:#536f80}
+.app.dark .passage-select small{color:#c5d8e2}
+.app.dark .passage-select:hover,.app.dark .passage-select[aria-pressed=true]{background:#31586b;color:#ffffff}
+.app.dark .passage-select span.selected{box-shadow:inset 0 -9px #3d6576}
+
+/* Practice & pH: pair controls and feedback with readable, distinct colors. */
+.app.dark .coefficient-equation{background:#192f3e;color:#edf5f7}
+.app.dark .coefficient-term b,.app.dark .coefficient-term>span{color:#d6edf2}
+.app.dark .coefficient-stepper{background:#28495b;color:#f5fbfc;border-color:#648692}
+.app.dark .coefficient-stepper strong,.app.dark .coefficient-stepper button{color:#f0f8fb}
+.app.dark .coefficient-stepper button:hover:not(:disabled){background:#3c6377}
+.app.dark .coefficient-stepper button:disabled{opacity:.55}
+.app.dark .balance-result{background:#4b3a2d;color:#ffe3b7}
+.app.dark .balance-result.is-balanced{background:#224c43;color:#c7f2df}
+.app.dark .ph-value span,.app.dark .range-labels,.app.dark .ph-card>p{color:#c3d9e3}
+.app.dark .ph-explanation{color:#d1e3eb!important}
+.app.dark .ph-card input{accent-color:#a8d4df}
+.app.dark .ph-card > div:first-child > span,.app.dark .module-link > span{background:#2b4c5b;color:#d0edf2}
+.app.dark .answer-grid button.selected{background:#2b4b61;color:#f0f8fb;border-color:#87bdd2}
+.app.dark .answer-grid button.correct{background:#224c43;color:#d4f6e7;border-color:#82bca8}
+.app.dark .answer-grid button.incorrect{background:#4b2929!important;color:#ffe3dc;border-color:#d68f84!important}
+.app.dark .answer-grid button>span{background:#354d5e;color:#e5f2f6}
+.app.dark .answer-grid button svg{color:#a2e3ce}
+.app.dark .feedback{background:#224c43;color:#d4f6e7}
+.app.dark .feedback-wrong{background:#4b2929!important;color:#ffe3dc!important;border-color:#aa6c61!important}
+.app.dark .feedback-wrong svg,.app.dark .feedback-wrong strong{color:#ffe3dc!important}
+
+/* V6.3 practice bank classes still used by the V8.3 learner. */
+.app.dark .v63-quiz,.app.dark .v63-glossary{
+  --v63-ink:#edf5f7;--v63-muted:#c4d6de;--v63-line:#506a78;--v63-pine:#c0edda;--v63-aqua:#a9ded3;
+  color:#edf5f7;
+}
+.app.dark .v63-stat,.app.dark .v63-filter-panel,.app.dark .v63-exam,.app.dark .v63-glossary-grid article{background:#1b3445;color:#edf5f7;border-color:#506a78}
+.app.dark .v63-stat small,.app.dark .v63-panel-heading small,.app.dark .v63-field,.app.dark .v63-exam-top,.app.dark .v63-exam-top span:last-child,.app.dark .v63-question-tip,.app.dark .v63-quiz-footer,.app.dark .v63-no-results{color:#c4d6de}
+.app.dark .v63-panel-heading,.app.dark .v63-exam-actions{border-color:#506a78}
+.app.dark .v63-exam-progress{background:#364f5e}
+.app.dark .v63-field select,.app.dark .v63-search{background:#213e50;color:#eef6f8;border-color:#647f8e}
+.app.dark .v63-search input{color:#eef6f8}
+.app.dark .v63-search input::placeholder,.app.dark .v63-topics b{color:#c3d7e2;opacity:1}
+.app.dark .v63-topics button{background:#243f51;color:#dbeef4}
+.app.dark .v63-topics button:hover,.app.dark .v63-topics button.on{background:#285546;color:#d9f7e8;border-color:#91bda8}
+.app.dark .v63-source-note{background:#4a3c2b;color:#ffe1b7}
+.app.dark .v63-source-note :is(a,svg){color:#ffe1b7}
+.app.dark .v63-question-meta span{background:#4a3c2b;color:#ffe1b7}
+.app.dark .v63-question-meta span+span{background:#493958;color:#f0e1ff}
+.app.dark .v63-choices button{background:#243f51;color:#f0f7fa;border-color:#566f81}
+.app.dark .v63-choices button:hover:not(:disabled){background:#34566a;color:#ffffff}
+.app.dark .v63-choices button.selected{background:#55432b;color:#ffe3bb;border-color:#e2ba7b}
+.app.dark .v63-choices button.correct{background:#224c43;color:#d4f6e7;border-color:#82bca8}
+.app.dark .v63-choices button.wrong{background:#4b2929;color:#ffe3dc;border-color:#d68f84}
+.app.dark .v63-choices .v63-letter{background:#354e60;color:#e5f2f7}
+.app.dark .v63-choices button.selected .v63-letter{background:#f5d19a;color:#382819}
+.app.dark .v63-choices button.correct .v63-letter{background:#a4ddc4;color:#183b30}
+.app.dark .v63-choices button.wrong .v63-letter{background:#eab6af;color:#482929}
+.app.dark .v63-explanation.is-correct{background:#224c43;color:#d4f6e7;border-color:#82bca8}
+.app.dark .v63-explanation.is-wrong{background:#4a3c2b;color:#ffe1b7;border-color:#88714a}
+.app.dark .v63-exam-actions{background:#192f3e;color:#edf5f7}
+.app.dark .v63-secondary{background:#29495b;color:#edf5f7;border-color:#648692}
+.app.dark .v63-primary,.app.dark .v63-no-results button{background:#a4ddc4;color:#123d31;border-color:#a4ddc4}
+.app.dark .v63-primary:hover:not(:disabled){background:#c0efdc;color:#123d31}
+.app.dark .v63-quiz-footer button{color:#efd3ac}
+.app.dark .v63-glossary-bar>span{color:#d5e7eb}
+.app.dark .v63-glossary-bar label,.app.dark .v63-glossary-bar button{background:#29495b;color:#edf5f7;border-color:#648692}
+.app.dark .v63-glossary-bar input,.app.dark .v63-glossary-grid article>button{color:#edf5f7}
+.app.dark .v63-glossary-grid article.is-open{background:#2b4859}
+
+/* Hybrid simulation controls remain clearly separate from real SDK results. */
+.app.dark .scenario-list button.active,.app.dark .segmented-stack button.active{background:#2b4b61;color:#f2f8fb;border-color:#84b9cd}
+.app.dark .scenario-list button.active .radio{border-color:#a1d7e7}
+.app.dark .scenario-list small,.app.dark .status-rows span,.app.dark .preference-panel>p{color:#c5d8e1}
+.app.dark .result-log,.app.dark .live-result{background:#224c43;color:#d4f6e7;border-color:#80aa98}
+.app.dark .result-log p,.app.dark .result-log strong{color:#d4f6e7}
+.app.dark .result-log.error{background:#4b2929;color:#ffe3dc;border-color:#ae7065}
+.app.dark .result-log.error p,.app.dark .result-log.error strong{color:#ffe3dc}
+.app.dark .node-icon,.app.dark .steps>div span,.app.dark .reference-card>span{background:#284957;color:#d0edf2}
+.app.dark .engine-node.active{border-color:#84b9cd}
+.app.dark .engine-node li svg,.app.dark .privacy-note svg{color:#a9d8e0}
+.app.dark .v83-native-model{background:#192f3e;color:#edf5f7;border-color:#526e7e}
+
+/* Larger source provenance & lab readouts. Preserve formula/PDF contents verbatim. */
+.app .source-box{overflow-wrap:anywhere}
+.app .source-box>div{flex-wrap:wrap;gap:6px}
+.app .source-box strong{font-size:12px}
+.app .source-box p{font-size:12px!important;line-height:1.55}
+.app .source-box>span,.app .input-source-citations small{font-size:12px;line-height:1.55}
+.app .input-source-citations{display:grid;justify-content:stretch}
+.app .ph-card > p,.app .ph-value span,.app .range-labels,.app .scenario-list small,.app .status-rows > div,.app .result-log p,.app .preference-panel > p,.app .segmented-stack button{font-size:12px;line-height:1.45}
+.app .ph-card > div:first-child > span.badge{width:auto;height:auto;padding:6px 9px;display:inline-flex;align-self:center;color:#3c6172;background:#ebf0ec}
+.app.dark .ph-card > div:first-child > span.badge{background:#284957;color:#d0edf2}
+.app .scenario-list strong,.app .engine-node > p,.app .engine-node li{font-size:13px}
+.app .scenario-list button{min-height:44px}
+.app .status-rows > div{gap:12px;padding:8px 0}
+.app .status-rows strong{text-align:right;overflow-wrap:anywhere}
+.app .segmented-stack button{min-height:44px}
+
+/* Tutor: the composer is in normal flow (never overlays a previous response).
+ * At desktop widths only the conversation pane scrolls. On phones document
+ * scroll is used and the app reserves the bottom navigation + system inset.
+ */
+.app[data-elk-ai-v83=learner] .conversation{min-width:0;display:flex;flex-direction:column;padding:clamp(14px,3vw,32px);gap:14px}
+.app[data-elk-ai-v83=learner] .tutor-welcome{min-height:unset;flex:1 0 auto;padding:24px 0}
+.app[data-elk-ai-v83=learner] .answer-thread{width:100%;min-width:0;max-width:760px;margin:0 auto;padding-bottom:4px}
+.app[data-elk-ai-v83=learner] .composer{position:relative;inset:auto;z-index:auto;margin:12px auto 0;width:100%;max-width:760px;padding:14px;flex-shrink:0}
+.app[data-elk-ai-v83=learner] .composer textarea{font-size:16px;min-height:72px;height:auto;line-height:1.5;resize:vertical;max-height:260px}
+.app[data-elk-ai-v83=learner] .composer > div{gap:12px}
+.app[data-elk-ai-v83=learner] .composer > div span{font-size:11px;line-height:1.45;min-width:0;overflow-wrap:anywhere}
+.app[data-elk-ai-v83=learner] .composer > div button{width:44px;height:44px;flex:0 0 44px}
+.app[data-elk-ai-v83=learner] .user-message{font-size:14px;line-height:1.6}
+.app[data-elk-ai-v83=learner] .answer-intro strong,.app[data-elk-ai-v83=learner] .answer-intro small{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.app[data-elk-ai-v83=learner] .answer-section>p:not(.eyebrow),.app[data-elk-ai-v83=learner] .answer-section.steps p:not(.eyebrow){font-size:14px;line-height:1.7}
+.app.dark[data-elk-ai-v83=learner] .composer{background:#1b3445;color:#f0f7fa;border-color:#648395}
+.app.dark[data-elk-ai-v83=learner] .composer > div span{color:#cedee6}
+.app.dark[data-elk-ai-v83=learner] .composer > div button{background:#a8d4df;color:#102a3b}
+.app.dark[data-elk-ai-v83=learner] .prompt-grid button{background:#243e50;color:#eef6fa;border-color:#536e7f}
+.app.dark[data-elk-ai-v83=learner] .answer-actions button{background:#243e50;color:#eef6fa;border-color:#536e7f}
+@media(max-width:760px){
+  .app[data-elk-ai-v83=learner]{--v84-bottom-nav:76px}
+  .app[data-elk-ai-v83=learner] .app-shell{padding-bottom:calc(var(--v84-bottom-nav) + env(safe-area-inset-bottom))}
+  .app[data-elk-ai-v83=learner] .toast{bottom:calc(var(--v84-bottom-nav) + 12px + env(safe-area-inset-bottom))}
+  .app[data-elk-ai-v83=learner] .mobile-nav{height:calc(var(--v84-bottom-nav) + env(safe-area-inset-bottom));padding:8px 8px max(8px,env(safe-area-inset-bottom));z-index:65}
+  .app.dark[data-elk-ai-v83=learner] .mobile-nav{background:#142b3b;border-color:#476373}
+  .app.dark[data-elk-ai-v83=learner] .mobile-nav button{color:#c3d6de}
+  .app.dark[data-elk-ai-v83=learner] .mobile-nav button.active{color:#e0f8fb}
+  .app[data-elk-ai-v83=learner] .mobile-nav button.active{border-radius:12px;background:#d9e8ec;color:#1b4a5d}
+  .app.dark[data-elk-ai-v83=learner] .mobile-nav button.active{background:#294b5e;color:#e0f8fb}
+  .app[data-elk-ai-v83=learner] .tutor-page{display:block;min-height:0;height:auto;overflow:visible;padding:0}
+  .app[data-elk-ai-v83=learner] .conversation{min-height:0;height:auto;overflow:visible;padding:14px 14px 24px}
+  .app[data-elk-ai-v83=learner] .tutor-welcome{padding:20px 0}
+  .app[data-elk-ai-v83=learner] .tutor-context,.app[data-elk-ai-v83=learner] .tutor-references{display:none}
+  .app[data-elk-ai-v83=learner] .v83-tutor-tools{display:flex}
+  .app[data-elk-ai-v83=learner] .v83-menu-trigger{display:inline-flex}
+  .app[data-elk-ai-v83=learner] .answer-thread{height:auto;overflow:visible}
+  .app[data-elk-ai-v83=learner] .v82-special-nav{flex-wrap:wrap}
+  .app .coefficient-stepper button{min-width:36px;min-height:44px}
+  .app .quiz-actions{gap:8px;flex-wrap:wrap}
+  .app .quiz-actions button{flex:1 1 140px}
+}
+/* Scanner already owns its fullscreen navigation; don't reserve phantom nav space. */
+@media(max-width:760px){.app[data-elk-ai-v83=learner] .app-shell:has(.v82-special-nav):not(:has(+.mobile-nav)){padding-bottom:0}}

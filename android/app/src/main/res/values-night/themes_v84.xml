@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ElKimiyaTheme84" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#0C1E30</item>
+        <item name="android:statusBarColor">#0C1E30</item>
+        <item name="android:navigationBarColor">#0C1E30</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:colorAccent">#B5D7E2</item>
+    </style>
+</resources>

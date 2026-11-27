@@ -56,6 +56,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -113,6 +114,8 @@ class MainActivity : ComponentActivity() {
     private var cameraRequest: PermissionRequest? = null
     private var reportBytes: ByteArray? = null
     private var reportFilename: String = "ElKimiya_Report.json"
+    // ELKIMIYA_V84_NATIVE_SPLASH: full window canvas until first document completes.
+    private var firstDocument84 by mutableStateOf(true)
     private var busy by mutableStateOf(true)
     private var errorLoading by mutableStateOf(false)
     private var themeMode by mutableStateOf(ThemeMode.SYSTEM)
@@ -163,6 +166,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG)
         themeMode = ElKimiyaPrefs.theme(this)
         languageMode = ElKimiyaPrefs.language(this)
         NativeTutorAccess.revoke()
@@ -190,15 +194,33 @@ class MainActivity : ComponentActivity() {
                     // Do NOT draw another native toolbar above that header.
                     AndroidView(factory = { newBrowser() }, modifier = Modifier.fillMaxSize())
 
-                    if (busy) {
+                    if (busy && firstDocument84) {
+                        Column(
+                            modifier = Modifier.fillMaxSize().background(palette.canvas).padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painterResource(if (dark) R.drawable.elkimiya_logo_white else R.drawable.elkimiya_logo_navy),
+                                contentDescription = "El-Kīmiyā",
+                                modifier = Modifier.size(96.dp)
+                            )
+                            Spacer(Modifier.size(20.dp))
+                            Text("El-Kīmiyā", fontWeight = FontWeight.Bold, fontSize = 27.sp, color = palette.title)
+                            Text(if (languageMode == "en") "Understand chemistry. Anywhere." else "Pahami kimia. Di mana saja.", color = palette.secondary)
+                            Spacer(Modifier.size(28.dp))
+                            CircularProgressIndicator(modifier = Modifier.size(32.dp), color = palette.primary)
+                            Spacer(Modifier.size(12.dp))
+                            Text(if (languageMode == "en") "Loading learning space…" else "Memuat ruang belajar…", color = palette.secondary)
+                        }
+                    } else if (busy) {
                         LinearProgressIndicator(Modifier.fillMaxWidth().align(Alignment.TopCenter))
                     }
                     if (errorLoading) {
                         Column(
-                            modifier = Modifier.align(Alignment.Center).background(palette.canvas)
-                                .padding(24.dp),
+                            modifier = Modifier.fillMaxSize().background(palette.canvas).padding(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                         ) {
                             Image(
                                 painterResource(if (dark) R.drawable.elkimiya_logo_white else R.drawable.elkimiya_logo_navy),
@@ -295,9 +317,9 @@ class MainActivity : ComponentActivity() {
     private fun newBrowser(): WebView = WebView(this).apply {
         browser = this
         setBackgroundColor(if (resolveDark(this@MainActivity, themeMode))
-            android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.WHITE)
+            android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.rgb(248, 247, 242))
         settings.javaScriptEnabled = true
-        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3"
+        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3 ElKimiyaRelease/8.4"
         nativeAI83?.invalidate()
         nativeAI83 = NativeAiBridge83(this@MainActivity, this).also { it.install() }
         // React provides its own dark design; never invert its colors algorithmically.
@@ -349,6 +371,7 @@ class MainActivity : ComponentActivity() {
                 errorLoading = false
             }
             override fun onPageFinished(view: WebView, url: String?) {
+                firstDocument84 = false
                 busy = false
                 if (originAllowed(Uri.parse(url ?: ""))) {
                     injectDownloadSupport(view)
@@ -468,6 +491,7 @@ class MainActivity : ComponentActivity() {
                     }
                     if (packet.has("dark") && !packet.isNull("dark")) {
                         val dark = packet.optBoolean("dark")
+                        browser?.setBackgroundColor(if (dark) android.graphics.Color.rgb(12, 30, 48) else android.graphics.Color.rgb(248, 247, 242))
                         if (dark != resolveDark(this, themeMode)) {
                             themeMode = if (dark) ThemeMode.DARK else ThemeMode.LIGHT
                             ElKimiyaPrefs.saveTheme(this, themeMode)

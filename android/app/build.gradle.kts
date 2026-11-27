@@ -13,8 +13,8 @@ android {
         minSdk = 26 // Required by firebase-ai-ondevice
         targetSdk = 35
         // ELKIMIYA_ANDROID_WEB_V82
-        versionCode = 3
-        versionName = "0.8.3"
+        versionCode = 4
+        versionName = "0.8.4"
     }
     buildTypes {
         release { isMinifyEnabled = false }

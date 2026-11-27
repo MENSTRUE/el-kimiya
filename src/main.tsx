@@ -15,14 +15,17 @@ import './v8/platform.css'
 import './v8/access81.css'
 import './v8/access82.css'
 import './v8/mobile83.css'
+import './v8/visual84.css'
 
 // ELKIMIYA_V70_SYSTEM_THEME_BOOTSTRAP: on first visit only, respect system theme.
 // Never override a manual Light/Dark choice already stored by React or Android.
+let bootDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 try {
-  if (localStorage.getItem('elk.dark') === null) {
-    localStorage.setItem('elk.dark', String(window.matchMedia('(prefers-color-scheme: dark)').matches));
-  }
+  const saved = localStorage.getItem('elk.dark');
+  if (saved === null) localStorage.setItem('elk.dark', String(bootDark));
+  else bootDark = saved === 'true';
 } catch { /* Storage can be unavailable in private browser contexts. */ }
+document.documentElement.dataset.elkTheme = bootDark ? 'dark' : 'light';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -37,3 +40,4 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
     void navigator.serviceWorker.register('/sw.js').catch(() => { /* optional PWA enhancement */ });
   });
 }
+

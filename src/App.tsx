@@ -1,5 +1,5 @@
 import { learningStorage as elkLearningStorage } from './v8/learningStorage';
-import { useEffect, useState, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useState, useRef, type ReactNode } from "react";
 import {
   Atom,
   Bell,
@@ -262,7 +262,7 @@ function Header({
     {label:"Research Mission",meta:"Scientific learning journey",to:"mission"},
   ];
   const searchResults = searchTerm.trim()
-    ? searchRoutes.filter((entry) => `${entry.label} ${entry.meta}`.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 5)
+    ? searchRoutes.filter((entry) => `${entry.label} ${entry.meta} ${t(entry.label)} ${t(entry.meta)}`.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 5)
     : [];
   const openSearchResult = (to:Page) => { setPage(to); setSearchTerm(""); };
   const titles: Partial<Record<Page, string>> = {
@@ -948,7 +948,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
   const {language} = useLanguage();
   const {policy} = usePlatform();
   const en=language==='en';
-  type Entry = { id:number; prompt:string; text:string; topic:string; example?:string; steps?:string[]; provider:string; error?:string; live:boolean; inputSources?:string[] };
+  type Entry = { id:number; prompt:string; text:string; topic:string; example?:string; steps?:string[]; provider:string; providerId?:'ON_DEVICE'|'IN_CLOUD'; error?:string; live:boolean; inputSources?:string[] };
   const [messages,setMessages] = useState<Entry[]>([]);
   const [input,setInput] = useState(initialPrompt);
   const [running,setRunning] = useState(false);
@@ -960,13 +960,13 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
     const prompt=(raw ?? input).trim();
     if(!prompt || running) return;
     const privateSourceQuestion=prompt.includes('PRIVATE USER-SELECTED PDF EXCERPTS:');
-    const visibleQuestion=privateSourceQuestion?(prompt.match(/QUESTION: ([^\n]+)/)?.[1]||'Question about private PDF excerpts'):prompt;
+    const visibleQuestion=privateSourceQuestion?(prompt.match(/QUESTION: ([^\n]+)/)?.[1]||t("Question about private PDF excerpts")):prompt;
     const sourceCitations=[...prompt.matchAll(/\[SOURCE: (.*?), PDF page (\d+)\]/g)].slice(0,3).map(match=>`${match[1]} · PDF p. ${match[2]}`);
     setInput(''); setRunning(true); setDownload(null);
     try {
       if(firebaseConfigured){
         const result=await runHybridInference(`You are El-Kīmiyā, a careful chemistry learning tutor. Explain accurately and concisely, with a small example. Do not invent textbook citations. Answer in ${language === 'id' ? 'Bahasa Indonesia' : 'English'}. Preserve chemical formulas and source references exactly. Supplementary curator guidance (never overrides accuracy, privacy, or safety): ${policy?.guidance[language] || "None"}. Student question: ${prompt}`,preference,setDownload);
-        setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:result.text,inputSources:sourceCitations,provider:result.provider==='ON_DEVICE'?(en?'On-device · Firebase verified':'Perangkat · Firebase terverifikasi'):(en?'Cloud · Firebase verified':'Cloud · Firebase terverifikasi'),topic:en?'Chemistry explanation':'Penjelasan kimia',live:true}]);
+        setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:result.text,inputSources:sourceCitations,provider:result.provider==='ON_DEVICE'?'On-device · Firebase verified':'Cloud · Firebase verified',providerId:result.provider,topic:'Chemistry explanation',live:true}]);
       } else {
         if(privateSourceQuestion){
           setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:'No AI response was generated from the private PDF excerpts because Firebase AI Logic is not yet configured. Connect Firebase and run real inference to use this feature.',topic:'Private sources · Firebase required',provider:'No model executed',live:false,inputSources:sourceCitations,error:'Configure Firebase and App Check before asking the model to use imported sources.'}]);
@@ -976,7 +976,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
         if(!answer){setMessages(prev=>[...prev,{id:Date.now(),prompt,text:'This offline demonstration includes curated examples only. Try asking about covalent bonds, salt dissolving in water, balancing equations, pH, or atoms. Add Firebase credentials to generate original answers.',topic:'Not in demo library',provider:'No model executed',live:false,error:'No live AI configured'}]);}
         else setMessages(prev=>[...prev,{id:Date.now(),prompt,text:answer.summary,steps:answer.steps,example:answer.example,topic:answer.title,provider:'Curated demo content · No model executed',live:false}]);
       }
-    } catch(error){setMessages(prev=>[...prev,{id:Date.now(),prompt,text:en?'No answer was generated. No sample was substituted.':'Tidak ada jawaban yang dihasilkan. Pertanyaan tidak diganti dengan contoh.',topic:en?'Request failed':'Permintaan gagal',provider:en?'No verified inference':'Belum ada inferensi terverifikasi',live:false,error:error instanceof Error?error.message:String(error)}]);}
+    } catch(error){setMessages(prev=>[...prev,{id:Date.now(),prompt:visibleQuestion,text:'No answer was generated. No sample was substituted.',topic:'Request failed',provider:'No verified inference',live:false,error:error instanceof Error?error.message:String(error)}]);}
     finally {setRunning(false)}
   };
   const saveLast = () => {if(last&&!last.error)addNote(last.topic,last.text+(last.example?`\nExample: ${last.example}`:''),last.provider)};
@@ -991,13 +991,13 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
     <section className="conversation">
       {messages.length===0?<div className="tutor-welcome"><div className="large-ai-orb"><BrainCircuit size={28}/></div><Badge>{firebaseConfigured?(isAndroid83()?'Firebase AI · Android':'Firebase AI · Web'):(en?'Interactive curated demo':'Demo terkurasi')}</Badge><h2>{t("What would you like to")}<br/>{t("understand today?")}</h2><p>{firebaseConfigured?(en?'Ask a question. Each response shows its actual inference source.':'Ajukan pertanyaan. Setiap respons menampilkan sumber inferensi aktual.'):(en?'Live generation requires Firebase configuration.':'Inferensi langsung memerlukan konfigurasi Firebase.')}</p>
         <div className="prompt-grid">{(en?['Explain ionic and covalent bonds.','Why does salt dissolve in water?','Help me balance an equation.','Explain pH with an everyday example.']:['Jelaskan ikatan ionik dan kovalen.','Mengapa garam larut dalam air?','Bantu setarakan persamaan reaksi.','Jelaskan pH dengan contoh sehari-hari.']).map(prompt=><button key={prompt} onClick={()=>void ask(prompt)}><span>{prompt}</span><ChevronRight size={17}/></button>)}</div></div>
-      :<div className="answer-thread" aria-live="polite">{messages.map(message=><div className="thread-pair" key={message.id}><div className="user-message">{message.prompt}</div><div className="ai-answer">
-        <div className="answer-intro"><span className="ai-orb"><BrainCircuit size={17}/></span><div><strong>{t("El-Kīmiyā tutor")}</strong><small>{message.provider}</small></div></div>
-        <div className="answer-section"><p className="eyebrow">{message.error?(en?'REQUEST FAILED':'PERMINTAAN GAGAL'):message.live?(en?'LIVE INFERENCE':'INFERENSI LANGSUNG'):(en?'LEARNING RESPONSE':'RESPONS PEMBELAJARAN')}</p><h3>{message.topic}</h3><p>{message.text}</p></div>
+      :<div className="answer-thread" aria-live="polite">{messages.map(message=><div className="thread-pair" key={message.id}><div className="user-message">{message.prompt}</div><div className="ai-answer" data-elk-provider={message.providerId} data-elk-live={message.live?"true":undefined}>
+        <div className="answer-intro"><span className="ai-orb"><BrainCircuit size={17}/></span><div><strong>{t("El-Kīmiyā tutor")}</strong><small>{t(message.provider)}</small></div></div>
+        <div className="answer-section"><p className="eyebrow">{message.error?(en?'REQUEST FAILED':'PERMINTAAN GAGAL'):message.live?(en?'LIVE INFERENCE':'INFERENSI LANGSUNG'):(en?'LEARNING RESPONSE':'RESPONS PEMBELAJARAN')}</p><h3>{message.live||message.error?t(message.topic):message.topic}</h3><p>{message.error ? t(message.text) : message.text}</p></div>
         {message.steps&&<div className="answer-section steps"><p className="eyebrow">{t("STEP BY STEP")}</p>{message.steps.map((step,i)=><div key={i}><span>{i+1}</span><p>{step}</p></div>)}</div>}
         {message.example&&<div className="formula-card"><span>{message.example}</span></div>}
-        {message.error&&<p className="inline-alert" role="alert"><CircleHelp size={16}/><span>{message.error}</span></p>}
-        <div className="source-box"><div><strong>{t("Transparency")}</strong><Badge variant="neutral">{message.error?(en?'Failed':'Gagal'):message.live?(en?'Firebase response':'Respons Firebase'):(en?'Demo content':'Konten demo')}</Badge></div><p>{message.provider}</p>{message.inputSources?.length?<div className="input-source-citations"><small>{t("Source excerpts supplied by this user (PDF pages, not externally fact-checked):")}</small>{message.inputSources.map((citation,index)=><small key={index}>{citation}</small>)}</div>:<span>{t("No verified book/page citation provided.")}</span>}</div>
+        {message.error&&<p className="inline-alert" role="alert"><CircleHelp size={16}/><span>{t(message.error)}</span></p>}
+        <div className="source-box"><div><strong>{t("Transparency")}</strong><Badge variant="neutral">{message.error?(en?'Failed':'Gagal'):message.live?(en?'Firebase response':'Respons Firebase'):(en?'Demo content':'Konten demo')}</Badge></div><p>{t(message.provider)}</p>{message.inputSources?.length?<div className="input-source-citations"><small>{t("Source excerpts supplied by this user (PDF pages, not externally fact-checked):")}</small>{message.inputSources.map((citation,index)=><small key={index}>{citation}</small>)}</div>:<span>{t("No verified book/page citation provided.")}</span>}</div>
         {!message.error&&<div className="answer-actions"><button onClick={()=>addNote(message.topic,message.text,message.provider)}><NotebookPen size={16}/> {t("Save explanation")}</button><button onClick={()=>addCard({id:`generated-${Date.now()}`,question:message.prompt,answer:message.text,detail:message.example||message.provider,topic:message.topic})}><Layers3 size={16}/> {t("Make flashcard")}</button><button onClick={()=>setPage('practice')}><Target size={16}/> {t("Practice")}</button></div>}
       </div></div>)}</div>}
       {running&&<div className="tutor-running" role="status"><span className="loading-dots"/> {download===null?(en?'Requesting a model response…':'Meminta respons model…'):`${en?'Preparing local model':'Menyiapkan model lokal'}: ${Math.round(download*100)}%`}</div>}
@@ -1007,7 +1007,7 @@ function TutorPage({ setPage, addNote, addCard, preference, initialPrompt, clear
     <aside className="tutor-references"><div className="panel-title"><div><p className="eyebrow">{t("Source transparency")}</p><h3>{t("Reference status")}</h3></div><BookMarked size={18}/></div>
       <div className="reference-card"><span><BookOpen size={18}/></span><div><Badge variant="neutral">{t("Original demo")}</Badge><strong>{t("Chemical bonding")}</strong><p>{t("No copyrighted textbook excerpts included.")}</p></div></div>
       <div className="reference-card"><span><Atom size={18}/></span><div><Badge variant="neutral">{t("Related concept")}</Badge><strong>{t("Molecular polarity")}</strong><p>{t("Explore in Chemistry Explorer")}</p></div></div>
-      <button className="engine-mini" onClick={()=>setPage('hybrid')}><div><span className="status-dot"/><div><strong>{firebaseConfigured?'Firebase configured':'Demo mode'}</strong><small>{t("Open inference settings")}</small></div></div><ChevronRight size={17}/></button>
+      <button className="engine-mini" onClick={()=>setPage('hybrid')}><div><span className="status-dot"/><div><strong>{t(firebaseConfigured?'Firebase configured':'Demo mode')}</strong><small>{t("Open inference settings")}</small></div></div><ChevronRight size={17}/></button>
     </aside>
   </main>;
 }
@@ -1017,6 +1017,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
   offline:boolean; setOffline:(v:boolean)=>void;
   preference:InferencePreference; setPreference:(v:InferencePreference)=>void;
 }) {
+  const {language}=useLanguage();
   const [scenario,setScenario] = useState<Scenario>('local-online');
   const [liveResult,setLiveResult] = useState('');
   const [liveProvider,setLiveProvider] = useState('');
@@ -1027,7 +1028,7 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
     if(!firebaseConfigured || running) return;
     setRunning(true);setLiveResult('');setLiveProvider('');setLiveError('');setProgress(null);
     try {
-      const result = await runHybridInference('Explain in two sentences why H2O has polar covalent bonds.',preference,setProgress);
+      const result = await runHybridInference(`Explain in two sentences why H2O has polar covalent bonds. Answer in ${language==='id'?'Bahasa Indonesia':'English'}.`,preference,setProgress);
       setLiveResult(result.text); setLiveProvider(`${result.provider} · ${result.model}`);
     } catch(error) {setLiveError(error instanceof Error?error.message:String(error))}
     finally {setRunning(false)}
@@ -1135,12 +1136,13 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
               <button
                 key={item.id}
                 className={scenario === item.id ? "active" : ""}
+                aria-pressed={scenario === item.id}
                 onClick={() => selectScenario(item.id)}
               >
                 <span className="radio" />
                 <span>
-                  <strong>{item.title}</strong>
-                  <small>{item.note}</small>
+                  <strong>{t(item.title)}</strong>
+                  <small>{t(item.note)}</small>
                 </span>
               </button>
             ))}
@@ -1173,34 +1175,32 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
             </div>
             <div>
               <span>{t("Local model availability")}</span>
-              <strong>{isLocal ? "Available" : "Unavailable"}</strong>
+              <strong>{t(isLocal ? "Available" : "Unavailable")}</strong>
             </div>
             <div>
               <span>{t("Model preparation")}</span>
-              <strong>{isLocal ? "Ready for supported tasks" : "Not available"}</strong>
+              <strong>{t(isLocal ? "Ready for supported tasks" : "Not available")}</strong>
             </div>
             <div>
               <span>{t("Offline-ready content")}</span>
-              <strong>3 books · 12 flashcards</strong>
+              <strong>{t("3 books · 12 flashcards")}</strong>
             </div>
             <div>
               <span>{t("Preferred inference")}</span>
-              <strong>{preference}</strong>
+              <strong>{t(preference)}</strong>
             </div>
             <div>
-              <span>{t("Actual provider used")}</span>
+              <span>{t("Simulated route")}</span>
               <strong className={unavailable ? "error-text" : ""}>
-                {unavailable ? "Unavailable in scenario" : isLocal ? "Local · Simulated" : "Cloud · Simulated"}
+                {t(unavailable ? "Unavailable in scenario" : isLocal ? "Local · Simulated" : "Cloud · Simulated")}
               </strong>
             </div>
           </div>
           <div className={`result-log ${unavailable ? "error" : ""}`}>
             <span />{" "}
             <p>
-              <strong>{unavailable ? "Request not run" : "Simulated request completed"}</strong>
-              {unavailable
-                ? "No compatible inference path is available. Connect to the internet or enable a supported local model."
-                : `The ${isLocal ? "local" : "cloud"} route was selected based on this scenario.`}
+              <strong>{t(unavailable ? "Request not run" : "Simulated request completed")}</strong>
+              {t(unavailable ? "No compatible inference path is available. Connect to the internet or enable a supported local model." : isLocal ? "The local route was selected based on this scenario." : "The cloud route was selected based on this scenario.")}
             </p>
           </div>
         </article>
@@ -1216,9 +1216,11 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
               <button
                 key={mode}
                 className={preference === mode ? "active" : ""}
+                aria-pressed={preference === mode}
+                data-elk-preference={mode}
                 onClick={() => setPreference(mode)}
               >
-                <span>{mode}</span>
+                <span>{t(mode)}</span>
                 {preference === mode && <Check size={16} />}
               </button>
             ))}
@@ -1228,12 +1230,12 @@ function HybridPage({ offline, setOffline, preference, setPreference }: {
           </p>
         </article>
       </section>
-      <section className="live-hybrid-check" aria-label="Firebase live inference test">
-        <div><Badge variant="gold">{t("LIVE SDK VERIFICATION")}</Badge><h3>{t("Verify the real inference provider")}</h3><p>{firebaseConfigured?'Firebase settings detected. Run this short request to see the provider reported by the SDK.':'No Firebase configuration detected. The scenario cards above are visual simulations, not actual AI responses.'}</p></div>
-        <button className="primary-button" disabled={!firebaseConfigured||running} onClick={()=>void runLive()}><BrainCircuit size={17}/>{running?'Running on Firebase...':'Run real inference test'}</button>
-        {preference === 'On-device only' && <p>{t("On-device mode needs compatible Chrome Desktop (139+), Prompt API enabled, and local model download. This mode never claims cloud fallback as local success.")}</p>}
-        {running&&<p role="status">{progress===null?'Preparing or requesting a response...':`Local model download: ${Math.round(progress*100)}%`}</p>}
-        {liveResult&&<div className="live-result" role="status"><strong>{t("Verified provider:")} {liveProvider}</strong><p>{liveResult}</p></div>}
+      <section className="live-hybrid-check" aria-label={t("Firebase live inference test")}>
+        <div><Badge variant="gold">{t("LIVE SDK VERIFICATION")}</Badge><h3>{t("Verify the real inference provider")}</h3><p>{t(firebaseConfigured?'Firebase settings detected. Run this short request to see the provider reported by the SDK.':'No Firebase configuration detected. The scenario cards above are visual simulations, not actual AI responses.')}</p></div>
+        <button className="primary-button" disabled={!firebaseConfigured||running} onClick={()=>void runLive()}><BrainCircuit size={17}/>{t(running?'Running on Firebase...':'Run real inference test')}</button>
+        {preference === 'On-device only' && <p>{t(isAndroid83()?'On-device mode depends on Android device support and a ready local model. This mode never claims cloud fallback as local success.':'On-device mode needs compatible Chrome Desktop (139+), Prompt API enabled, and local model download. This mode never claims cloud fallback as local success.')}</p>}
+        {running&&<p role="status">{progress===null?t('Preparing or requesting a response...'):`${t('Local model download:')} ${Math.round(progress*100)}%`}</p>}
+        {liveResult&&<div className="live-result" role="status" data-elk-provider={liveProvider.split(" · ")[0]} data-elk-live="true"><strong>{t("Verified provider:")} {liveProvider}</strong><p>{liveResult}</p></div>}
         {liveError&&<div className="inline-alert" role="alert"><CircleHelp size={17}/><span>{liveError}</span></div>}
       </section>
     </main>
@@ -1267,22 +1269,22 @@ function LegacyPracticePage({ setPage, onAnswer }: {setPage:(page:Page)=>void; o
   return <main className="page standard-page">
     <section className="page-intro"><Badge variant="gold">{t("Safe educational simulation")}</Badge><h2>{t("Try it. Check it.")}<br/>{t("Understand why.")}</h2><p>{t("Interactive chemistry practice with real answer validation and conservation-of-atoms feedback. No unsafe laboratory procedures.")}</p></section>
     <div className="practice-layout"><article className="quiz-card">
-      <div className="quiz-top"><div><p className="eyebrow">{t("CHALLENGE")} {index+1} OF {quizzes.length}</p><h3>{t("Balance the equation")}</h3></div><Badge>{completed} {t("answers checked")}</Badge></div>
-      <p className="quiz-question">{current.question}</p><div className="equation-large"><span>{current.equation}</span></div>
-      <div className="answer-grid">{current.choices.map((choice,i)=><button key={choice} aria-pressed={answer===i} className={`${answer===i?'selected':''} ${checked&&i===current.correct?'correct':''} ${checked&&i===answer&&i!==current.correct?'incorrect':''}`} onClick={()=>{if(!checked)setAnswer(i)}}><span>{String.fromCharCode(65+i)}</span>{choice}{checked&&i===current.correct&&<Check size={18}/>}</button>)}</div>
-      {hint&&!checked&&<div className="inline-hint"><Lightbulb size={17}/>{current.hint}</div>}
-      {checked&&<div className={`feedback ${answer===current.correct?'':'feedback-wrong'}`} role="status">{answer===current.correct?<Check size={20}/>:<CircleHelp size={20}/>}<p><strong>{answer===current.correct?'Correct — well done!':'Not quite — review the atoms.'}</strong> {current.explanation}</p></div>}
-      <div className="quiz-actions"><button className="secondary-button" onClick={()=>setHint(!hint)} disabled={checked}><Lightbulb size={16}/>{hint?'Hide hint':'Reveal hint'}</button>{!checked?<button className="primary-button" disabled={answer===null} onClick={validate}>{t("Check answer")} <ChevronRight size={16}/></button>:<button className="primary-button" onClick={next}>{t("Next challenge")} <ArrowRight size={16}/></button>}</div>
+      <div className="quiz-top"><div><p className="eyebrow">{t("CHALLENGE")} {index+1} {t("OF")} {quizzes.length}</p><h3>{t("Balance the equation")}</h3></div><Badge>{completed} {t("answers checked")}</Badge></div>
+      <p className="quiz-question">{t(current.question)}</p><div className="equation-large"><span>{current.equation}</span></div>
+      <div className="answer-grid">{current.choices.map((choice,i)=><button key={choice} aria-pressed={answer===i} className={`${answer===i?'selected':''} ${checked&&i===current.correct?'correct':''} ${checked&&i===answer&&i!==current.correct?'incorrect':''}`} onClick={()=>{if(!checked)setAnswer(i)}}><span>{String.fromCharCode(65+i)}</span>{t(choice)}{checked&&i===current.correct&&<Check size={18}/>}</button>)}</div>
+      {hint&&!checked&&<div className="inline-hint"><Lightbulb size={17}/>{t(current.hint)}</div>}
+      {checked&&<div className={`feedback ${answer===current.correct?'':'feedback-wrong'}`} role="status">{answer===current.correct?<Check size={20}/>:<CircleHelp size={20}/>}<p><strong>{t(answer===current.correct?'Correct — well done!':'Not quite — review the atoms.')}</strong> {t(current.explanation)}</p></div>}
+      <div className="quiz-actions"><button className="secondary-button" onClick={()=>setHint(!hint)} disabled={checked}><Lightbulb size={16}/>{t(hint?'Hide hint':'Reveal hint')}</button>{!checked?<button className="primary-button" disabled={answer===null} onClick={validate}>{t("Check answer")} <ChevronRight size={16}/></button>:<button className="primary-button" onClick={next}>{t("Next challenge")} <ArrowRight size={16}/></button>}</div>
     </article>
-    <aside className="lab-modules"><article className="ph-card"><div><span><FlaskConical size={19}/></span><Badge>{t("Interactive")}</Badge></div><h3>{t("Explore the pH scale")}</h3><p>{t("Adjust pH for a simplified aqueous-solution example at 25°C.")}</p><div className="ph-value"><strong>{ph}</strong><span>{ph<7?'Acidic':ph>7?'Basic':'Neutral'}</span></div>
-      <label className="sr-only" htmlFor="ph-slider">{t("pH value")}</label><input id="ph-slider" aria-label="pH scale" type="range" min="0" max="14" value={ph} onChange={event=>setPh(Number(event.target.value))}/><div className="range-labels"><span>{t("0 · Acid")}</span><span>{t("7 · Neutral")}</span><span>{t("14 · Base")}</span></div><p className="ph-explanation">{ph<7?'Acidic solution: higher hydrogen-ion activity than neutral water.':ph>7?'Basic solution: lower hydrogen-ion activity than neutral water.':'Neutral pure water at 25°C is approximately pH 7.'}</p></article>
+    <aside className="lab-modules"><article className="ph-card"><div><span><FlaskConical size={19}/></span><Badge>{t("Interactive")}</Badge></div><h3>{t("Explore the pH scale")}</h3><p>{t("Adjust pH for a simplified aqueous-solution example at 25°C.")}</p><div className="ph-value"><strong>{ph}</strong><span>{t(ph<7?'Acidic':ph>7?'Basic':'Neutral')}</span></div>
+      <label className="sr-only" htmlFor="ph-slider">{t("pH value")}</label><input id="ph-slider" aria-label={t("pH scale")} type="range" min="0" max="14" value={ph} onChange={event=>setPh(Number(event.target.value))}/><div className="range-labels"><span>{t("0 · Acid")}</span><span>{t("7 · Neutral")}</span><span>{t("14 · Base")}</span></div><p className="ph-explanation">{t(ph<7?'Acidic solution: higher hydrogen-ion activity than neutral water.':ph>7?'Basic solution: lower hydrogen-ion activity than neutral water.':'Neutral pure water at 25°C is approximately pH 7.')}</p></article>
       <button className="module-link" onClick={()=>setPage('explorer')}><span><Atom size={21}/></span><div><strong>{t("Explore chemical bonding")}</strong><p>{t("Compare elements and molecular models.")}</p></div><ChevronRight size={18}/></button>
     </aside></div>
-    <section className="coefficient-lab" aria-label="Interactive equation balancing laboratory">
+    <section className="coefficient-lab" aria-label={t("Interactive equation balancing laboratory")}>
       <div><p className="eyebrow">{t("HANDS-ON LAB")}</p><h3>{t("Balance it yourself")}</h3><p>{t("Use + and − to change coefficients. The atom counts update immediately.")}</p></div>
-      <div className="coefficient-equation">{['H₂','O₂','H₂O'].map((formula,i)=><div className="coefficient-term" key={formula}><div className="coefficient-stepper"><button onClick={()=>changeCoefficient(i,-1)} aria-label={`Decrease coefficient for ${formula}`} disabled={coeff[i]===1}>−</button><strong>{coeff[i]}</strong><button onClick={()=>changeCoefficient(i,1)} aria-label={`Increase coefficient for ${formula}`} disabled={coeff[i]===6}>+</button></div><b>{formula}</b>{i!==2&&<span>{i===0?'+':'→'}</span>}</div>)}</div>
+      <div className="coefficient-equation">{['H₂','O₂','H₂O'].map((formula,i)=><div className="coefficient-term" key={formula}><div className="coefficient-stepper"><button onClick={()=>changeCoefficient(i,-1)} aria-label={`${t("Decrease coefficient for")} ${formula}`} disabled={coeff[i]===1}>−</button><strong>{coeff[i]}</strong><button onClick={()=>changeCoefficient(i,1)} aria-label={`${t("Increase coefficient for")} ${formula}`} disabled={coeff[i]===6}>+</button></div><b>{formula}</b>{i!==2&&<span>{i===0?'+':'→'}</span>}</div>)}</div>
       <div className="atom-count-grid"><div><strong>{t("Reactants")}</strong><span>{t("Hydrogen:")} {atomLeft.H} {t("atoms")}</span><span>{t("Oxygen:")} {atomLeft.O} {t("atoms")}</span></div><div><strong>{t("Products")}</strong><span>{t("Hydrogen:")} {atomRight.H} {t("atoms")}</span><span>{t("Oxygen:")} {atomRight.O} {t("atoms")}</span></div></div>
-      <div className={`balance-result ${equationCorrect?'is-balanced':''}`} aria-live="polite">{equationCorrect?<Check size={18}/>:<Target size={18}/>} {equationCorrect?'Balanced! Both sides conserve H and O atoms.':'Not balanced yet. Match both hydrogen and oxygen atom counts.'}</div>
+      <div className={`balance-result ${equationCorrect?'is-balanced':''}`} aria-live="polite">{equationCorrect?<Check size={18}/>:<Target size={18}/>} {t(equationCorrect?'Balanced! Both sides conserve H and O atoms.':'Not balanced yet. Match both hydrogen and oxygen atom counts.')}</div>
       <button className="text-button" onClick={()=>setCoeff([1,1,1])}><RotateCcw size={16}/> {t("Reset coefficients")}</button>
     </section>
   </main>;
@@ -1341,7 +1343,7 @@ function LegacyFlashcardsPage({ cards, onReview }: {cards:StudyCard[]; onReview:
     <div className="deck-progress"><span>{Math.min(index+1,cards.length)} of {cards.length}</span><Progress value={cards.length?(Math.min(index,cards.length)/cards.length)*100:0}/><span>{Math.max(cards.length-index,0)} {t("remaining")}</span></div>
     {complete?<div className="deck-finished"><Check size={34}/><h3>{t("Review complete")}</h3><p>{t("You reviewed")} {Object.keys(sessionRatings).length} {t("cards this session. Last ratings are stored in this browser.")}</p><button className="primary-button" onClick={()=>{setIndex(0);setFlipped(false);setSessionRatings({})}}><RotateCcw size={17}/> {t("Review deck again")}</button></div>
     :<><button className={`flashcard ${flipped?'flipped':''}`} onClick={()=>setFlipped(!flipped)} aria-label={flipped?'Show flashcard question':'Reveal flashcard answer'} aria-pressed={flipped}>
-      <div className="flashcard-face front"><Badge>{current.topic}</Badge><p className="eyebrow">{flipped?'QUESTION':'TAP TO REVEAL'}</p><h3>{current.question}</h3><span><RotateCcw size={17}/> {t("Flip card")}</span></div>
+      <div className="flashcard-face front"><Badge>{current.topic}</Badge><p className="eyebrow">{flipped?'QUESTION':'TAP TO REVEAL'}</p><h3>{t(current.question)}</h3><span><RotateCcw size={17}/> {t("Flip card")}</span></div>
       <div className="flashcard-face back"><Badge variant="gold">{t("Answer")}</Badge><h3>{current.answer}</h3><p>{current.detail}</p><span><RotateCcw size={17}/> {t("Show question")}</span></div>
     </button>
     <div className="card-rating"><button disabled={!flipped} onClick={()=>rate('again')}><RotateCcw size={17}/><span><strong>{t("Review again")}</strong><small>{t("Needs practice")}</small></span></button><button disabled={!flipped} onClick={()=>rate('difficult')}><CircleHelp size={17}/><span><strong>{t("Difficult")}</strong><small>{t("Review soon")}</small></span></button><button disabled={!flipped} onClick={()=>rate('easy')}><Check size={17}/><span><strong>{t("Easy")}</strong><small>{t("Remembered well")}</small></span></button></div><p className="rating-note">{t("Reveal the answer before rating this card. Spaced repetition scheduling is not enabled in this demo.")}</p></>}
@@ -1461,7 +1463,7 @@ function MobileBottomNav({ page, setPage, showMenu }: { page: Page; setPage: (p:
   const items: { id: Page; label: string; icon: typeof Home }[] = [
     { id: "dashboard", label: en?"Home":"Dasbor", icon: Home },
     { id: "library", label: en?"Library":"Pustaka", icon: Library },
-    { id: "scan", label: "Scan", icon: Camera },
+    { id: "scan", label: en?"Scan":"Pindai", icon: Camera },
     { id: "tutor", label: "AI Tutor", icon: BrainCircuit },
   ];
   return <nav className="mobile-nav" aria-label={en?"Workspace navigation":"Navigasi ruang belajar"}>
@@ -1523,7 +1525,8 @@ function WorkspaceApp() {
     if(requestedPage!==page){history.replaceState({},'',`#${page}`);setCurrentPage(page);}
   },[requestedPage,page]);
   const [collapsed,setCollapsed] = useStoredState('elk.sidebar.collapsed',false);
-  const [dark,setDark] = useStoredState('elk.dark',false);
+  const [dark,setDark] = useStoredState('elk.dark',window.matchMedia('(prefers-color-scheme: dark)').matches);
+  useLayoutEffect(()=>{document.documentElement.dataset.elkTheme=dark?'dark':'light'},[dark]);
   const [reducedMotion,setReducedMotion] = useStoredState('elk.reduceMotion',false);
   const [offline,setOffline] = useState(false); // Only a UI scenario toggle, not actual network control.
   const [preference,setPreference] = useStoredState<InferencePreference>('elk.inferencePreference','Prefer on-device');
@@ -1570,11 +1573,12 @@ function WorkspaceApp() {
     return <Dashboard setPage={setPage}/>;
   })();
   if(page==='landing'||page==='guest'||isAuthRoute(page)||page==='moduler')return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion}>{content}</div>;
-  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion} data-elk-ai-v83={role==='user'?'learner':undefined} data-elk-ai-session={session83}>
+  return <div className={dark?'app dark':'app'} data-reduce-motion={reducedMotion} data-elk-ui-v84={role==='user'?'ready':undefined} data-elk-ai-v83={role==='user'?'learner':undefined} data-elk-ai-session={session83}>
     <Sidebar page={page} setPage={setPage} collapsed={collapsed} setCollapsed={setCollapsed}/>
     <div className="app-shell">{(page==='reader'||page==='scan')&&<div className="v82-special-nav"><button type="button" className="v83-menu-trigger secondary-button" onClick={()=>setMenu83(true)} aria-label={language==='en'?'All features':'Semua fitur'}><Menu size={18}/>Menu</button><button type="button" className="v82-home" onClick={()=>setPage("landing")} aria-label={language==="id"?"Ke halaman utama":"Back to homepage"}><Home size={17}/>{language==="id"?"Beranda":"Homepage"}</button><SessionExit go={()=>setPage('landing')}/></div>}{page!=='reader'&&page!=='scan'&&<Header page={page} setPage={setPage} dark={dark} setDark={setDark} offline={offline}/>}<div key={page} className="page-entrance">{page==='library'&&<><PublishedContent kind="lesson" onAsk={askAbout}/><PublishedContent kind="reference" onAsk={askAbout}/></>}{page==='practice'&&<PublishedContent kind="question" onAsk={askAbout} onAnswer={onAnswer}/>} {page==='flashcards'&&<PublishedContent kind="flashcard" onAsk={askAbout}/>} {page==='molecules'&&<PublishedContent kind="molecule" onAsk={askAbout}/>} {content}</div></div>
     {page!=='scan'&&<MobileBottomNav page={page} setPage={setPage} showMenu={()=>setMenu83(true)}/>}
     <MobileFeatureMenu83 page={page} setPage={setPage} open={menu83} close={()=>setMenu83(false)}/>
-    {toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span><button onClick={()=>setToast('')} aria-label="Dismiss notification"><X size={15}/></button></div>}
+    {toast&&<div className="toast" role="status"><Check size={17}/><span>{t(toast)}</span><button onClick={()=>setToast('')} aria-label={t("Dismiss notification")}><X size={15}/></button></div>}
   </div>;
 }
+

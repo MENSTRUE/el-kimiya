@@ -111,17 +111,19 @@ export async function runHybridInference(
   preference: InferencePreference,
   onProgress?: (fraction: number) => void
 ): Promise<InferenceResult> {
+  if (!prompt.trim()) throw new Error('Pertanyaan kimia tidak boleh kosong.');
+
+  // Native Android uses the Android Firebase config and App Check provider.
+  // Never fall back to Web inference inside Android. Keep firebaseConfigured for
+  // the existing authentication/Firestore gate; it is independent of native AI.
+  if (isAndroid83()) return runNativeAi83(prompt, preference, onProgress);
   if (!firebaseConfigured) {
     throw new Error('Konfigurasi Firebase belum lengkap. Cek .env dan restart Vite.');
   }
-  if (!prompt.trim()) throw new Error('Pertanyaan kimia tidak boleh kosong.');
-
-  // Native Android attestation and inference. Never silently retry through the Web SDK.
-  if (isAndroid83()) return runNativeAi83(prompt, preference, onProgress);
 
   try {
     const app = setupAppCheck();
-    const ai = getAI(app, { backend: new GoogleAIBackend() });
+    const ai = getAI(app, { backend: new GoogleAIBackend(), useLimitedUseAppCheckTokens: true });
     const model = getGenerativeModel(ai, {
       mode: modes[preference],
       inCloudParams: { model: cloudModel },
@@ -140,7 +142,9 @@ export async function runHybridInference(
 
     const response = (await model.generateContent(prompt)).response;
     const provider = response.inferenceSource;
-    if (provider !== 'on_device' && provider !== 'in_cloud') {
+    if ((provider !== 'on_device' && provider !== 'in_cloud') ||
+        (preference === 'On-device only' && provider !== 'on_device') ||
+        (preference === 'Cloud only' && provider !== 'in_cloud')) {
       throw new Error('Firebase tidak menyertakan sumber inferensi yang terverifikasi.');
     }
     const text = response.text();
@@ -157,3 +161,4 @@ export async function runHybridInference(
     throw explainError(error, preference);
   }
 }
+
