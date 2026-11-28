@@ -1,0 +1,102 @@
+/* V8.6 audited legacy theme pairs. Old components specify muted colors
+ * independently of their surfaces. Match both halves of each surface here;
+ * keep scientific plots, periodic categories, chemical diagrams, original
+ * PDFs, book-cover art and generated images unchanged. */
+
+/* Public landing and preview — previews use the selected app theme too. */
+.app .landing-hero-copy :is(.landing-edition,p),
+.app .landing-trust span,
+.app .landing-principles .eyebrow,
+.app .feature67-head p,
+.app .feature67-grid article p,
+.app .faith-landing-teaser p {color:var(--v85-muted)}
+.app .feature67-head span {color:#795027}
+.app.dark .feature67-head span {color:var(--v85-warn-ink)}
+.app .landing-route article small {color:#dce9ed}
+.app .showcase-lesson small,
+.app .showcase-lesson .landing-preview-notice {color:#355b65}
+.app.dark :is(.showcase-content,.showcase-cards>span,.showcase-phone,.faith-landing-teaser) {
+  background:var(--v85-panel);color:var(--v85-ink);border-color:var(--v85-line)
+}
+.app.dark :is(.showcase-lesson,.showcase-phone>div) {background:var(--v85-soft);color:var(--v85-ink)}
+.app.dark :is(.showcase-topline>span,.showcase-cards b,.showcase-phone>strong,.showcase-lesson strong,.showcase-phone>div b,.faith-landing-teaser h2) {color:var(--v85-ink)}
+.app.dark :is(.showcase-lesson small,.showcase-lesson .landing-preview-notice,.showcase-cards small,.showcase-phone>small,.showcase-cards svg) {color:var(--v85-muted)}
+.app.dark .showcase-phone>button {background:var(--v85-accent);color:var(--v85-on-accent)}
+.app:not(.dark) .v82-guest-preview .elk-language-switch button.active {background:#143656;color:#fff}
+/* V6.9 marks entry header button colors !important; the active gold chip needs dark ink. */
+.app.dark .v82-guest-preview .elk-language-switch button.active {background:#edc986;color:#30291d!important}
+
+/* Dashboard labels and research footer. */
+.app:not(.dark) .real65-metric span,
+.app .real65-privacy,
+.app .mission67-footer>span {color:var(--v85-muted)}
+
+/* Library and original demo reader. Do not modify imported PDF page colors. */
+.app :is(.library35-overline,.library35-discover-head>span,.library35-rights,
+.library64-next-copy>span,.library64-disclaimer,.library35-heading p,
+.library35-connect p,.public66-shelf-note) {color:var(--v85-muted)}
+.app .library35-shelf-tabs button:not(.active) {color:var(--v85-muted)}
+.app.dark .library35-shelf-tabs button.active {background:var(--v85-selection);color:var(--v85-ink)}
+.app.dark .library64-next-copy strong {color:var(--v85-ink)}
+.app.dark .library35-research>div>span:not(.library35-overline) {color:var(--v85-good-ink)}
+.app.dark .library-book-info {background:var(--v85-panel);color:var(--v85-ink)}
+.app .large-cover.cover-gold :is(strong,span) {color:#081a25} /* same gold cover, readable labels */
+.app.dark .reader-ai .analogy-card {background:var(--v85-warn-bg);color:var(--v85-warn-ink)}
+.app.dark .reader-ai .analogy-card :is(strong,p) {color:var(--v85-warn-ink)}
+
+/* Faith and related reading notes. */
+.app :is(.faith-section-head p,.faith-benefit p,.faith-benefit-number,.faith-footer>span) {color:var(--v85-muted)}
+.app:not(.dark) .faith-translation>span {color:#795027}
+.app.dark .faith-translation>span {color:var(--v85-warn-ink)}
+.app.dark :is(.faith-reading-note>div>span,.faith-personal-form>label,.faith-personal-form small) {color:var(--v85-muted)}
+.app.dark :is(.faith-verse-footer>a,.faith-verse-footer>button,.faith-footer>a) {color:var(--v85-accent)}
+
+/* Practice, periodic explorer, glossary and every flashcard instance. */
+.app .v63-topics button b {color:var(--v85-muted)}
+.app .v63-topic-label b {color:#205c46}
+.app :is(.v63-quiz-footer>span,.v45-periodic-note>span,.v45-shells>small,
+.v45-footer>span,.v45-footer details p,.v63-glossary-credit,
+.v44-card-top span,.v44-flip-label,.v44-flip-hint,.v44-card-footer>span,
+.v44-tabs>span,.v44-stat small,.v44-footnote,.v44-root .v44-eyebrow,
+.v44-root .v44-section-head p,.v44-tabs button:not(.is-active)) {color:var(--v85-muted)}
+.app .v45-footer summary {color:var(--v85-accent)}
+.app.dark .v63-topics button b {color:var(--v85-muted)}
+
+/* Molecule tools: chrome, labels and state prose only.
+ * Canvas backgrounds and SVG/3D atom graphics stay under their own renderer. */
+.app .v60-side-heading>span {color:#205c70}
+.app :is(.v60-subtle,.v60-sample-list button small,.v60-editor small,
+.v60-note-card>p,.v60-note-actions>span,.v60-ethics-card>p,.v60-ethics-card>small,
+.v60-ethics-card .v60-eyebrow,.v61-quick>span,.v61-palette>p,.v61-caveat,
+.mi39-source,.mi39-example>span,.mi39-empty>p) {color:var(--v85-muted)}
+.app.dark :is(.v61-title h3,.mi39-search label) {color:var(--v85-ink)}
+.app :is(.v61-title p,.v61-title>div>span) {color:var(--v85-muted)}
+.app .v61-piece-grid button small {color:var(--v85-muted)}
+.app.dark .v61-piece-grid button {background:var(--v85-panel);color:var(--v85-ink);border-color:var(--v85-line)}
+.app.dark .v61-piece-grid button:is(.v61-active,[aria-pressed=true]) {background:var(--v85-selection);color:var(--v85-ink);border-color:var(--v85-accent)}
+.app .v61-board-wrap :is(.v61-guide,.v61-submit>span),
+.app :is(.v60-placeholder>span,.v60-artfooter>span) {color:#405866}
+.app.dark .v60-ethics-card a {color:var(--v85-accent)}
+.app .ma42-root {--ink:var(--v85-ink);--muted:var(--v85-muted)}
+.app .ma42-section-title>span,.app .ma42-status small,.app .ma42-placeholder {color:var(--v85-muted)}
+.app.dark :is(.ma42-section-title>h3,.ma42-agent-actions>label) {color:var(--v85-ink)}
+.app.dark :is(.ma42-status>button,.ma42-outline) {background:var(--v85-soft);color:var(--v85-ink);border-color:var(--v85-line)}
+/* The old non-reactive white fallback in the geometry card was intentional
+ * for molecular drawings but not for the surrounding textual toolbar. */
+.app.dark :is(.v61-board-wrap,.v60-artbar,.v60-artfooter) {
+ background:var(--v85-panel);color:var(--v85-ink);border-color:var(--v85-line)
+}
+.app.dark .v61-board-wrap :is(.v61-guide,.v61-submit>span),
+.app.dark .v60-artfooter>span {color:var(--v85-muted)}
+
+/* Prevent long chemical identifiers and form controls from forcing the
+ * surrounding columns wider; purpose-built tables and science canvases retain
+ * their own local scroll/zoom behavior. */
+.app :is(.library-book-info,.library64-next-copy,.v44-study-card,.v44-card-top,
+.v8-card,.v85-studio .v85-editor-grid>*,.v60-sample-list button,
+.v45-footer details) {min-width:0;overflow-wrap:anywhere}
+@media(max-width:540px) {
+ .app .v44-card-footer {flex-wrap:wrap}
+ .app .v63-topics button {min-width:0;overflow-wrap:anywhere}
+ .app .v85-studio :is(input,textarea,select) {max-width:100%}
+}

@@ -7,23 +7,25 @@ import { execFileSync } from 'node:child_process';
 import { LEARNER_ROUTES,MODULER_ROUTES,createMatrix,trustedUrl,screenshotName,summarize,classifyAudit,inspectPage,auditPage,inspectDrawer,clickVisible,inspectSplash,splashVerdict,viewports } from './visual-core-v85.mjs';
 const val=(k,def)=>{const i=process.argv.indexOf(k);return i<0?def:process.argv[i+1];};
 const flags=new Set(process.argv.slice(2));
-const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick'),drawerOnly:flags.has('--drawer-only')};
+const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick'),drawerOnly:flags.has('--drawer-only'),polish:flags.has('--polish')};
 if(!['learner','moduler','both'].includes(options.role))throw Error('Use --role learner|moduler|both');
 if(options.androidOnly&&!options.adb)throw Error('--android-only requires --adb <path>');
 if(options.drawerOnly&&!options.androidOnly)throw Error('--drawer-only requires --android-only');
+if(options.polish&&(!options.drawerOnly||!options.androidOnly))throw Error('--polish requires --android-only --drawer-only');
 const base=options.url,origin=new URL(base).origin;
 const modes=options.androidOnly?['android']:options.adb?['desktop','mobile','android']:['desktop','mobile'];
 const fullMatrix=options.drawerOnly?[]:createMatrix(options.role,modes);
 const matrix=options.quick?fullMatrix.filter(c=>c.theme==='dark'&&c.language==='id'):fullMatrix;
 const actualRoles=options.role==='both'?['learner','moduler']:[options.role];
+const expectedDrawerChecks=(actualRoles.length+(options.polish&&actualRoles.includes('learner')?1:0))*(options.quick?1:4);
 const screenshots=join(options.report,'screenshots');mkdirSync(screenshots,{recursive:true});
 const results=[],extras=[];const startedAt=new Date().toISOString();
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 const safeError=e=>typeof e?.message==='string'&&/^[A-Z][A-Z0-9_]{3,90}$/.test(e.message)?e.message:'RUNTIME_OR_NAVIGATION_ERROR';
 function persist(){
  const summary=summarize(results,matrix);const supplemental={pass:extras.filter(e=>e.status==='PASS').length,fail:extras.filter(e=>e.status==='FAIL').length,warn:extras.filter(e=>e.status==='WARN').length,blocked:extras.filter(e=>e.status==='BLOCKED').length};
- const complete=options.drawerOnly?supplemental.pass===actualRoles.length*(options.quick?1:4)&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0:summary.certified&&!options.quick&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0;
- const data={startedAt,updatedAt:new Date().toISOString(),version:'8.5.1',url:base,quick:options.quick,drawerOnly:options.drawerOnly,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
+ const complete=options.drawerOnly?supplemental.pass===expectedDrawerChecks&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0:summary.certified&&!options.quick&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0;
+ const data={startedAt,updatedAt:new Date().toISOString(),version:options.polish?'8.6':'8.5.1',url:base,quick:options.quick,drawerOnly:options.drawerOnly,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
  writeFileSync(join(options.report,'report.json'),JSON.stringify(data,null,2));return data;
 }
 function addResult(c,state){
@@ -105,6 +107,51 @@ async function drawerAudit(target,c){
  }
  addExtra({check:'mobile-drawer',...c,status:pass&&closed&&screenshot?'PASS':'FAIL',detail:!pass?'DRAWER_GEOMETRY_FOCUS_OR_ROUTE_DEFECT':!closed?'DRAWER_CLOSE_FAILED':!screenshot?'SCREENSHOT_FAILED':'DRAWER_FULL_HEIGHT_AND_ALL_ROUTES',drawer,closed,screenshot});
  if(!closed)throw Error('DRAWER_CLOSE_FAILED');
+}
+// Read-only physical builder smoke: actual app surface, no validation/backend request.
+async function builderAudit86(target,c){
+ const route='molecules';
+ let opened=false,closed=false,geometry=null,screenshot=null,error='';
+ try{
+  await navigate(target,{...c,route});
+  const mark=await target.eval(()=>document.documentElement.dataset.elkPolishRelease==='8.6');
+  if(!mark)throw Error('V86_MARKER_MISSING');
+  if(!await click(target,'learner','[data-elk-molecule-open="builder"]',true))throw Error('MOLECULE_LAUNCHER_MISSING');
+  opened=true;
+  const deadline=Date.now()+6000;
+  while(Date.now()<deadline){
+   geometry=await target.eval(()=>{
+    const root=document.querySelector('[data-elk-molecule-fullscreen="builder"]');
+    const svg=root?.querySelector('.v61-drop-zone svg');
+    if(!root||!svg)return null;
+    const r=root.getBoundingClientRect(),b=svg.getBoundingClientRect();
+    const hit=document.elementFromPoint(Math.round(b.left+b.width/2),Math.round(b.top+b.height/2));
+    return {visible:r.width>0&&r.height>0,full:r.left<=3&&r.top<=3&&r.right>=innerWidth-3&&r.bottom>=innerHeight-3,canvasWidth:Math.round(b.width),canvasHeight:Math.round(b.height),width:innerWidth,height:innerHeight,hit:!!hit&&svg.contains(hit)};
+   });
+   if(geometry?.full&&geometry?.hit)break;
+   await delay(150);
+  }
+  if(!geometry?.visible||!geometry.full||!geometry.hit||geometry.canvasWidth<geometry.width*.65||geometry.canvasHeight<170)throw Error('MOLECULE_FULLSCREEN_GEOMETRY');
+  screenshot=['learner','android',c.theme,c.language,'molecule-builder'].join('-')+'.png';
+  await target.capture(join(screenshots,screenshot));
+ }catch(e){error=safeError(e);}
+ finally{
+  if(opened){
+   try{
+    const selector='[data-elk-molecule-fullscreen="builder"] [data-elk-drawer-close]';
+    const clicked=await click(target,'learner',selector,true);
+    if(clicked){
+     const until=Date.now()+5000;
+     while(Date.now()<until){
+      if(!await target.eval(()=>!!document.querySelector('[data-elk-molecule-fullscreen="builder"]'))){closed=true;break;}
+      await delay(150);
+     }
+    }
+   }catch{}
+  }
+ }
+ addExtra({check:'molecule-builder',...c,status:!error&&closed?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'MOLECULE_CLOSE_FAILED':'MOLECULE_FULLSCREEN_GEOMETRY_AND_CLOSE'),geometry,closed,screenshot});
+ if(opened&&!closed)throw Error('MOLECULE_CLOSE_FAILED');
 }
 async function navigate(target,c){
  if(c.viewport!=='desktop')await openDrawer(target,c);
@@ -299,6 +346,7 @@ async function runAndroid(){
       for(const theme of options.quick?['dark']:['dark','light'])for(const language of options.quick?['id']:['id','en']){
        const c={role,viewport:'android',theme,language};
        await setAppearance(target,c);await drawerAudit(target,c);
+       if(options.polish&&role==='learner')await builderAudit86(target,c);
       }
      }finally{try{await setAppearance(target,{role,viewport:'android',theme:initial.theme,language:initial.language});}catch{}}
     }catch(e){addExtra({check:'android-drawer-role',role,status:'BLOCKED',detail:safeError(e)});}
@@ -312,7 +360,7 @@ async function runAndroid(){
 }
 async function main(){
  persist();
- console.log('[INFO] V8.5 ',matrix.length,' expected route screenshots. All output is saved locally:',options.report);
+ console.log('[INFO] '+(options.polish?'V8.6 polish':'V8.5')+' ',matrix.length,' expected route screenshots. All output is saved locally:',options.report);
  console.log('[PRIVACY] Do not upload unreviewed screenshots; authenticated profile/learning pages may show account data. This QA does not create, edit, publish or delete real database records.');
  if(!options.androidOnly)await runBrowser();
  if(options.adb)await runAndroid();

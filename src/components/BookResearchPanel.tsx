@@ -88,7 +88,8 @@ const tx = (id: string, english: string) => en ? english : id;
   const [readerId, setReaderId] = useState<string | null>(null);
   const [readerPage, setReaderPage] = useState(1);
   const [manualPage, setManualPage] = useState('1');
-  const [message, setMessage] = useState('');
+  const [message, setMessageText] = useState<{id:string;en:string}|null>(null);
+  const setMessage = (id:string, english=id) => setMessageText(id?{id,en:english}:null);
   const [index, setIndex] = useState<PrivateIndex | null>(null);
   const [showResearch, setShowResearch] = useState(false);
   const [question, setQuestion] = useState('What is the difference between ionic and covalent bonding?');
@@ -187,7 +188,7 @@ const tx = (id: string, english: string) => en ? english : id;
   const openBook = (bookId: string) => {
     if (!pdfs[bookId]) {
       setSelectedForUpload(bookId);
-      setMessage('PDF belum terhubung. Gunakan tombol “Buka PDF sendiri” pada kartu buku ini.');
+      setMessage('PDF belum terhubung. Gunakan tombol “Buka PDF sendiri” pada kartu buku ini.','The PDF is not connected. Use the “Open your own PDF” button on this book card.');
       return;
     }
     setReaderId(bookId);
@@ -204,42 +205,42 @@ const tx = (id: string, english: string) => en ? english : id;
       if (id && file.size <= 80_000_000 && !matched.has(id)) matched.set(id, file);
     }
     for (const [id, file] of matched) attachFile(id, file);
-    setMessage(matched.size ? `${matched.size} PDF terhubung dari folder lokal. Tidak ada file yang diunggah ke cloud.` : 'Tidak ditemukan PDF yang cocok dengan katalog El-Kīmiyā.');
+    if(matched.size)setMessage(`${matched.size} PDF terhubung dari folder lokal. Tidak ada file yang diunggah ke cloud.`,`${matched.size} PDFs connected from the local folder. No files were uploaded to the cloud.`); else setMessage('Tidak ditemukan PDF yang cocok dengan katalog El-Kīmiyā.','No PDFs match the El-Kīmiyā catalog.');
   };
   const uploadSelected = (file?: File) => {
     if (!file) return;
     if (!file.name.toLowerCase().endsWith('.pdf') || file.size > 80_000_000) {
-      setMessage('Pilih file .pdf dengan ukuran maksimal 80 MB.'); return;
+      setMessage('Pilih file .pdf dengan ukuran maksimal 80 MB.','Choose a .pdf file up to 80 MB.'); return;
     }
     const detected = identifyLocalBook(file.name);
     if (detected && detected !== selectedForUpload) {
-      setMessage('File itu cocok dengan kartu buku lain. Pilih kartu yang sesuai.'); return;
+      setMessage('File itu cocok dengan kartu buku lain. Pilih kartu yang sesuai.','This file matches another book card. Choose the matching card.'); return;
     }
     attachFile(selectedForUpload, file);
-    setMessage('PDF berhasil dihubungkan, hanya di browser lokal.');
+    setMessage('PDF berhasil dihubungkan, hanya di browser lokal.','PDF connected in this local browser only.');
     setReaderId(selectedForUpload);
     setReaderPage(pages[selectedForUpload] || 1);
     setRecent(selectedForUpload);
   };
   const loadIndex = async (file?: File) => {
     if (!file) return;
-    if (file.size > 15_000_000) { setMessage('Indeks terlalu besar (maksimum 15 MB).'); return; }
+    if (file.size > 15_000_000) { setMessage('Indeks terlalu besar (maksimum 15 MB).','The index is too large (15 MB maximum).'); return; }
     try {
       const data = parsePrivateIndex(JSON.parse(await file.text()));
       setIndex(data);
-      setMessage(`Indeks privat terbaca: ${data.pages.length} halaman. Tidak diunggah ke cloud.`);
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Format indeks tidak didukung.'); }
+      setMessage(`Indeks privat terbaca: ${data.pages.length} halaman. Tidak diunggah ke cloud.`,`Private index loaded: ${data.pages.length} pages. Nothing uploaded to the cloud.`);
+    } catch { setMessage('Format atau isi indeks tidak didukung. Periksa JSON privatmu.','The index format or content is unsupported. Check your private JSON.'); }
   };
   const prepareTutor = () => {
     if (!consent || !researchHits.length) return;
     askAbout(contextForPrompt(question, researchHits));
-    notify('Kutipan disiapkan untuk AI Tutor. Periksa kembali nomor halaman pada PDF asli.');
+    notify(tx('Kutipan disiapkan untuk AI Tutor. Periksa kembali nomor halaman pada PDF asli.','Excerpts prepared for the AI Tutor. Check page numbers in the original PDF.'));
   };
   const savePage = () => {
     if (!currentBook) return;
     const page = boundPage(readerPage, currentBook.pdfPages);
     setPages(previous => ({ ...previous, [currentBook.id]: page }));
-    setMessage(`Halaman ${page} disimpan untuk ${currentBook.title}.`);
+    setMessage(`Halaman ${page} disimpan untuk ${currentBook.title}.`,`Page ${page} saved for ${currentBook.title}.`);
   };
   const navigatePage = (next: number) => currentBook && setReaderPage(boundPage(next, currentBook.pdfPages));
   const applyManualPage = () => currentBook && setReaderPage(boundPage(Number(manualPage), currentBook.pdfPages));
@@ -266,9 +267,9 @@ const tx = (id: string, english: string) => en ? english : id;
   }
 
   return (
-    <section className="library35" aria-label="Perpustakaan kimia pribadi El-Kīmiyā">
-      <input ref={selectedInput} className="library35-file-input" type="file" accept=".pdf,application/pdf" onChange={event => { uploadSelected(event.target.files?.[0]); event.target.value = ''; }} aria-label="Pilih PDF dari laptop" />
-      <input ref={folderInput} className="library35-file-input" type="file" multiple onChange={event => { connectFolder(event.target.files); event.target.value = ''; }} aria-label="Pilih folder PDF pribadi" />
+    <section className="library35" aria-label={tx('Perpustakaan kimia pribadi El-Kīmiyā','El-Kīmiyā private chemistry library')}>
+      <input ref={selectedInput} className="library35-file-input" type="file" accept=".pdf,application/pdf" onChange={event => { uploadSelected(event.target.files?.[0]); event.target.value = ''; }} aria-label={tx('Pilih PDF dari perangkat','Choose PDF from your device')} />
+      <input ref={folderInput} className="library35-file-input" type="file" multiple onChange={event => { connectFolder(event.target.files); event.target.value = ''; }} aria-label={tx('Pilih folder PDF pribadi','Choose a private PDF folder')} />
 
       <div className="library35-heading">
         <div><span className="library35-overline"><span /> {t("THE KNOWLEDGE COLLECTION · EL-KĪMIYĀ")}</span><h2>{t("Your chemistry,")} <em>{t("beautifully organized.")}</em></h2><p>{t("Delapan referensi yang kamu miliki, satu ruang belajar untuk menemukan dan memahami kimia.")}</p></div>
@@ -289,7 +290,7 @@ const tx = (id: string, english: string) => en ? english : id;
           <div className="library35-hero-actions">
             <button className="library35-btn library35-btn--light" onClick={() => featured && openBook(featured.id)} disabled={!featured || !pdfs[featured.id]}><BookOpen size={17} /> {lastBook ? tx('Lanjutkan membaca', 'Continue reading') : tx('Mulai membaca', 'Start reading')} <ArrowRight size={16} /></button>
             <a href="#progress" className="library64-inline-link">{tx('Lihat progres', 'View progress')} <ArrowRight size={15}/></a>
-            <span className="library35-hero-hint">{lastBook ? `${lastBook.title} · halaman tersimpan ${pages[lastBook.id] || 1}` : 'Pilih buku untuk mulai membaca'}</span>
+            <span className="library35-hero-hint">{lastBook ? `${lastBook.title} · ${tx('halaman tersimpan','saved page')} ${pages[lastBook.id] || 1}` : tx('Pilih buku untuk mulai membaca','Choose a book to begin reading')}</span>
           </div>
           <div className="library35-metrics">
             <div><strong>{connectedCount}<small>/{expectedLocalBookCount}</small></strong><span>{t("Buku terhubung")}</span></div>
@@ -308,13 +309,13 @@ const tx = (id: string, english: string) => en ? english : id;
 
       <div className="library35-discover-head" id="elkimiya-v64-catalog"><div><span className="library35-overline">{t("EXPLORE THE SHELVES")}</span><h3>{t("Find something worth reading.")}</h3></div><span>{visibleBooks.length} {t("dari")} {sourceBooks.length} {t("referensi")}</span></div>
       <div className="library35-toolbar">
-        <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari judul, penulis, atau topik kimia..." aria-label="Cari buku" />{query && <button aria-label={t("Hapus pencarian")} onClick={() => setQuery('')}><X size={16}/></button>}</label>
-        <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label="Urutkan buku" value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">{t("Urutan katalog")}</option><option value="title">{t("Judul A–Z")}</option><option value="length">{t("Halaman paling sedikit")}</option></select></label>
+        <label className="library35-search"><Search size={19} /><input value={query} onChange={event => setQuery(event.target.value)} placeholder={tx('Cari judul, penulis, atau topik kimia...','Search title, author, or chemistry topic...')} aria-label={tx('Cari buku','Search books')} />{query && <button aria-label={t("Hapus pencarian")} onClick={() => setQuery('')}><X size={16}/></button>}</label>
+        <label className="library35-sort"><ArrowDownUp size={17}/><select aria-label={tx('Urutkan buku','Sort books')} value={sort} onChange={event => setSort(event.target.value)}><option value="recommended">{t("Urutan katalog")}</option><option value="title">{t("Judul A–Z")}</option><option value="length">{t("Halaman paling sedikit")}</option></select></label>
       </div>
-      <div className="library35-filters" role="group" aria-label="Filter kategori buku">
+      <div className="library35-filters" role="group" aria-label={tx('Filter kategori buku','Filter book categories')}>
         {['All', ...Object.keys(roleLabels)].map(role => <button key={role} className={category === role ? 'active' : ''} onClick={() => setCategory(role)}>{role === 'All' ? t('Semua buku') : t(roleLabels[role as SourceBook['role']])}</button>)}
       </div>
-      <div className="library35-shelf-tabs" role="group" aria-label="Filter koleksi">
+      <div className="library35-shelf-tabs" role="group" aria-label={tx('Filter koleksi','Filter collection')}>
         <button className={shelfMode === 'all' ? 'active' : ''} onClick={() => setShelfMode('all')}><LibraryBig size={15}/> {t("Koleksi")}</button>
         <button className={shelfMode === 'continue' ? 'active' : ''} onClick={() => setShelfMode('continue')}><Clock3 size={15}/> {t("Sedang dibaca")}</button>
         <button className={shelfMode === 'saved' ? 'active' : ''} onClick={() => setShelfMode('saved')}><Heart size={15}/> {t("Favorit")}</button>
@@ -329,20 +330,20 @@ const tx = (id: string, english: string) => en ? english : id;
             <span className="library35-card-cover"><BookCover book={book}/></span>
             <span className="library35-card-body"><span className="library35-card-role">{t(roleLabels[book.role])}</span><strong className="library35-card-title">{book.title}</strong><span className="library35-card-author">{book.author}</span><span className="library35-card-meta"><span><BookOpen size={13}/> {book.pdfPages} {t("halaman")}</span><span className={ready ? 'ready' : 'pending'}>{t(ready ? '● Siap dibaca' : '○ PDF belum ada')}</span></span>{remembered && <span className="library35-card-progress"><span><span style={{ width: `${Math.max(4, remembered / book.pdfPages * 100)}%` }} /></span><small>{t("Penanda: halaman")} {remembered}</small></span>}<span className="library35-card-cta">{t(ready ? (remembered ? 'Lanjutkan membaca' : 'Baca sekarang') : 'Hubungkan PDF')} <ArrowRight size={16}/></span></span>
           </button>
-          <button className={`library35-card-favorite ${isFavorite ? 'active' : ''}`} onClick={() => toggleFavorite(book.id)} aria-label={isFavorite ? `Hapus ${book.title} dari favorit` : `Tambahkan ${book.title} ke favorit`} title={isFavorite ? 'Hapus favorit' : 'Tambah favorit'}><Heart size={17} fill={isFavorite ? 'currentColor' : 'none'}/></button>
+          <button className={`library35-card-favorite ${isFavorite ? 'active' : ''}`} onClick={() => toggleFavorite(book.id)} aria-label={isFavorite ? tx(`Hapus ${book.title} dari favorit`,`Remove ${book.title} from favorites`) : tx(`Tambahkan ${book.title} ke favorit`,`Add ${book.title} to favorites`)} title={isFavorite ? t('Hapus favorit') : t('Tambah favorit')}><Heart size={17} fill={isFavorite ? 'currentColor' : 'none'}/></button>
           {!ready && <button className="library35-card-attach" onClick={() => chooseOwnPdf(book.id)}><Upload size={13}/> {t("Buka PDF sendiri")}</button>}
         </article>;
       })}</div> : <div className="library35-empty"><FileSearch size={34}/><h4>{t("Belum ada buku yang cocok")}</h4><p>{t("Coba kata kunci lain, ubah filter, atau tambahkan favorit untuk mengisi rak ini.")}</p><button onClick={() => { setQuery(''); setCategory('All'); setShelfMode('all'); }}>{t("Tampilkan semua buku")}</button></div>}
-      {message && <div className="library35-toast" role="status"><Check size={16}/>{message}<button onClick={() => setMessage('')} aria-label="Tutup pesan"><X size={15}/></button></div>}
+      {message && <div className="library35-toast" role="status"><Check size={16}/>{message[language]}<button onClick={() => setMessage('')} aria-label={tx('Tutup pesan','Dismiss message')}><X size={15}/></button></div>}
 
       <div className="library35-research">
         <div><span className="library35-overline">{t("FROM READING TO UNDERSTANDING")}</span><h3>{index ? tx('Tanya bukumu berdasarkan sumber.', 'Ask your books with evidence.') : tx('Cari isi buku setelah membuat indeks.', 'Search inside books after building an index.')}</h3><p>{index ? tx('Indeks PDF tersedia. Pilih halaman relevan dan tinjau kutipan sebelum bertanya kepada AI.', 'Your PDF index is ready. Review page-level excerpts before asking AI.') : tx('Pencarian isi PDF memerlukan indeks pribadi di laptop atau JSON yang kamu impor sendiri. Katalog saja belum menyediakan isi buku.', 'Searching PDF contents needs a local index or your own imported JSON. Catalogue entries do not contain full book text.')}</p><span><ShieldCheck size={16}/>{tx('PDF tetap privat · kutipan hanya atas persetujuanmu', 'PDFs remain private · quotes require your consent')}</span></div>
-        <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? 'Tutup pencarian' : 'Buka pencarian buku'}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
+        <button className="library35-btn library35-btn--outline" onClick={() => setShowResearch(value => !value)} aria-expanded={showResearch}><FileSearch size={17}/>{showResearch ? tx('Tutup pencarian','Close search') : tx('Buka pencarian buku','Open book search')}<ChevronDown size={16} className={showResearch ? 'library35-rotate' : ''}/></button>
       </div>
-      {showResearch && <section className="library35-research-panel" aria-label="Cari isi PDF dengan indeks privat">
+      {showResearch && <section className="library35-research-panel" aria-label={tx('Cari isi PDF dengan indeks privat','Search PDF contents with a private index')}>
         <div className="library35-research-setup"><div><FileText size={22}/><div><strong>{t("Indeks PDF pribadi")}</strong><p>{t("Indeks otomatis dari folder private tersedia saat server lokal berjalan. Jika belum ada, buat dengan")} <code>python scripts/build_private_index.py</code>.</p></div></div><label className="library35-btn library35-btn--outline"><Upload size={16}/> {t("Import JSON")}<input type="file" accept=".json,application/json" onChange={event => { void loadIndex(event.target.files?.[0]); event.target.value = ''; }} /></label></div>
-        <label className="library35-question">{t("Tanyakan topik dari buku")}<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder="Misalnya: apa perbedaan ikatan ion dan kovalen?" /></label>
-        <p className="library35-index-status">{index ? `${index.pages.length} halaman terindeks · ${researchHits.length} cuplikan relevan` : 'Belum ada indeks pribadi yang dimuat.'}</p>
+        <label className="library35-question">{t("Tanyakan topik dari buku")}<textarea value={question} onChange={event => setQuestion(event.target.value)} maxLength={500} rows={2} placeholder={tx('Misalnya: apa perbedaan ikatan ion dan kovalen?','For example: what is the difference between ionic and covalent bonds?')} /></label>
+        <p className="library35-index-status">{index ? tx(`${index.pages.length} halaman terindeks · ${researchHits.length} cuplikan relevan`,`${index.pages.length} indexed pages · ${researchHits.length} relevant excerpts`) : tx('Belum ada indeks pribadi yang dimuat.','No private index has been loaded.')}</p>
         {index && <><div className="library35-hits">{researchHits.map(hit => <article key={`${hit.bookId}-${hit.pdfPage}`}><strong>{hit.title} {t("· PDF halaman")} {hit.pdfPage}</strong><p>{hit.text.slice(0, 340)}{hit.text.length > 340 ? '…' : ''}</p></article>)}</div><label className="library35-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> {t("Saya setuju cuplikan buku terpilih dapat dikirim ke layanan AI cloud untuk menjawab pertanyaan ini.")}</label><button className="library35-btn library35-btn--dark" disabled={!consent || !researchHits.length} onClick={prepareTutor}><BrainCircuit size={17}/> {t("Siapkan pertanyaan bersumber")} <ArrowRight size={16}/></button><p className="library35-footnote">{t("Periksa nomor halaman dan kebenaran kutipan pada PDF asli. Sumber dan tafsir bukan hal yang sama.")}</p></>}
       </section>}
       <p className="library35-rights"><ShieldCheck size={14}/> {t("PDF tetap pribadi. Katalog ini bukan izin untuk mempublikasikan atau menjual buku berhak cipta.")}</p>

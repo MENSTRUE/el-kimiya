@@ -1,7 +1,9 @@
-import { useRef, useState, type DragEvent, type PointerEvent as ReactPointerEvent } from 'react';
-import { AlertTriangle, Atom, Check, FlaskConical, Grip, LoaderCircle, Redo2, RotateCcw, Trash2, Undo2 } from 'lucide-react';
+import { useEffect, useId, useRef, useState, type DragEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import { AlertTriangle, Atom, Check, FlaskConical, Grip, LoaderCircle, Redo2, RotateCcw, Trash2, Undo2, Maximize2, ZoomIn, ZoomOut, Move } from 'lucide-react';
 import { useLanguage } from '../lib/language';
 import '../visual-molecular-builder-v61.css';
+import '../v8/molecule86.css';
+import { MoleculeFullscreen86, useMoleculeFullscreen86 } from './MoleculeFullscreen86';
 
 /** A small, deterministic atom-and-bond graph, not a freehand drawing program.
  * RDKit on the server is the authority for chemical validity and SMILES.
@@ -50,7 +52,7 @@ const PALETTE: { kind: Piece; id: string; en: string; symbol: string }[] = [
   { kind: 'Cl', id: 'Klorin', en: 'Chlorine', symbol: 'Cl' },
   { kind: 'Br', id: 'Bromin', en: 'Bromine', symbol: 'Br' },
 ];
-const colors: Record<Element, string> = { C: '#1f4558', O: '#d44c42', N: '#346cbb', S: '#b58b20', F: '#138461', Cl: '#138461', Br: '#9c5628' };
+const colors: Record<Element, string> = { C: 'var(--m86-carbon)', O: 'var(--m86-oxygen)', N: 'var(--m86-nitrogen)', S: 'var(--m86-sulfur)', F: 'var(--m86-halogen)', Cl: 'var(--m86-halogen)', Br: 'var(--m86-bromine)' };
 const initial = (): Graph => ({
   nodes: [{ id: 1, element: 'C', x: 292, y: 250 }, { id: 2, element: 'C', x: 351, y: 216 }],
   edges: [{ id: 1, a: 1, b: 2, order: 1 }],
@@ -180,6 +182,28 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const svgRef = useRef<SVGSVGElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
+  const gridId = useId().replace(/:/g, '');
+  const full = useMoleculeFullscreen86('builder');
+  const [camera, setCamera] = useState({ x: W / 2, y: H / 2, zoom: 2 });
+  const [panMode, setPanMode] = useState(false);
+  const [boardSize, setBoardSize] = useState({ w: W, h: H });
+  const panRef = useRef<{ x: number; y: number; cameraX: number; cameraY: number; scale: number } | null>(null);
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const update = () => {
+      const r = svg.getBoundingClientRect();
+      if (r.width && r.height) setBoardSize({ w: r.width, h: r.height });
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, [full.expanded, opened]);
+  const viewScale = Math.min(boardSize.w / W, boardSize.h / H) * camera.zoom;
+  const spanX = boardSize.w / viewScale, spanY = boardSize.h / viewScale;
+  const viewBox = full.expanded ? `${camera.x - spanX / 2} ${camera.y - spanY / 2} ${spanX} ${spanY}` : `0 0 ${W} ${H}`;
   const dragRef = useRef<{ id: number; start: Graph; moved: boolean } | null>(null);
   const revisionRef = useRef(0);
   const { nodes, edges } = history.present;
@@ -195,9 +219,13 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
     setSuccess(''); setError('');
   }
   function point(clientX: number, clientY: number): [number, number] {
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (!rect) return [W / 2, H / 2];
-    return [(clientX - rect.left) / rect.width * W, (clientY - rect.top) / rect.height * H];
+    const svg = svgRef.current;
+    const matrix = svg?.getScreenCTM();
+    if (!svg || !matrix) return [W / 2, H / 2];
+    const p = svg.createSVGPoint();
+    p.x = clientX; p.y = clientY;
+    const local = p.matrixTransform(matrix.inverse());
+    return [local.x, local.y];
   }
   function insert(kind: Piece, x: number, y: number) {
     commit(g => putPiece(g, kind, x, y, selectedAtom));
@@ -254,7 +282,7 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
   }
   async function analyze() {
     const problem = validateShape(history.present);
-    if (problem) { setError(problem); return; }
+    if (problem) { setError(!history.present.nodes.length ? tx('Belum ada atom pada rangka', problem) : tx('Molekul melebihi batas builder', problem)); return; }
     setWorking(true); setError(''); setSuccess('');
     const submittedRevision = revisionRef.current;
     const abort = new AbortController();
@@ -270,12 +298,13 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
         throw new Error(reason);
       }
       if (!payload || typeof payload !== 'object' || !('canonical_smiles_rdkit' in payload) || !('svg_2d' in payload)) {
-        throw new Error('Unexpected molecular API response');
+        throw new Error(tx('Respons API molekul tidak sesuai', 'Unexpected molecular API response'));
       }
       if (revisionRef.current !== submittedRevision) throw new Error(tx('Struktur berubah selama validasi. Jalankan lagi.', 'Structure changed during validation. Please validate again.'));
       const data = payload as BuilderResultV61;
       onResult(data);
       setSuccess(`${data.molecular_formula_rdkit} · ${data.canonical_smiles_rdkit}`);
+      if (full.expanded) full.close();
       window.setTimeout(() => document.getElementById('v60-artboard')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -284,25 +313,21 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
     }
   }
   const caption = tx('Tarik objek ke area kerja, atau pilih objek lalu klik. Ujung garis adalah karbon (C). Klik atom untuk memilih, tarik untuk menggeser; klik ikatan untuk mengubah orde.', 'Drag a piece onto the workspace or select a piece and click. Bond endpoints are carbon (C). Select or move an atom; click a bond to change its order.');
-  return <section className="v61-builder" aria-label="Visual molecular assembly builder">
-    <div className="v61-title">
-      <div><span><Grip size={16}/> V6.1 · VISUAL MOLECULAR BUILDER</span>
-        <h3>{tx('Rakit molekul tanpa mengetik SMILES.', 'Assemble molecules without typing SMILES.')}</h3>
-        <p>{tx('Objek siap pakai → snap ke rangka karbon → validasi kimia RDKit.', 'Ready-made pieces → snap to carbon skeleton → RDKit chemistry validation.')}</p>
-      </div>
-      <button type="button" onClick={() => setOpened(o => !o)} aria-expanded={opened} className="v61-toggle">{opened ? tx('Sembunyikan','Collapse') : tx('Buka builder','Open builder')}</button>
-    </div>
-    {opened && <>
-      <div className="v61-quick" aria-label="Molecule examples">
+  const openFull = () => {
+    setOpened(true);
+    full.open();
+  };
+  const tools = <>
+      <div className="v61-quick" aria-label={tx('Contoh molekul', 'Molecule examples')}>
         <span>{tx('Mulai cepat:', 'Quick start:')}</span>
         <button type="button" onClick={() => { commit(() => preset('ethanol')); setPicked(null); }}>{tx('Etanol','Ethanol')}</button>
         <button type="button" onClick={() => { commit(() => preset('benzene')); setPicked(null); }}>{tx('Benzena','Benzene')}</button>
         <button type="button" onClick={() => { commit(() => preset('acid')); setPicked(null); }}>{tx('Asam asetat','Acetic acid')}</button>
       </div>
       <div className="v61-layout">
-        <aside className="v61-palette" aria-label="Draggable molecular pieces">
+        <aside className="v61-palette" aria-label={tx("Objek molekul yang dapat diseret", "Draggable molecular pieces")}>
           <strong>{tx('Objek kimia', 'Molecular pieces')}</strong>
-          <p>{tx('Tarik atau klik objek','Drag or click a piece')}</p>
+          <p>{tx('Tarik atau pilih objek','Drag or select a piece')}</p>
           <div className="v61-piece-grid">{PALETTE.map(item => <button key={item.kind} type="button" draggable aria-pressed={active === item.kind}
             className={active === item.kind ? 'v61-active' : ''}
             onDragStart={(e: DragEvent<HTMLButtonElement>) => { setActive(item.kind); e.dataTransfer.setData('text/plain', item.kind); e.dataTransfer.effectAllowed = 'copy'; }}
@@ -313,38 +338,60 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
         <div className="v61-board-wrap">
           <div className="v61-toolbar"><span><Atom size={16}/>{tx('Area perakitan', 'Assembly workspace')}</span>
             <div>
-              <button type="button" onClick={undo} disabled={!history.past.length} title={tx('Urungkan','Undo')}><Undo2 size={16}/></button>
-              <button type="button" onClick={redo} disabled={!history.future.length} title={tx('Ulangi','Redo')}><Redo2 size={16}/></button>
-              <button type="button" onClick={removeSelected} disabled={!picked} title={tx('Hapus objek terpilih','Delete selected')}><Trash2 size={16}/></button>
-              <button type="button" onClick={() => { commit(() => initial()); setPicked(null); }} title={tx('Reset rangka','Reset skeleton')}><RotateCcw size={16}/></button>
+              <button type="button" onClick={undo} disabled={!history.past.length} aria-label={tx('Urungkan','Undo')} title={tx('Urungkan','Undo')}><Undo2 size={16}/></button>
+              <button type="button" onClick={redo} disabled={!history.future.length} aria-label={tx('Ulangi','Redo')} title={tx('Ulangi','Redo')}><Redo2 size={16}/></button>
+              <button type="button" onClick={removeSelected} disabled={!picked} aria-label={tx('Hapus objek terpilih','Delete selected')} title={tx('Hapus objek terpilih','Delete selected')}><Trash2 size={16}/></button>
+              <button type="button" onClick={() => { commit(() => initial()); setPicked(null); }} aria-label={tx('Reset rangka','Reset skeleton')} title={tx('Reset rangka','Reset skeleton')}><RotateCcw size={16}/></button>
             </div></div>
+          {full.expanded && <div className="molecule86-board-tools" role="group" aria-label={tx('Kontrol tampilan rangka', 'Graph view controls')}>
+            <button type="button" onClick={() => setCamera(c => ({...c, zoom: bound(c.zoom * 1.25, .7, 4)}))} aria-label={tx('Perbesar rangka', 'Zoom graph in')}><ZoomIn size={19}/></button>
+            <button type="button" onClick={() => setCamera(c => ({...c, zoom: bound(c.zoom / 1.25, .7, 4)}))} aria-label={tx('Perkecil rangka', 'Zoom graph out')}><ZoomOut size={19}/></button>
+            <button type="button" aria-pressed={panMode} onClick={() => setPanMode(p => !p)} aria-label={tx('Geser tampilan', 'Pan view')}><Move size={19}/><span>{tx('Geser','Pan')}</span></button>
+            <button type="button" onClick={() => setCamera({x: W / 2,y:H / 2,zoom:1})}>{tx('Muat semua','Fit all')}</button>
+          </div>}
           <div className="v61-drop-zone" onDragOver={e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }} onDrop={e => { e.preventDefault(); const kind = e.dataTransfer.getData('text/plain') as Piece; if (PALETTE.some(p => p.kind === kind)) { const [x,y] = point(e.clientX,e.clientY); insert(kind,x,y); } }}>
-            <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Skeletal molecular graph. Drag pieces or click to place. Select nodes to edit." onClick={e => { const [x,y] = point(e.clientX,e.clientY); insert(active,x,y); }}>
-              <defs><pattern id="v61grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d9e8ed"/></pattern></defs>
-              <rect x="0" y="0" width={W} height={H} fill="url(#v61grid)"/>
+            <svg ref={svgRef} viewBox={viewBox} role="img" aria-label={tx('Rangka molekul. Pilih atau seret objek untuk merakit.', 'Skeletal molecular graph. Select or drag pieces to assemble.')}
+                data-pan={panMode && full.expanded ? 'true' : 'false'}
+                onPointerDown={e => {
+                  if (!full.expanded || !panMode) return;
+                  panRef.current = { x:e.clientX,y:e.clientY,cameraX:camera.x,cameraY:camera.y,scale:viewScale };
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                }}
+                onPointerMove={e => {
+                  const pan = panRef.current;
+                  if (!pan) return;
+                  setCamera(c => ({...c,x:bound(pan.cameraX-(e.clientX-pan.x)/pan.scale,0,W),y:bound(pan.cameraY-(e.clientY-pan.y)/pan.scale,0,H)}));
+                }}
+                onPointerUp={() => { panRef.current=null; }} onPointerCancel={() => { panRef.current=null; }}
+                onClick={e => {
+                  if (full.expanded && panMode) return;
+                  const [x,y] = point(e.clientX,e.clientY); insert(active,x,y);
+                }}>
+              <defs><pattern id={gridId} width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="var(--m86-grid)"/></pattern></defs>
+              <rect x="0" y="0" width={W} height={H} fill={`url(#${gridId})`}/>
               {edges.map(edge => {
                 const a = nodes.find(n => n.id === edge.a), b = nodes.find(n => n.id === edge.b);
                 if (!a || !b) return null;
                 const dx = b.x-a.x, dy = b.y-a.y, len = Math.max(1, Math.hypot(dx,dy)), nx = -dy / len, ny = dx / len;
                 const offsets = edge.order === 1 ? [0] : edge.order === 2 ? [-4.2,4.2] : [-6.7,0,6.7];
                 return <g key={edge.id} className={picked?.type === 'edge' && picked.id === edge.id ? 'v61-picked-edge' : 'v61-edge'}>
-                  {offsets.map(offset => <line key={offset} x1={a.x+nx*offset} y1={a.y+ny*offset} x2={b.x+nx*offset} y2={b.y+ny*offset} strokeWidth={2.65} stroke="currentColor" strokeLinecap="round" pointerEvents="none"/>)}
-                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth={17} onClick={e => {e.stopPropagation(); cycleBond(edge.id);}}><title>{tx('Klik untuk ubah orde ikatan','Click to cycle bond order')}</title></line>
+                  {offsets.map(offset => <line key={offset} x1={a.x+nx*offset} y1={a.y+ny*offset} x2={b.x+nx*offset} y2={b.y+ny*offset} strokeWidth={full.expanded ? 3 : 2.65} vectorEffect={full.expanded ? "non-scaling-stroke" : undefined} stroke="currentColor" strokeLinecap="round" pointerEvents="none"/>)}
+                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="transparent" strokeWidth={full.expanded ? 22 : 17} vectorEffect={full.expanded ? "non-scaling-stroke" : undefined} onClick={e => {if (full.expanded && panMode) return; e.stopPropagation(); cycleBond(edge.id);}}><title>{tx('Klik untuk ubah orde ikatan','Click to cycle bond order')}</title></line>
                 </g>;
               })}
               {nodes.map(node => <g key={node.id}>
-                {node.element !== 'C' && <circle cx={node.x} cy={node.y} r={18} fill="#f9fcfe"/>}
+                {node.element !== 'C' && <circle cx={node.x} cy={node.y} r={18} fill="var(--m86-board)"/>}
                 {node.element !== 'C' && <text x={node.x} y={node.y + 5} textAnchor="middle" fontWeight="800" fontSize={18} fill={colors[node.element]} pointerEvents="none">{node.element}</text>}
-                {picked?.type === 'node' && picked.id === node.id && <circle cx={node.x} cy={node.y} r={21} fill="none" stroke="#48aac0" strokeWidth={2} strokeDasharray="4 3" pointerEvents="none"/>}
+                {picked?.type === 'node' && picked.id === node.id && <circle cx={node.x} cy={node.y} r={21} fill="none" stroke="var(--m86-picked)" strokeWidth={2} strokeDasharray="4 3" pointerEvents="none"/>}
                 <circle cx={node.x} cy={node.y} r={20} fill="transparent" className="v61-node-target"
-                  onClick={e => { e.stopPropagation(); setPicked({type:'node',id:node.id}); }}
-                  onPointerDown={e => down(e,node.id)} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
+                  onClick={e => { if (full.expanded && panMode) return; e.stopPropagation(); setPicked({type:'node',id:node.id}); }}
+                  onPointerDown={e => { if (!(full.expanded && panMode)) down(e,node.id); }} onPointerMove={move} onPointerUp={up} onPointerCancel={up}>
                   <title>{node.element}: {tx('seret untuk memindahkan / pilih untuk menyambung','drag to move / select to attach')}</title>
                 </circle>
               </g>)}
             </svg>
           </div>
-          <p className="v61-guide">{caption}</p>
+          <p className="v61-guide">{full.expanded && panMode ? tx('Seret kanvas untuk menggeser. Nonaktifkan Geser untuk merakit.', 'Drag the canvas to pan. Turn off Pan to edit the graph.') : caption}</p>
           <div className="v61-submit"><span>{nodes.length} {tx('atom','atoms')} · {edges.length} {tx('ikatan','bonds')}</span>
             <button type="button" onClick={() => void analyze()} disabled={working || !nodes.length}>{working ? <LoaderCircle size={17} className="v61-spin"/> : <FlaskConical size={17}/>}{working ? tx('Memvalidasi…','Validating…') : tx('Validasi & kirim ke viewer','Validate & open in viewer')}</button>
           </div>
@@ -353,6 +400,22 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
         </div>
       </div>
       <p className="v61-caveat">{tx('Builder untuk molekul kecil dan senyawa sederhana. Ikatan stereokimia, reaksi kimia, muatan dan struktur kompleks tetap gunakan SMILES atau perangkat lunak khusus. Tidak ada prediksi keamanan, sintesis, atau kehalalan.', 'Builder for small, simple molecular structures. Use SMILES or specialist tools for stereochemistry, reactions, formal charges and complex molecules. No safety, synthesis or halal predictions.')}</p>
-    </>}
+    </>;
+  return <section ref={rootRef} className="v61-builder" aria-label={tx('Perakit molekul visual', 'Visual molecular assembly builder')}>
+    <div className="v61-title">
+      <div><span><Grip size={16}/> {tx('V8.6 · PERAKITAN MOLEKUL', 'V8.6 · MOLECULAR BUILDER')}</span>
+        <h3>{tx('Rakit molekul tanpa mengetik SMILES.', 'Assemble molecules without typing SMILES.')}</h3>
+        <p>{tx('Objek siap pakai → snap ke rangka karbon → validasi kimia RDKit.', 'Ready-made pieces → snap to carbon skeleton → RDKit chemistry validation.')}</p>
+      </div>
+      <div className="molecule86-launch-row">
+        <button type="button" onClick={() => setOpened(o => !o)} aria-expanded={opened} className="v61-toggle molecule86-desktop-toggle">{opened ? tx('Sembunyikan','Collapse') : tx('Buka builder','Open builder')}</button>
+        <button type="button" className="molecule86-launch" data-elk-molecule-open="builder" aria-haspopup="dialog" aria-expanded={full.expanded} onClick={openFull}><Maximize2 size={18}/>{tx('Buka perakit layar penuh','Open fullscreen builder')}</button>
+      </div>
+    </div>
+    <p className="molecule86-mobile-summary">{nodes.length} {tx('atom','atoms')} · {edges.length} {tx('ikatan','bonds')} — {tx('Rakit di ruang kerja khusus dengan kontrol sentuh besar.', 'Build in a dedicated workspace with large touch controls.')}</p>
+    {!full.expanded && opened && <div className="molecule86-inline-builder">{tools}</div>}
+    {full.expanded && <MoleculeFullscreen86 kind="builder" title={tx('Perakit molekul','Molecular builder')} anchor={rootRef.current} onClose={full.close}>
+      <section className="v61-builder molecule86-builder-content">{tools}</section>
+    </MoleculeFullscreen86>}
   </section>;
 }

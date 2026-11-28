@@ -48,7 +48,7 @@ async function readOutline(pdf: PDFDocumentProxy): Promise<OutlineItem[]> {
         const destination = typeof node.dest === 'string' ? await pdf.getDestination(node.dest) : node.dest;
         if (destination?.[0]) page = (await pdf.getPageIndex(destination[0])) + 1;
       } catch { /* Some PDF outlines have destinations we cannot resolve. */ }
-      if (result.length < 120) result.push({ title: node.title || 'Bagian', page, depth });
+      if (result.length < 120) result.push({ title: node.title || '', page, depth });
       if (result.length < 120 && node.items?.length) await scan(node.items, depth + 1);
     }
   };
@@ -133,7 +133,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
     }).catch(err => {
       if (!active) return;
       setLoading(false);
-      setError(err instanceof Error ? err.message : 'PDF tidak bisa dibaca.');
+      setError(err instanceof Error ? err.message : tx('PDF tidak bisa dibaca.','Could not read the PDF.'));
     });
     return () => {
       active = false;
@@ -156,7 +156,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
         const viewport = pdfPage.getViewport({scale:fit * zoom, rotation});
         const canvas = canvasRef.current;
         const context = canvas?.getContext('2d');
-        if (!canvas || !context) throw new Error('Browser tidak dapat membuat canvas pembaca.');
+        if (!canvas || !context) throw new Error(tx('Browser tidak dapat membuat canvas pembaca.','The browser could not create a reader canvas.'));
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.round(viewport.width * dpr);
         canvas.height = Math.round(viewport.height * dpr);
@@ -169,7 +169,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
       } catch (err) {
         if (cancelled || (err instanceof Error && err.name === 'RenderingCancelledException')) return;
         setRendering(false);
-        setError(err instanceof Error ? err.message : 'Gagal merender halaman.');
+        setError(err instanceof Error ? err.message : tx('Gagal merender halaman.','Could not render the page.'));
       }
     })();
     return () => { cancelled = true; activeTask?.cancel(); if (taskRef.current === activeTask) taskRef.current = null; };
@@ -206,7 +206,7 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
     if (file.size > 80_000_000) { setTextError(tx('JSON terlalu besar (maks 80 MB).', 'JSON too large (80 MB max).')); return; }
     try {
       const parsed: unknown = JSON.parse(await file.text());
-      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Unsupported JSON format');
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error(tx('Format JSON tidak didukung.','Unsupported JSON format.'));
       const data = parsed as Record<string, unknown>;
       if (data.schema_version !== 1 || data.book_id !== book.id || !Array.isArray(data.pages) || data.pages.length > 5000) {
         throw new Error(tx('JSON tidak cocok dengan buku ini atau skemanya tidak didukung.', 'JSON does not match this book or uses an unsupported schema.'));
@@ -254,22 +254,22 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
       else await el.requestFullscreen();
-    } catch { setError('Mode layar penuh tidak didukung browser ini.'); }
+    } catch { setError(tx('Mode layar penuh tidak didukung browser ini.','Full-screen mode is not supported by this browser.')); }
   };
   const copyCitation = async () => {
     const ref = `${book.title} — halaman PDF ${validPage} (${book.author}).`;
     try { await navigator.clipboard.writeText(ref); setCopied(true); setTimeout(() => setCopied(false), 1500); }
-    catch { setError('Browser tidak mengizinkan clipboard.'); }
+    catch { setError(tx('Browser tidak mengizinkan clipboard.','The browser does not allow clipboard access.')); }
   };
 
-  return <section className="library36-studio" ref={frameRef} aria-label={`Reading Studio: ${book.title}`}>
+  return <section className="library36-studio" ref={frameRef} aria-label={tx(`Ruang baca: ${book.title}`,`Reading studio: ${book.title}`)}>
     <header className="library36-topbar">
       <button className="library36-back" onClick={onBack}><ArrowLeft size={17}/> {t("Kembali ke perpustakaan")}</button>
       <div className="library36-top-title"><small>{t("EL-KĪMIYĀ · READING STUDIO")}</small><strong title={book.title}>{book.title}</strong></div>
       <div className="library36-top-actions">
         <LanguageSwitch />
         <button title={t("Simpan halaman")} onClick={onBookmark}><BookmarkCheck size={18}/><span>{t("Simpan")}</span></button>
-        <button title={favorite?'Hapus favorit':'Tambah favorit'} onClick={onFavorite}><Heart size={18} fill={favorite?'currentColor':'none'}/></button>
+        <button title={favorite?t('Hapus favorit'):t('Tambah favorit')} onClick={onFavorite}><Heart size={18} fill={favorite?'currentColor':'none'}/></button>
         <button title={t("Layar penuh")} onClick={() => void fullscreen()}>{fullScreen?<Minimize size={18}/>:<Maximize size={18}/>}</button>
       </div>
     </header>
@@ -286,15 +286,15 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
           <button onClick={() => setSideTab('notes')} className={sideTab==='notes'?'active':''}><Bookmark size={16}/> {t("Catatan")}</button>
         </div>
         <div className="library36-side-content">
-          {sideTab==='contents' && <><p className="library36-side-eyebrow">{t("NAVIGATE THIS BOOK")}</p>{outline.length ? <div className="library36-outline">{outline.map((item,i)=><button key={`${item.title}-${i}`} style={{paddingLeft:`${12+item.depth*14}px`}} onClick={() => go(item.page)} className={item.page===validPage?'active':''}><span>{item.title}</span><small>{item.page}</small></button>)}</div>:<div className="library36-side-empty"><ListTree size={26}/><p>{t("PDF ini tidak menyediakan daftar isi digital. Gunakan nomor halaman di toolbar untuk berpindah.")}</p></div>}<p className="library36-side-foot">{t("Nomor yang ditampilkan adalah halaman PDF, bukan nomor halaman cetak.")}</p></>}
+          {sideTab==='contents' && <><p className="library36-side-eyebrow">{t("NAVIGATE THIS BOOK")}</p>{outline.length ? <div className="library36-outline">{outline.map((item,i)=><button key={`${item.title}-${i}`} style={{paddingLeft:`${12+item.depth*14}px`}} onClick={() => go(item.page)} className={item.page===validPage?'active':''}><span>{item.title||tx('Bagian','Section')}</span><small>{item.page}</small></button>)}</div>:<div className="library36-side-empty"><ListTree size={26}/><p>{t("PDF ini tidak menyediakan daftar isi digital. Gunakan nomor halaman di toolbar untuk berpindah.")}</p></div>}<p className="library36-side-foot">{t("Nomor yang ditampilkan adalah halaman PDF, bukan nomor halaman cetak.")}</p></>}
           {sideTab==='search' && <><p className="library36-side-eyebrow">{t("SEARCH YOUR PRIVATE BOOK")}</p><label className="library36-side-search"><Search size={17}/><input placeholder={t("Contoh: ikatan kovalen")} value={search} onChange={e=>setSearch(e.target.value)}/>{search&&<button aria-label={t("Hapus pencarian")} onClick={()=>setSearch('')}><X size={15}/></button>}</label>{!privateIndex?<div className="library36-side-empty"><FileSearch size={26}/><p>{t("Indeks JSON pribadi belum tersedia. Jalankan generator indeks sekali di proyek untuk mengaktifkan pencarian halaman.")}</p></div>:!search.trim()?<div className="library36-side-empty"><Sparkles size={26}/><p>{t("Cari istilah untuk menemukan halaman relevan dari buku ini.")}</p></div>:hits.length?<div className="library36-results">{hits.map((hit,i)=><button key={`${hit.pdfPage}-${i}`} onClick={()=>{go(hit.pdfPage);setReadMode('text')}}><span>{t("Halaman")} {hit.pdfPage} <ArrowRight size={13}/></span><p>{hit.text.slice(0,180)}{hit.text.length>180?'…':''}</p></button>)}</div>:<p className="library36-side-empty">{t("Tidak ada hasil untuk “")}{search}”.</p>}<p className="library36-side-foot">{t("Pencarian dilakukan di browser, tanpa mengunggah buku.")}</p></>}
-          {sideTab==='notes' && <><p className="library36-side-eyebrow">{t("YOUR READING MARKER")}</p><div className="library36-bookmark"><BookmarkCheck size={27}/><strong>{t("Halaman tersimpan:")} {savedPage}</strong><p>{t("Halaman terakhir yang kamu tandai pada buku ini.")}</p><button onClick={()=>go(savedPage)}>{t("Lanjutkan dari sini")} <ArrowRight size={14}/></button></div><div className="library36-notepad"><label htmlFor="elk-reader-note">{t("Catatan pribadi · halaman")} {validPage}</label><textarea id="elk-reader-note" value={noteDraft} maxLength={2500} rows={5} onChange={e=>{setNoteDraft(e.target.value);setNoteStatus('')}} placeholder={t("Apa hal penting dari halaman ini?")}/><div><button onClick={()=>{setNotes(prev=>({...prev,[validPage]:noteDraft.trim()}));setNoteStatus('Catatan tersimpan di browser.')}}><Check size={14}/> {t("Simpan catatan")}</button><button onClick={()=>{setNotes(prev=>{const next={...prev};delete next[validPage];return next});setNoteDraft('');setNoteStatus('Catatan dihapus.')}}><X size={14}/> {t("Hapus")}</button></div>{noteStatus&&<small role="status">{noteStatus}</small>}</div>{Object.entries(notes).filter(([p,t])=>t.trim()).length>0 && <div className="library36-notelist"><strong>{t("Halaman dengan catatan")}</strong>{Object.entries(notes).filter(([p,t])=>t.trim()).sort((a,b)=>Number(a[0])-Number(b[0])).map(([p,noteContent])=><button key={p} onClick={()=>go(Number(p))}><span>{t("Halaman")} {p}</span><small>{noteContent.slice(0,78)}{noteContent.length>78?'…':''}</small></button>)}</div>}<div className="library36-note-info"><CircleHelp size={19}/><p>{t("Catatan dan penanda disimpan di browser ini, bukan di Firebase.")}</p></div></>}
+          {sideTab==='notes' && <><p className="library36-side-eyebrow">{t("YOUR READING MARKER")}</p><div className="library36-bookmark"><BookmarkCheck size={27}/><strong>{t("Halaman tersimpan:")} {savedPage}</strong><p>{t("Halaman terakhir yang kamu tandai pada buku ini.")}</p><button onClick={()=>go(savedPage)}>{t("Lanjutkan dari sini")} <ArrowRight size={14}/></button></div><div className="library36-notepad"><label htmlFor="elk-reader-note">{t("Catatan pribadi · halaman")} {validPage}</label><textarea id="elk-reader-note" value={noteDraft} maxLength={2500} rows={5} onChange={e=>{setNoteDraft(e.target.value);setNoteStatus('')}} placeholder={t("Apa hal penting dari halaman ini?")}/><div><button onClick={()=>{setNotes(prev=>({...prev,[validPage]:noteDraft.trim()}));setNoteStatus('saved')}}><Check size={14}/> {t("Simpan catatan")}</button><button onClick={()=>{setNotes(prev=>{const next={...prev};delete next[validPage];return next});setNoteDraft('');setNoteStatus('deleted')}}><X size={14}/> {t("Hapus")}</button></div>{noteStatus&&<small role="status">{noteStatus==='saved'?tx('Catatan tersimpan di browser.','Note saved in this browser.'):tx('Catatan dihapus.','Note deleted.')}</small>}</div>{Object.entries(notes).filter(([p,t])=>t.trim()).length>0 && <div className="library36-notelist"><strong>{t("Halaman dengan catatan")}</strong>{Object.entries(notes).filter(([p,t])=>t.trim()).sort((a,b)=>Number(a[0])-Number(b[0])).map(([p,noteContent])=><button key={p} onClick={()=>go(Number(p))}><span>{t("Halaman")} {p}</span><small>{noteContent.slice(0,78)}{noteContent.length>78?'…':''}</small></button>)}</div>}<div className="library36-note-info"><CircleHelp size={19}/><p>{t("Catatan dan penanda disimpan di browser ini, bukan di Firebase.")}</p></div></>}
         </div>
       </aside>}
       <div className="library36-main">
         <div className="library36-tools">
           <div className="library36-nav">
-            <button onClick={()=>setShowSide(x=>!x)} title={showSide?'Sembunyikan panel':'Tampilkan panel'}><Columns2 size={18}/></button>
+            <button onClick={()=>setShowSide(x=>!x)} title={showSide?t('Sembunyikan panel'):t('Tampilkan panel')}><Columns2 size={18}/></button>
             <button onClick={()=>go(validPage-1)} disabled={validPage<=1} title={t("Halaman sebelumnya")}><ChevronLeft size={19}/></button>
             <label className="library36-number"><span>{t("Hal.")}</span><input type="number" min={1} max={pageCount} value={manual} onChange={e=>setManual(e.target.value)} onKeyDown={e=>{if(e.key==='Enter')go(Number(manual))}} onBlur={()=>setManual(String(validPage))}/><span>/ {pageCount}</span></label>
             <button onClick={()=>go(Number(manual))} title={t("Buka halaman")}><ArrowRight size={17}/></button>
@@ -321,13 +321,13 @@ export function PrivateReadingWorkspace({book, url, page, savedPage, favorite, p
           {loading && <div className="library36-loading"><LoaderCircle size={31} className="spin"/><strong>{t("Menyiapkan halaman buku…")}</strong><span>{t("Dokumen dibaca dari folder privat laptop")}</span></div>}
           {error && <div className="library36-error" role="alert"><CircleHelp size={20}/><p>{error}</p><button onClick={()=>setReadMode('text')}>{t("Coba mode teks")}</button></div>}
           {!loading && readMode==='document' && <div className="library36-paper-wrap">
-            <div className="library36-paper"><canvas ref={canvasRef} aria-label={`Halaman PDF ${validPage} dari ${book.title}`}/>{rendering&&<div className="library36-rendering"><LoaderCircle className="spin" size={22}/> {t("Memuat halaman…")}</div>}</div>
-            <p className="library36-page-foot">El-Kīmiyā · {book.title} · PDF p. {validPage}</p>
+            <div className="library36-paper"><canvas ref={canvasRef} aria-label={tx(`Halaman PDF ${validPage} dari ${book.title}`,`PDF page ${validPage} of ${book.title}`)}/>{rendering&&<div className="library36-rendering"><LoaderCircle className="spin" size={22}/> {t("Memuat halaman…")}</div>}</div>
+            <p className="library36-page-foot">El-Kīmiyā · {book.title} · {tx('Hal. PDF','PDF p.')} {validPage}</p>
           </div>}
-          {!loading && readMode==='text' && <article className="library36-text-sheet"><span className="library36-text-kicker">{t("DIGITAL READING · PDF PAGE")} {validPage}</span><h2>{book.title}</h2><p className="library36-text-description">{t("Teks diambil dari PDF yang dibuka di browser atau JSON privat yang kamu impor. Tata letak rumus dan gambar tetap gunakan mode Dokumen.")}</p>{selectedText?<div className="library36-text-content library65-extracted" style={{fontSize: `${fontSize}px`, lineHeight, fontFamily: fontFamily === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif'}}>{selectedText}</div>:<div className="library36-text-missing"><FileText size={30}/><strong>{t("Belum ada teks terindeks untuk halaman ini.")}</strong><p>{t("Jika PDF hasil scan tanpa text layer, ekstraksi otomatis bisa kosong. Gunakan PDF asli atau impor JSON teks privat yang dibuat dari file milikmu.")}</p></div>}{textBusy && <p className="library65-caption" role="status">{tx('Mengekstrak teks dari PDF…', 'Extracting text from PDF…')}</p>}
+          {!loading && readMode==='text' && <article className="library36-text-sheet"><span className="library36-text-kicker">{t("DIGITAL READING · PDF PAGE")} {validPage}</span><h2>{book.title}</h2><p className="library36-text-description">{tx('Teks diambil dari PDF yang dibuka di browser atau JSON privat yang kamu impor. Tata letak rumus dan gambar tetap gunakan mode Dokumen.','Text comes from the PDF open in this browser or your imported private JSON. Use Document mode for the original layout of formulas and figures.')}</p>{selectedText?<div className="library36-text-content library65-extracted" style={{fontSize: `${fontSize}px`, lineHeight, fontFamily: fontFamily === 'serif' ? 'Georgia, serif' : 'system-ui, sans-serif'}}>{selectedText}</div>:<div className="library36-text-missing"><FileText size={30}/><strong>{t("Belum ada teks terindeks untuk halaman ini.")}</strong><p>{tx('Jika PDF hasil scan tanpa text layer, ekstraksi otomatis bisa kosong. Gunakan PDF asli atau impor JSON teks privat yang dibuat dari file milikmu.','Scanned PDFs without a text layer may produce no extracted text. Use the original PDF or import private text JSON created from your own file.')}</p></div>}{textBusy && <p className="library65-caption" role="status">{tx('Mengekstrak teks dari PDF…', 'Extracting text from PDF…')}</p>}
           {textError && <p className="library65-reader-error" role="alert">{textError}</p>}
           <p className="library65-source">{tx('Hanya untuk penggunaan privat. Teks dari PDF bukan hasil OCR, tabel dan rumus mungkin tidak sempurna.', 'Private use only. PDF text extraction is not OCR; tables and formulas may not preserve layout.')}</p>
-          <div className="library36-text-actions"><label className="library65-import"><FileText size={16}/>{tx('Impor JSON privat', 'Import private JSON')}<input type="file" accept=".json,application/json" onChange={e => { void importPrivateJson(e.target.files?.[0]); e.target.value = ''; }}/></label><button onClick={() => void copyPageText()} disabled={!selectedText}><FileText size={16}/>{tx('Salin teks', 'Copy text')}</button><button onClick={()=>void copyCitation()}>{copied?<Check size={16}/>:<Bookmark size={16}/>} {copied?'Referensi disalin':'Salin referensi halaman'}</button><button onClick={()=>setReadMode('document')}><BookOpen size={16}/> {t("Lihat PDF asli")}</button></div></article>}
+          <div className="library36-text-actions"><label className="library65-import"><FileText size={16}/>{tx('Impor JSON privat', 'Import private JSON')}<input type="file" accept=".json,application/json" onChange={e => { void importPrivateJson(e.target.files?.[0]); e.target.value = ''; }}/></label><button onClick={() => void copyPageText()} disabled={!selectedText}><FileText size={16}/>{tx('Salin teks', 'Copy text')}</button><button onClick={()=>void copyCitation()}>{copied?<Check size={16}/>:<Bookmark size={16}/>} {copied?tx('Referensi disalin','Reference copied'):tx('Salin referensi halaman','Copy page citation')}</button><button onClick={()=>setReadMode('document')}><BookOpen size={16}/> {t("Lihat PDF asli")}</button></div></article>}
         </div>
         <footer className="library36-bottom"><div><ShieldCheck size={15}/> {t("Dokumen privat · Tidak dipublikasikan")}</div><div className="library36-bottom-actions"><button onClick={()=>onAsk(`Jelaskan topik pada ${book.title}, halaman PDF ${validPage}. Jangan mengarang isi halaman; jika tidak memiliki cuplikan sumber, minta saya mengimpor indeks pribadi terlebih dahulu.`)}><Sparkles size={16}/> {t("Diskusikan di AI Tutor")}</button><button onClick={()=>go(validPage+1)} disabled={validPage>=pageCount}>{t("Halaman berikutnya")} <ChevronRight size={16}/></button></div></footer>
       </div>

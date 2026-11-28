@@ -2,11 +2,12 @@ import { learningStorage as elkLearningStorage } from '../v8/learningStorage';
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type PointerEvent } from 'react';
 import {
   Atom, BookOpen, Box, Check, Copy, Download, FlaskConical, LoaderCircle,
-  Maximize2, RotateCcw, ShieldCheck, Sparkles, ZoomIn, ZoomOut, AlertTriangle,
+  Maximize2, RotateCcw, Move, ShieldCheck, Sparkles, ZoomIn, ZoomOut, AlertTriangle,
 } from 'lucide-react';
 import { useLanguage } from '../lib/language';
 import { VisualMolecularBuilderV61, type BuilderResultV61 } from './VisualMolecularBuilderV61';
 import '../molecular-studio-v60.css';
+import { MoleculeFullscreen86, useMoleculeFullscreen86 } from './MoleculeFullscreen86';
 
 type Atom3D = { element: string; xyz: [number, number, number] };
 type Bond3D = { a: number; b: number; order: number };
@@ -53,17 +54,47 @@ function svgBlob(svg: string) { return new Blob([svg], { type: 'image/svg+xml;ch
 function safeFileName(value: string) { return value.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 40) || 'molecule'; }
 
 function MolecularCanvas3D({ geometry, label }: { geometry: Geometry3D; label: string }) {
+  const { language } = useLanguage();
+  const tx = (id: string, en: string) => language === 'en' ? en : id;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const dragRef = useRef<{ x: number; y: number } | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const full = useMoleculeFullscreen86('viewer');
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const [size, setSize] = useState({ w: 900, h: 540, ratio: 1 });
+  const [theme, setTheme] = useState(false);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [panMode, setPanMode] = useState(false);
   const [yaw, setYaw] = useState(0.45);
   const [pitch, setPitch] = useState(-0.22);
   const [zoom, setZoom] = useState(1);
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const measure = () => {
+      const r = canvas.getBoundingClientRect();
+      const dark = canvas.closest('.app')?.classList.contains('dark') ?? document.documentElement.dataset.elkTheme === 'dark';
+      if (r.width > 0 && r.height > 0) setSize({ w: Math.round(r.width), h: Math.round(r.height), ratio: Math.min(2, window.devicePixelRatio || 1) });
+      setTheme(dark);
+    };
+    measure();
+    const resize = new ResizeObserver(measure); resize.observe(canvas);
+    const style = new MutationObserver(measure);
+    const app = canvas.closest('.app');
+    if (app) style.observe(app, { attributes: true, attributeFilter: ['class'] });
+    style.observe(document.documentElement, { attributes: true, attributeFilter: ['data-elk-theme'] });
+    const wheel = (event: WheelEvent) => {
+      event.preventDefault();
+      setZoom(z => Math.max(.45, Math.min(4, z * Math.exp(-event.deltaY * .0015))));
+    };
+    canvas.addEventListener('wheel', wheel, { passive: false });
+    return () => { resize.disconnect(); style.disconnect(); canvas.removeEventListener('wheel', wheel); pointers.current.clear(); };
+  }, [full.expanded]);
   const positions = useMemo(() => {
     const n = geometry.atoms.length || 1;
     const mean = geometry.atoms.reduce((acc, a) => [acc[0] + a.xyz[0], acc[1] + a.xyz[1], acc[2] + a.xyz[2]] as [number, number, number], [0, 0, 0]);
     const center = mean.map(v => v / n);
     const xyz = geometry.atoms.map(a => [a.xyz[0] - center[0], a.xyz[1] - center[1], a.xyz[2] - center[2]]);
-    const extent = Math.max(2, ...xyz.flatMap(p => p.map(Math.abs)));
+    const extent = Math.max(1, ...xyz.flatMap(p => p.map(Math.abs)));
     return { xyz, extent };
   }, [geometry]);
 
@@ -71,12 +102,13 @@ function MolecularCanvas3D({ geometry, label }: { geometry: Geometry3D; label: s
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
-    const W = canvas.width;
-    const H = canvas.height;
-    ctx.fillStyle = '#f8fbfc';
+    const W = size.w;
+    const H = size.h;
+    ctx.setTransform(size.ratio, 0, 0, size.ratio, 0, 0);
+    ctx.fillStyle = theme ? '#162c3b' : '#f8fbfc';
     ctx.fillRect(0, 0, W, H);
     // Faint graph paper makes the spatial reference visually explicit.
-    ctx.strokeStyle = '#e9f0f3';
+    ctx.strokeStyle = theme ? '#294552' : '#e2ebee';
     ctx.lineWidth = 1;
     for (let i = 0; i <= W; i += 38) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke(); }
     for (let i = 0; i <= H; i += 38) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(W, i); ctx.stroke(); }
@@ -89,67 +121,106 @@ function MolecularCanvas3D({ geometry, label }: { geometry: Geometry3D; label: s
       const ry = y * cx - rz * sx;
       const depth = y * sx + rz * cx;
       const perspective = 1 / (1 + Math.max(-0.65, depth / (positions.extent * 8)));
-      return { x: W / 2 + rx * factor * perspective, y: H / 2 - ry * factor * perspective, depth, perspective };
+      return { x: W * (0.5 + pan.x) + rx * factor * perspective, y: H * (0.5 + pan.y) - ry * factor * perspective, depth, perspective };
     });
-    const orderedBonds = geometry.bonds.map(b => ({ ...b, depth: (screen[b.a].depth + screen[b.b].depth) / 2 })).sort((a, b) => a.depth - b.depth);
+    const orderedBonds = geometry.bonds.filter(b => screen[b.a] && screen[b.b]).map(b => ({ ...b, depth: (screen[b.a].depth + screen[b.b].depth) / 2 })).sort((a, b) => a.depth - b.depth);
     for (const bond of orderedBonds) {
       const a = screen[bond.a], b = screen[bond.b];
       if (!a || !b) continue;
       ctx.lineCap = 'round';
-      ctx.strokeStyle = '#8ba3ae';
+      ctx.strokeStyle = theme ? '#9dbfc9' : '#678793';
       ctx.lineWidth = Math.max(3, 6 * zoom);
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
       if (bond.order >= 1.8) {
         const dx = b.x - a.x, dy = b.y - a.y, len = Math.max(1, Math.hypot(dx, dy));
-        ctx.strokeStyle = '#dbe6ea'; ctx.lineWidth = 2.2;
+        ctx.strokeStyle = theme ? '#ddedf1' : '#dbe6ea'; ctx.lineWidth = 2.2;
         ctx.beginPath(); ctx.moveTo(a.x + (-dy / len) * 3, a.y + (dx / len) * 3);
         ctx.lineTo(b.x + (-dy / len) * 3, b.y + (dx / len) * 3); ctx.stroke();
       }
     }
-    const palette: Record<string, string> = { C: '#395c6b', O: '#e15b54', N: '#477cc3', H: '#e2e8ea', S: '#d5a43e', P: '#dd8b48', F: '#48a873', Cl: '#48a873', Br: '#98634a', I: '#8f6fa9' };
+    const palette: Record<string, string> = { C: theme ? '#86b7ca' : '#395c6b', O: '#e15b54', N: '#477cc3', H: '#e2e8ea', S: '#d5a43e', P: '#dd8b48', F: '#48a873', Cl: '#48a873', Br: '#98634a', I: '#8f6fa9' };
     const sorted = geometry.atoms.map((atom, i) => ({ atom, i, ...screen[i] })).sort((a, b) => a.depth - b.depth);
     for (const a of sorted) {
       const r = (a.atom.element === 'H' ? 7 : 13) * Math.min(1.55, zoom) * a.perspective;
       const gradient = ctx.createRadialGradient(a.x - r * .28, a.y - r * .32, Math.max(1, r * .1), a.x, a.y, r);
       gradient.addColorStop(0, '#fff');
       gradient.addColorStop(.28, palette[a.atom.element] ?? '#80929e');
-      gradient.addColorStop(1, '#223b4c');
+      gradient.addColorStop(1, theme ? '#436679' : '#223b4c');
       ctx.fillStyle = gradient; ctx.beginPath(); ctx.arc(a.x, a.y, Math.max(2, r), 0, Math.PI * 2); ctx.fill();
       if (a.atom.element !== 'C' && a.atom.element !== 'H') {
         ctx.fillStyle = '#fff'; ctx.font = `bold ${Math.max(10, 12 * Math.min(1.35, zoom))}px system-ui`;
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(a.atom.element, a.x, a.y);
       }
     }
-  }, [geometry, positions, yaw, pitch, zoom]);
+  }, [geometry, positions, yaw, pitch, zoom, pan, size, theme, full.expanded]);
 
   const pointerDown = (event: PointerEvent<HTMLCanvasElement>) => {
-    dragRef.current = { x: event.clientX, y: event.clientY };
+    if (event.button !== 0 && event.pointerType === 'mouse') return;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
     event.currentTarget.setPointerCapture(event.pointerId);
   };
-  const pointerMove = (event: PointerEvent<HTMLCanvasElement>) => {
-    if (!dragRef.current) return;
-    const dx = event.clientX - dragRef.current.x;
-    const dy = event.clientY - dragRef.current.y;
-    dragRef.current = { x: event.clientX, y: event.clientY };
+  const shift = (dx: number, dy: number) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPan(p => ({ x: Math.max(-1, Math.min(1,p.x + dx / rect.width)), y: Math.max(-1, Math.min(1,p.y + dy / rect.height)) }));
+  };
+  const rotate = (dx: number, dy: number) => {
     setYaw(v => v + dx * 0.012);
     setPitch(v => Math.max(-1.45, Math.min(1.45, v + dy * 0.012)));
   };
-  return <div className="v60-canvas3d">
-    <canvas ref={canvasRef} width={900} height={540} onPointerDown={pointerDown} onPointerMove={pointerMove}
-      onPointerUp={() => { dragRef.current = null; }} onPointerCancel={() => { dragRef.current = null; }}
-      aria-label={`Interactive 3D ball-and-stick illustration: ${label}`} role="img"/>
-    <div className="v60-canvas3d-controls">
-      <button type="button" onClick={() => setZoom(z => Math.min(2.3, z + .2))} aria-label="Zoom 3D in"><ZoomIn size={17}/></button>
-      <button type="button" onClick={() => setZoom(z => Math.max(.6, z - .2))} aria-label="Zoom 3D out"><ZoomOut size={17}/></button>
-      <button type="button" onClick={() => { setYaw(.45); setPitch(-.22); setZoom(1); }} aria-label="Reset 3D rotation"><RotateCcw size={17}/></button>
-    </div>
+  const pointerMove = (event: PointerEvent<HTMLCanvasElement>) => {
+    const previous = pointers.current.get(event.pointerId);
+    if (!previous) return;
+    const next = { x: event.clientX, y: event.clientY };
+    const other = [...pointers.current].find(([id]) => id !== event.pointerId)?.[1];
+    pointers.current.set(event.pointerId, next);
+    if (other) {
+      const oldDistance = Math.hypot(previous.x-other.x, previous.y-other.y);
+      const newDistance = Math.hypot(next.x-other.x, next.y-other.y);
+      if (oldDistance >= 5 && newDistance >= 5) setZoom(z => Math.max(.45, Math.min(4, z * newDistance/oldDistance)));
+      shift((next.x-previous.x)/2, (next.y-previous.y)/2);
+    } else if (panMode || event.shiftKey) {
+      shift(next.x-previous.x, next.y-previous.y);
+    } else rotate(next.x-previous.x, next.y-previous.y);
+  };
+  const reset = () => { setYaw(.45); setPitch(-.22); setZoom(1); setPan({ x:0, y:0 }); setPanMode(false); };
+  const controls = <div className="v60-canvas3d-controls" role="group" aria-label={tx('Kontrol tampilan 3D', '3D view controls')}>
+      <button type="button" onClick={() => setZoom(z => Math.min(4, z * 1.25))} aria-label={tx('Perbesar 3D','Zoom 3D in')} title={tx('Perbesar 3D','Zoom 3D in')}><ZoomIn size={18}/></button>
+      <button type="button" onClick={() => setZoom(z => Math.max(.45, z / 1.25))} aria-label={tx('Perkecil 3D','Zoom 3D out')} title={tx('Perkecil 3D','Zoom 3D out')}><ZoomOut size={18}/></button>
+      <button type="button" aria-pressed={panMode} onClick={() => setPanMode(p => !p)} aria-label={tx('Geser 3D','Pan 3D')} title={tx('Geser 3D','Pan 3D')}><Move size={18}/></button>
+      <button type="button" onClick={reset} aria-label={tx('Reset tampilan 3D','Reset 3D view')} title={tx('Reset tampilan 3D','Reset 3D view')}><RotateCcw size={18}/></button>
+      {!full.expanded && <button type="button" onClick={full.open} data-elk-molecule-open="viewer" aria-haspopup="dialog" aria-expanded={false} aria-label={tx('Buka 3D layar penuh','Open fullscreen 3D')} title={tx('Buka 3D layar penuh','Open fullscreen 3D')}><Maximize2 size={19}/><span>{tx('Layar penuh','Fullscreen')}</span></button>}
+    </div>;
+  const viewport = <div className="v60-canvas3d molecule86-canvas-stage">
+    <canvas ref={canvasRef} width={Math.round(size.w*size.ratio)} height={Math.round(size.h*size.ratio)} onPointerDown={pointerDown} onPointerMove={pointerMove}
+      onPointerUp={e => { pointers.current.delete(e.pointerId); }} onPointerCancel={e => { pointers.current.delete(e.pointerId); }} onLostPointerCapture={e => { pointers.current.delete(e.pointerId); }}
+      tabIndex={0} data-pan={panMode?'true':'false'} onKeyDown={e => {
+        const directions:Record<string,[number,number]> = { ArrowLeft:[-18,0],ArrowRight:[18,0],ArrowUp:[0,-18],ArrowDown:[0,18] };
+        const d = directions[e.key];
+        if (d) { e.preventDefault(); if (e.shiftKey || panMode) shift(...d); else rotate(...d); }
+        else if (e.key==='+' || e.key==='=') { e.preventDefault(); setZoom(z => Math.min(4,z*1.25)); }
+        else if (e.key==='-') { e.preventDefault(); setZoom(z => Math.max(.45,z/1.25)); }
+      }}
+      aria-label={`${tx('Ilustrasi bola dan batang 3D interaktif','Interactive 3D ball-and-stick illustration')}: ${label}`} role="img"/>
+    {controls}
   </div>;
+  const hints = tx('Seret satu jari untuk memutar. Cubit untuk zoom, geser dua jari untuk menggeser, atau gunakan tombol.','Drag one finger to rotate. Pinch to zoom, drag two fingers to pan, or use the buttons.');
+  return <div ref={rootRef} className="molecule86-viewer">
+    {!full.expanded && <>{viewport}<p className="molecule86-view-hint">{hints}</p></>}
+    {full.expanded && <MoleculeFullscreen86 kind="viewer" title={`${tx('Penampil 3D','3D viewer')} · ${label}`} anchor={rootRef.current} onClose={full.close}>
+      {viewport}
+      <p className="molecule86-view-hint">{hints}<br/>{tx('Konformer perkiraan ETKDG · bukan struktur eksperimen','ETKDG estimated conformer · not measured structure')}</p>
+    </MoleculeFullscreen86>}
+  </div>;
+
 }
 
 export function MolecularStudioV60() {
   const { language } = useLanguage();
   const en = language === 'en';
   const tx = (id: string, english: string) => en ? english : id;
+  const langRef = useRef(language);
+  langRef.current = language;
   const [samples, setSamples] = useState<Sample[]>([]);
   const [selected, setSelected] = useState('custom');
   const [smiles, setSmiles] = useState('CCO');
@@ -167,7 +238,7 @@ export function MolecularStudioV60() {
 
   const analyze = useCallback(async (input: string, include3d = false) => {
     const value = input.trim();
-    if (!value) { setError('Enter SMILES'); return; }
+    if (!value) { setError(langRef.current === "id" ? "Masukkan SMILES" : "Enter SMILES"); return; }
     controllerRef.current?.abort();
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -187,7 +258,7 @@ export function MolecularStudioV60() {
       const data: unknown = await resp.json().catch(() => null);
       if (!resp.ok) throw new Error(getDetail(data, `HTTP ${resp.status}`));
       if (!data || typeof data !== 'object' || !('svg_2d' in data) || typeof data.svg_2d !== 'string' || !data.svg_2d.includes('<svg')) {
-        throw new Error('The chemistry API did not return a valid SVG structure');
+        throw new Error(langRef.current === 'id' ? 'API kimia tidak mengembalikan struktur SVG yang valid' : 'The chemistry API did not return a valid SVG structure');
       }
       if (controllerRef.current !== controller) return;
       const computed = data as Descriptor;
@@ -219,7 +290,7 @@ export function MolecularStudioV60() {
           void analyze(first.canonical_smiles);
         } else { void analyze('CCO'); }
       } catch {
-        if (active) { setSampleWarning('Public ChEMBL samples unavailable. Try the ethanol example.'); void analyze('CCO'); }
+        if (active) { setSampleWarning(langRef.current === 'id' ? 'Sampel publik ChEMBL tidak tersedia. Coba contoh etanol.' : 'Public ChEMBL samples unavailable. Try the ethanol example.'); void analyze('CCO'); }
       }
     };
     void loadSamples();
@@ -286,7 +357,7 @@ export function MolecularStudioV60() {
       canvas.toBlob(blob => { if (blob) saveBlob(blob, file); }, 'image/png');
       URL.revokeObjectURL(url);
     };
-    img.onerror = () => { URL.revokeObjectURL(url); setError('PNG conversion failed; download the SVG instead.'); };
+    img.onerror = () => { URL.revokeObjectURL(url); setError(tx('Konversi PNG gagal; unduh SVG sebagai gantinya.', 'PNG conversion failed; download the SVG instead.')); };
     img.src = url;
   };
   const saveNote = () => {
@@ -304,7 +375,7 @@ export function MolecularStudioV60() {
     if (!result) return;
     void navigator.clipboard.writeText(result.canonical_smiles_rdkit).then(() => {
       setCopied(true); window.setTimeout(() => setCopied(false), 1500);
-    }).catch(() => setError('Clipboard unavailable'));
+    }).catch(() => setError(tx('Papan klip tidak tersedia', 'Clipboard unavailable')));
   };
   const metrics = result ? [
     [tx('Rumus molekul', 'Molecular formula'), result.molecular_formula_rdkit],
@@ -316,7 +387,7 @@ export function MolecularStudioV60() {
     [tx('Ikatan rotasi', 'Rotatable bonds'), String(result.rotatable_bonds_rdkit)],
     [tx('Atom', 'Atoms'), String(result.atom_count_rdkit)],
   ] : [];
-  return <section className="v60-studio" aria-label="El-Kimiya Molecular Studio V6">
+  return <section className="v60-studio" aria-label={tx("Studio Molekul El-Kimiya", "El-Kimiya Molecular Studio")}>
     <header className="v60-hero">
       <div><span className="v60-eyebrow"><Atom size={15}/> EL-KĪMIYĀ · MOLECULAR STUDIO V6</span>
         <h2>{tx('Dari kode menjadi molekul.', 'From code to molecule.')}</h2>
@@ -343,7 +414,7 @@ export function MolecularStudioV60() {
         </form>
         <div className="v60-artboard" id="v60-artboard">
           <div className="v60-artbar"><div className="v60-tabs"><button type="button" aria-pressed={view === '2d'} className={view === '2d' ? 'on' : ''} onClick={() => setView('2d')}><Atom size={15}/> 2D</button><button type="button" aria-pressed={view === '3d'} className={view === '3d' ? 'on' : ''} onClick={ask3d} disabled={!result || busy}><Box size={15}/> 3D {busy && <LoaderCircle size={13} className="v60-loading"/>}</button></div>
-            <div className="v60-actions"><button type="button" onClick={() => setZoom2d(z => Math.min(2.4, z + .2))} disabled={view !== '2d' || !result} title="Zoom in"><ZoomIn size={17}/></button><button type="button" onClick={() => setZoom2d(z => Math.max(.55, z - .2))} disabled={view !== '2d' || !result} title="Zoom out"><ZoomOut size={17}/></button><button type="button" onClick={() => { setZoom2d(1); setView('2d'); }} disabled={!result} title="Reset view"><Maximize2 size={17}/></button></div></div>
+            <div className="v60-actions"><button type="button" onClick={() => setZoom2d(z => Math.min(2.4, z + .2))} disabled={view !== '2d' || !result} title={tx("Perbesar","Zoom in")} aria-label={tx("Perbesar 2D","Zoom 2D in")}><ZoomIn size={17}/></button><button type="button" onClick={() => setZoom2d(z => Math.max(.55, z - .2))} disabled={view !== '2d' || !result} title={tx("Perkecil","Zoom out")} aria-label={tx("Perkecil 2D","Zoom 2D out")}><ZoomOut size={17}/></button><button type="button" onClick={() => { setZoom2d(1); setView('2d'); }} disabled={!result} title={tx("Reset tampilan 2D","Reset 2D view")} aria-label={tx("Reset tampilan 2D","Reset 2D view")}><RotateCcw size={17}/></button></div></div>
           <div className="v60-art-content" aria-live="polite">
             {busy && !result ? <div className="v60-placeholder"><LoaderCircle size={35} className="v60-loading"/><span>{tx('RDKit menggambar struktur…','RDKit is drawing the structure…')}</span></div> :
               result ? (view === '3d' && result.molecule_3d ? <MolecularCanvas3D geometry={result.molecule_3d} label={result.molecular_formula_rdkit}/> :

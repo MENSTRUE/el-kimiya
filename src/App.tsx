@@ -370,7 +370,7 @@ function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn, da
             <span><FlaskConical size={15} /> {t("REAL UNDERSTANDING")}</span>
           </div>
         </div>
-        <div className="product-showcase" aria-label="El-Kīmiyā learning workspace preview">
+        <div className="product-showcase" aria-label={t("El-Kīmiyā learning workspace preview")}>
           <div className="showcase-window">
             <div className="showcase-sidebar">
               <BrandMark compact inverted size="sm" />
@@ -467,7 +467,7 @@ function LandingPage({ start, guest, openFaith, openHybrid, openScan, signIn, da
       <MissionLandingTeaserV67 onStart={start}/>
       <FeatureOverviewV67 onStart={start}/>
 
-      <section className="faith-landing-teaser" id="faith-intro" aria-label="Kimia dan keimanan">
+      <section className="faith-landing-teaser" id="faith-intro" aria-label={t("Kimia dan keimanan")}>
         <div><span className="faith-eyebrow">{t("TAFAKKUR · QS. LUQMAN 31:20")}</span><h2>{t("Belajar kimia. Menemukan manfaat. Mensyukuri ciptaan.")}</h2><p>{t("Temukan bagaimana ilmu kimia dapat mengajak kita berpikir kritis, berbuat manfaat, dan menjaga lingkungan—dengan ayat serta sumber yang jelas.")}</p></div>
         <button onClick={openFaith}>{t("Jelajahi Kimia & Keimanan")} <ArrowRight size={17}/></button>
       </section>
@@ -528,7 +528,7 @@ function Dashboard({ setPage }: { setPage: (page: Page) => void }) {
           <h2>{t("Every great discovery")}<br/><em>{t("begins with a question.")}</em></h2>
           <p>{t("A thoughtful place to read, experiment, and understand chemistry—one idea at a time.")}</p>
         </div>
-        <div className="dashboard-quick-actions" aria-label="Quick actions">
+        <div className="dashboard-quick-actions" aria-label={t("Quick actions")}>
           <button onClick={() => setPage("scan")}><span><Camera size={18}/></span> {t("Scan a page")} <ArrowUpRight size={17}/></button>
           <button onClick={() => setPage("tutor")}><span><MessageCircle size={18}/></span> {t("Ask the tutor")} <ArrowUpRight size={17}/></button>
         </div>
@@ -565,7 +565,7 @@ function Dashboard({ setPage }: { setPage: (page: Page) => void }) {
           <BondIllustration />
         </article>
 
-        <article className="faith-teaser" aria-label="Kimia dan keimanan">
+        <article className="faith-teaser" aria-label={t("Kimia dan keimanan")}>
           <div><span className="faith-eyebrow"><Sparkles size={14}/> {t("TAFAKKUR · QS. LUQMAN [31]: 20")}</span><h3>{t("Mengapa kita mempelajari ilmu kimia?")}</h3><p>{t("Kenali manfaat ilmu, renungkan nikmat Allah, dan pelajari cara menjaga alam secara bertanggung jawab.")}</p></div>
           <button onClick={() => setPage("faith")}>{t("Jelajahi hikmah")} <ArrowRight size={16}/></button>
         </article>
@@ -676,9 +676,9 @@ function Dashboard({ setPage }: { setPage: (page: Page) => void }) {
 
 function BondIllustration() {
   return (
-    <div className="bond-visual" aria-label="Illustration of a bent water molecule, H₂O">
+    <div className="bond-visual" aria-label={t("Illustration of a bent water molecule, H₂O")}>
       <div className="molecule-plate-top"><span>FIG. 01</span><span>{t("MOLECULAR GEOMETRY")}</span></div>
-      <svg className="water-diagram" viewBox="0 0 360 290" role="img" aria-label="Water molecule: oxygen bonded to two hydrogen atoms">
+      <svg className="water-diagram" viewBox="0 0 360 290" role="img" aria-label={t("Water molecule: oxygen bonded to two hydrogen atoms")}>
         <defs>
           <linearGradient id="oxygenShade" x1="0" x2="1"><stop offset="0" stopColor="#25465b"/><stop offset="1" stopColor="#55798a"/></linearGradient>
         </defs>
@@ -767,7 +767,7 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
         </div>
         <label className="primary-button upload-text-label"><Upload size={17}/> {t("Upload .txt / .md")} <input type="file" accept=".txt,.md,text/plain,text/markdown" onChange={e=>{void handleUpload(e.target.files?.[0]);e.target.value=''}}/></label>
       </section>
-      <article className="faith-teaser" aria-label="Landasan belajar kimia">
+      <article className="faith-teaser" aria-label={t("Landasan belajar kimia")}>
         <div><span className="faith-eyebrow"><Sparkles size={14}/> {t("SAINS & KEIMANAN")}</span><h3>{t("Ilmu kimia sebagai jalan untuk memberi manfaat.")}</h3><p>{t("QS. Luqman: 20 mengajak kita memperhatikan nikmat Allah di langit dan bumi.")}</p></div>
         <button onClick={() => setPage("faith")}>{t("Baca refleksi")} <ArrowRight size={16}/></button>
       </article>
@@ -779,7 +779,7 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
       <div className="toolbar">
         <label>
           <Search size={18} />
-          <input placeholder="Search your library" value={query} onChange={e=>setQuery(e.target.value)} aria-label="Search your library"/>
+          <input placeholder={t("Search your library")} value={query} onChange={e=>setQuery(e.target.value)} aria-label={t("Search your library")}/>
         </label>
         <div className="filter-tabs">
           {["All resources", "Demo materials", "Your uploads", "Bookmarked"].map((item) => (
@@ -820,7 +820,7 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
             <div className="library-book-info">
               <div>
                 <Badge>{index === 0 ? "Offline ready" : "Demo resource"}</Badge>
-                <button className="icon-button" title="Open demo textbook" aria-label={`Open ${book.title}`} onClick={()=>setPage('reader')}>
+                <button className="icon-button" title={t("Open demo textbook")} aria-label={`${t("Open")} ${book.title}`} onClick={()=>setPage('reader')}>
                   <BookOpen size={18}/>
                 </button>
               </div>
@@ -840,7 +840,7 @@ function LibraryPage({ setPage, addNote, notify, askAbout }: { setPage:(page:Pag
         <div className="uploaded-grid">{visibleUploads.map(file=><article className="uploaded-item" key={file.id}><FileText size={25}/><h3>{file.name}</h3><p>{file.content.slice(0,140)}{file.content.length>140?'…':''}</p><small>{t("Local file · Not AI-indexed ·")} {new Date(file.createdAt).toLocaleDateString()}</small><div><button className="secondary-button" onClick={()=>setOpenUpload(file)}>{t("Read text")}</button><button className="icon-button" title={`Remove ${file.name}`} aria-label={`Remove ${file.name}`} onClick={()=>setUploaded(prev=>prev.filter(item=>item.id!==file.id))}><X size={17}/></button></div></article>)}</div>
       </section>}
       {visibleBooks.length===0&&visibleUploads.length===0&&<div className="empty-state"><BookOpen size={30}/><h3>{t("No matching learning materials")}</h3><p>{t("Try another search or import your own text.")}</p></div>}
-      {openUpload&&<div className="modal-backdrop" role="presentation" onClick={()=>setOpenUpload(null)}><section className="import-modal" role="dialog" aria-modal="true" aria-label={`Read ${openUpload.name}`} onClick={event=>event.stopPropagation()}><div className="modal-head"><div><Badge>{t("Your private document")}</Badge><h2>{openUpload.name}</h2></div><button className="icon-button" onClick={()=>setOpenUpload(null)} aria-label="Close text preview"><X size={18}/></button></div><pre>{openUpload.content}</pre><div className="modal-actions"><button className="primary-button" onClick={()=>{addNote(openUpload.name,openUpload.content.slice(0,1800),`Personal upload: ${openUpload.name}`);setOpenUpload(null)}}><NotebookPen size={17}/> {t("Save excerpt as note")}</button></div></section></div>}
+      {openUpload&&<div className="modal-backdrop" role="presentation" onClick={()=>setOpenUpload(null)}><section className="import-modal" role="dialog" aria-modal="true" aria-label={`${t("Read")} ${openUpload.name}`} onClick={event=>event.stopPropagation()}><div className="modal-head"><div><Badge>{t("Your private document")}</Badge><h2>{openUpload.name}</h2></div><button className="icon-button" onClick={()=>setOpenUpload(null)} aria-label={t("Close text preview")}><X size={18}/></button></div><pre>{openUpload.content}</pre><div className="modal-actions"><button className="primary-button" onClick={()=>{addNote(openUpload.name,openUpload.content.slice(0,1800),`Personal upload: ${openUpload.name}`);setOpenUpload(null)}}><NotebookPen size={17}/> {t("Save excerpt as note")}</button></div></section></div>}
     </main>
   );
 }
@@ -879,9 +879,9 @@ function ReaderPage({ setPage, addNote, addCard, dark, notify }: {
       </aside>
       <article className="reader-content">
         <div className="reader-toolbar"><div><BrandMark compact inverted={dark} size="sm"/><Badge variant="gold">{t("Original demo content")}</Badge></div>
-          <div><button className="icon-button" title="Toggle larger text" aria-label="Toggle larger text" aria-pressed={large} onClick={()=>setLarge(!large)}><span className="font-small">Aa</span></button>
-          <button className="icon-button" title="Bookmark section" aria-label="Bookmark section" aria-pressed={bookmarked} onClick={()=>{setBookmarked(!bookmarked);notify(!bookmarked?'Lesson bookmarked':'Bookmark removed')}}><Bookmark size={17} fill={bookmarked?'currentColor':'none'}/></button>
-          <button className="icon-button" title="Save a note" aria-label="Save lesson note" onClick={save}><NotebookPen size={18}/></button></div>
+          <div><button className="icon-button" title={t("Toggle larger text")} aria-label={t("Toggle larger text")} aria-pressed={large} onClick={()=>setLarge(!large)}><span className="font-small">Aa</span></button>
+          <button className="icon-button" title={t("Bookmark section")} aria-label={t("Bookmark section")} aria-pressed={bookmarked} onClick={()=>{setBookmarked(!bookmarked);notify(!bookmarked?'Lesson bookmarked':'Bookmark removed')}}><Bookmark size={17} fill={bookmarked?'currentColor':'none'}/></button>
+          <button className="icon-button" title={t("Save a note")} aria-label={t("Save lesson note")} onClick={save}><NotebookPen size={18}/></button></div>
         </div>
         <div className={`article-copy ${large?'reader-large-text':''}`}>
           <p className="chapter-kicker">{t("Chapter 3 · Section")} {chapter+1}</p><h1>{current.title}</h1>
@@ -900,7 +900,7 @@ function ReaderPage({ setPage, addNote, addCard, dark, notify }: {
         </div>
       </article>
       <aside className={`reader-ai ${explained?'open':''}`}>
-        <div className="ai-panel-head"><div><span className="ai-orb"><Lightbulb size={17}/></span><div><strong>{t("Contextual study guide")}</strong><small>{t("Static demonstration, not AI-generated")}</small></div></div><button className="icon-button" aria-label="Hide explanation" onClick={()=>setExplained(false)}><X size={17}/></button></div>
+        <div className="ai-panel-head"><div><span className="ai-orb"><Lightbulb size={17}/></span><div><strong>{t("Contextual study guide")}</strong><small>{t("Static demonstration, not AI-generated")}</small></div></div><button className="icon-button" aria-label={t("Hide explanation")} onClick={()=>setExplained(false)}><X size={17}/></button></div>
         {explained&&<><div className="context-chip"><BookOpen size={15}/><span>{t("Based on displayed demo passage")}</span><Check size={15}/></div><h3>{current.title}{t(", simply")}</h3><p>{current.explain}</p>
           <div className="analogy-card"><Lightbulb size={19}/><div><strong>{t("Think it through")}</strong><p>{t("Identify the particles, then explain which forces attract them.")}</p></div></div>
           <div className="source-box"><div><strong>{t("Source & evidence")}</strong><Badge variant="neutral">{t("Demo passage")}</Badge></div><p>{source}</p><span>{t("No external book/page citation claimed.")}</span></div>
@@ -1285,7 +1285,7 @@ function LegacyExplorerPage({ setPage, addNote, askAbout }: {setPage:(page:Page)
   return <main className="page standard-page"><section className="page-intro"><Badge variant="gold">{t("Visual learning tool")}</Badge><h2>{t("See the structure")}<br/>{t("behind the substance.")}</h2><p>{t("Interactive 2D learning models, not 3D simulations or experimentally validated calculations.")}</p></section>
     <div className="explorer-layout"><article className="molecule-stage">
       <div className="stage-top"><div><p className="eyebrow">{t("SELECTED COMPOUND")}</p><h3>{selected.name} · {selected.formula}</h3></div><button className="secondary-button" onClick={()=>addNote(selected.name,`${selected.note} Bond type: ${selected.bond}. Molar mass: ${selected.mass}.`,'El-Kīmiyā educational reference · approximate values')}><Bookmark size={16}/> {t("Save molecule")}</button></div>
-      <div className="compound-tabs" role="group" aria-label="Choose compound">{(Object.keys(compounds) as (keyof typeof compounds)[]).map(id=><button key={id} onClick={()=>setCompound(id)} className={compound===id?'active':''} aria-pressed={compound===id}>{compounds[id].name}</button>)}</div>
+      <div className="compound-tabs" role="group" aria-label={t("Choose compound")}>{(Object.keys(compounds) as (keyof typeof compounds)[]).map(id=><button key={id} onClick={()=>setCompound(id)} className={compound===id?'active':''} aria-pressed={compound===id}>{compounds[id].name}</button>)}</div>
       <div className="water-model compound-model">{compound==='water'?<><span className="water-o">O</span><i className="water-bond left"/><i className="water-bond right"/><span className="water-h left">H</span><span className="water-h right">H</span></>:<div className="compound-formula-illustration" role="img" aria-label={selected.note}>{compound==='carbon'?<><span>O</span><i className="double-bond">═</i><span>C</span><i className="double-bond">═</i><span>O</span></>:<><span>Na⁺</span><i>⋯</i><span>Cl⁻</span></>}</div>}<div className="rotate-hint"><BookOpen size={15}/> {t("2D concept illustration · not to scale")}</div></div>
       <p className="compound-note">{selected.note}</p><div className="compound-stats"><div><span>{t("Formula")}</span><strong>{selected.formula}</strong></div><div><span>{t("Molar mass")}</span><strong>{selected.mass}</strong></div><div><span>{t("Bond type")}</span><strong>{selected.bond}</strong></div></div>
     </article><aside className="element-panel"><div className="panel-title"><div><p className="eyebrow">{t("MINI PERIODIC EXPLORER")}</p><h3>{t("Select an element")}</h3></div><Atom size={18}/></div>
@@ -1414,7 +1414,7 @@ function SettingsPage({dark,setDark,setPage,reducedMotion,setReducedMotion}: {da
   return <main className="page settings-page v8-settings"><div className="settings-nav" aria-label={t("Preferences")}>{menu.map(item=><button key={item.name} onClick={item.onClick} className={item.active?'active':''} aria-current={item.active?'page':undefined}>{t(item.name)}<ChevronRight size={16}/></button>)}</div>
     <section className="settings-content"><Badge variant="gold">{t("Personal workspace")}</Badge><h2>{t(panel==='appearance'?'Appearance':panel==='language'?'Learning & language':panel==='privacy'?'Privacy & local data':'Accessibility')}</h2>
       {panel==='appearance'&&<><p>{t("Set your reading environment. The approved logo geometry never changes.")}</p><div className="settings-section"><h3>{t("Color theme")}</h3><div className="theme-options"><button className={!dark?'active':''} onClick={()=>setDark(false)} aria-pressed={!dark}><span className="theme-preview light"><i/><b/></span><strong>{t("Light")}</strong><small>{t("Warm, focused surfaces")}</small></button><button className={dark?'active':''} onClick={()=>setDark(true)} aria-pressed={dark}><span className="theme-preview dark"><i/><b/></span><strong>{t("Deep navy")}</strong><small>{t("Lower-light learning")}</small></button></div></div></>}
-      {panel==='language'&&<><p>{t("Change the interface language instantly. Your preference remains after a refresh. Original PDF text and AI outputs are not automatically translated.")}</p><div className="settings-section"><h3>{t("Preferred language")}</h3><div className="language-options">{(['English','Bahasa Indonesia'] as const).map(item=><button key={item} onClick={()=>setLanguage(item)} className={language===item?'active':''} aria-pressed={language===item}><span><strong>{item}</strong><small>{item==='English'?'Original demo content':'Language applied to the interface'}</small></span>{language===item&&<Check size={18}/>}</button>)}</div><p className="setting-note">{t("Arabic terminology may appear in lessons. Arabic AI support is not guaranteed.")}</p></div></>}
+      {panel==='language'&&<><p>{t("Change the interface language instantly. Your preference remains after a refresh. Original PDF text and AI outputs are not automatically translated.")}</p><div className="settings-section"><h3>{t("Preferred language")}</h3><div className="language-options">{(['English','Bahasa Indonesia'] as const).map(item=><button key={item} onClick={()=>setLanguage(item)} className={language===item?'active':''} aria-pressed={language===item}><span><strong>{item}</strong><small>{t(item==="English"?"Original demo content":"Language applied to the interface")}</small></span>{language===item&&<Check size={18}/>}</button>)}</div><p className="setting-note">{t("Arabic terminology may appear in lessons. Arabic AI support is not guaranteed.")}</p></div></>}
       {panel==='privacy'&&<><p>{uiLanguage==='id'?'Data belajar tetap lokal di browser kecuali kamu membuat cadangan akun secara eksplisit. Foto tidak diunggah oleh pemindai.':'Learning data remains browser-local unless you explicitly back it up in your account. Photos are not uploaded by the scanner.'}</p><div className="settings-section"><h3>{t("Your control")}</h3><p>{t("When Firebase AI Logic is configured, prompts can be processed locally or in the cloud according to model availability and inference preference. Check the verified provider label after each request.")}</p><button className="secondary-button" onClick={()=>setPage('hybrid')}>{t("Inspect AI inference settings")} <ChevronRight size={16}/></button><hr/><button className="reset-data-button" onClick={resetLocalData}><X size={16}/> {t("Delete all locally saved learning data")}</button></div></>}
       {panel==='accessibility'&&<><p>{t("Comfortable reading controls and motion preferences are saved locally.")}</p><div className="settings-section"><h3>{t("Reading text")}</h3><button className="setting-switch" onClick={()=>setLargeText(!largeText)} aria-pressed={largeText}><span>{t("Large textbook text")}</span><strong>{t(largeText?'Enabled':'Disabled')}</strong></button><h3>{t("Motion")}</h3><button className="setting-switch" onClick={()=>setReducedMotion(!reducedMotion)} aria-pressed={reducedMotion}><span>{t("Reduce interface animation")}</span><strong>{t(reducedMotion?'Enabled':'Disabled')}</strong></button><p className="setting-note">{t("System reduced-motion preference is always respected.")}</p></div></>}
       <div className="settings-brand-panel"><BrandMark size="md" showTagline/><div><Badge>{t("About El-Kīmiyā")}</Badge><p>{uiLanguage==='id'?'Platform belajar kimia AI hibrida · ruang belajar akun':'Hybrid AI chemistry learning platform · account workspace'}</p></div></div>
@@ -1439,7 +1439,7 @@ function SimplePage({ type, setPage, notes, deleteNote, notify }: {
   const filtered=notes.filter(note=>`${note.title} ${note.content} ${note.source}`.toLowerCase().includes(query.toLowerCase()));
   return <main className="page standard-page"><section className="page-intro"><Badge variant="gold">{type==='notes'?'Personal knowledge':'Your account'}</Badge><h2>{type==='notes'?'Your saved ideas,\nkept close.':'Your learning space.'}</h2><p>{type==='notes'?'These notes are stored in this browser, not in a cloud account.':'Your account is required to access the learning workspace.'}</p></section>
     {type==='notes'?<><div className="notes-toolbar"><label><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t("Search saved notes")} aria-label={t("Search saved notes")}/></label><span>{filtered.length} {t("saved entries")}</span></div>
-      {filtered.length?<div className="notes-grid">{filtered.map(note=><article className="saved-note-card" key={note.id}><div><Badge variant="neutral">{new Date(note.createdAt).toLocaleDateString()}</Badge><button className="icon-button" title="Delete note" aria-label={`Delete ${note.title}`} onClick={()=>deleteNote(note.id)}><X size={16}/></button></div><h3>{note.title}</h3><p>{note.content}</p><small>{note.source}</small><button className="text-button" onClick={()=>{void navigator.clipboard?.writeText(note.content).then(()=>notify('Note copied')).catch(()=>notify('Copy unavailable; select the text instead'))}}><FileText size={15}/> {t("Copy note")}</button></article>)}</div>:<div className="empty-state"><span><NotebookPen/></span><h3>{notes.length?'No matching notes':'No notes saved yet'}</h3><p>{notes.length?'Try a different search.':'Open a lesson, select a passage, and save a real note to this browser.'}</p><button className="primary-button" onClick={()=>setPage('reader')}>{t("Open textbook")} <ChevronRight size={16}/></button></div>}
+      {filtered.length?<div className="notes-grid">{filtered.map(note=><article className="saved-note-card" key={note.id}><div><Badge variant="neutral">{new Date(note.createdAt).toLocaleDateString()}</Badge><button className="icon-button" title={t("Delete note")} aria-label={`${t("Delete")} ${note.title}`} onClick={()=>deleteNote(note.id)}><X size={16}/></button></div><h3>{note.title}</h3><p>{note.content}</p><small>{note.source}</small><button className="text-button" onClick={()=>{void navigator.clipboard?.writeText(note.content).then(()=>notify('Note copied')).catch(()=>notify('Copy unavailable; select the text instead'))}}><FileText size={15}/> {t("Copy note")}</button></article>)}</div>:<div className="empty-state"><span><NotebookPen/></span><h3>{t(notes.length?"No matching notes":"No notes saved yet")}</h3><p>{t(notes.length?"Try a different search.":"Open a lesson, select a passage, and save a real note to this browser.")}</p><button className="primary-button" onClick={()=>setPage('reader')}>{t("Open textbook")} <ChevronRight size={16}/></button></div>}
     </>:<div className="empty-state"><span><User/></span><h3>{t("Guest scholar")}</h3><p>{t("Local notes, learning review state and quiz statistics are stored on this device. This is not a signed-in account.")}</p><button className="primary-button" onClick={()=>setPage('settings')}>{t("Manage preferences")} <ChevronRight size={16}/></button></div>}
   </main>;
 }

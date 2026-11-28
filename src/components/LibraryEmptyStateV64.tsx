@@ -31,8 +31,8 @@ export function LibraryEmptyStateV64({ english, checking, count, onChooseFolder,
       </div>
       <div className="library64-illustration" aria-hidden="true">
         <div className="library64-orbit orbit-a"/><div className="library64-orbit orbit-b"/>
-        <div className="library64-book library64-book--rear"><span>CHEMISTRY</span><b>CO₂</b></div>
-        <div className="library64-book library64-book--front"><span>EL-KĪMIYĀ / STUDY</span><b>H₂O</b><small>PERSONAL READING</small></div>
+        <div className="library64-book library64-book--rear"><span>{tx('KIMIA','CHEMISTRY')}</span><b>CO₂</b></div>
+        <div className="library64-book library64-book--front"><span>{tx('EL-KĪMIYĀ / BELAJAR','EL-KĪMIYĀ / STUDY')}</span><b>H₂O</b><small>{tx('BACAAN PRIBADI','PERSONAL READING')}</small></div>
         <div className="library64-book-star"><BookOpenCheck size={28}/></div>
       </div>
     </div>

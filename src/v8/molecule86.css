@@ -1,0 +1,119 @@
+/* V8.6 molecular workspace: isolated from the global application/theme layout.
+ * The portal remains inside the authenticated .app to inherit palette changes.
+ */
+.app .v61-builder,.app .molecule86-fullscreen,.app .molecule86-viewer {
+  --m86-board:#f8fcfc;--m86-bond:#173f53;--m86-picked:#086d91;--m86-grid:#bfd0d6;
+  --m86-carbon:#173f53;--m86-oxygen:#a12c24;--m86-nitrogen:#285f9c;--m86-sulfur:#79580b;
+  --m86-halogen:#176c4d;--m86-bromine:#8c431d;
+}
+.app.dark .v61-builder,.app.dark .molecule86-fullscreen,.app.dark .molecule86-viewer {
+  --m86-board:#162c3b;--m86-bond:#dcecf0;--m86-picked:#68d4e9;--m86-grid:#44616e;
+  --m86-carbon:#e0f2f5;--m86-oxygen:#ff9a91;--m86-nitrogen:#accbff;--m86-sulfur:#ffe29c;
+  --m86-halogen:#a1e7bd;--m86-bromine:#f4b48f;
+}
+.app .v61-builder .v61-edge{color:var(--m86-bond)}
+.app .v61-builder .v61-picked-edge{color:var(--m86-picked)}
+.app .v61-builder .v61-board-wrap .v61-drop-zone{background:var(--m86-board)}
+.app .v61-builder .v61-drop-zone svg[data-pan=true]{cursor:grab}
+.app .v61-builder .v61-drop-zone svg[data-pan=true]:active{cursor:grabbing}
+.app .v61-builder .v61-drop-zone svg[data-pan=true] .v61-node-target{pointer-events:none}
+.app .molecule86-launch-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.app .molecule86-launch,.app .molecule86-back,.app .molecule86-fullscreen .molecule86-board-tools button{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:44px;
+  border:1px solid var(--v85-line);border-radius:10px;padding:9px 13px;color:var(--v85-ink);background:var(--v85-soft);
+  font:inherit;font-size:13px;font-weight:730;line-height:1.32;
+}
+.app .v61-builder .molecule86-launch{background:var(--v85-accent);color:var(--v85-on-accent);border-color:var(--v85-accent)}
+.app .v61-builder .molecule86-mobile-summary{display:none;color:var(--v85-muted)}
+.app .molecule86-fullscreen{
+  position:fixed;inset:0;z-index:2147483100;isolation:isolate;
+  width:100%;height:100%;height:100dvh;max-width:none;max-height:none;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:var(--v85-bg);color:var(--v85-ink);padding:0;
+  padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
+}
+.app .molecule86-fullscreen .molecule86-full-header{
+  display:flex;align-items:center;gap:12px;flex:0 0 auto;padding:8px 14px;
+  border-bottom:1px solid var(--v85-line);background:var(--v85-panel);
+}
+.app .molecule86-fullscreen .molecule86-full-header h2{font:700 clamp(16px,3vw,21px)/1.3 system-ui,sans-serif;margin:0;min-width:0;overflow-wrap:anywhere;color:var(--v85-ink)}
+.app .molecule86-fullscreen .molecule86-back{flex:none}
+.app .molecule86-fullscreen .molecule86-back svg{flex:none}
+.app .molecule86-fullscreen .molecule86-builder-content{
+  display:flex;flex:1 1 auto;flex-direction:column;min-height:0;margin:0;padding:10px;
+  border:0;border-radius:0;background:var(--v85-bg);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+}
+.app .molecule86-fullscreen .v61-quick{flex:none;padding:0 0 8px;gap:6px}
+.app .molecule86-fullscreen .v61-quick>span{color:var(--v85-muted)}
+.app .molecule86-fullscreen .v61-quick button{min-height:40px;padding:6px 10px;color:var(--v85-ink);background:var(--v85-soft);border-color:var(--v85-line)}
+.app .molecule86-fullscreen .v61-layout{
+  display:grid;grid-template-columns:minmax(190px,235px) minmax(0,1fr);gap:10px;align-items:start;padding:0;flex:none;
+}
+.app .molecule86-fullscreen .v61-palette{background:var(--v85-panel);color:var(--v85-ink);border-color:var(--v85-line);padding:10px;max-height:70dvh;overflow:auto}
+.app .molecule86-fullscreen .v61-piece-grid button{min-height:65px;background:var(--v85-soft);color:var(--v85-ink);border-color:var(--v85-line)}
+.app .molecule86-fullscreen .molecule86-board-tools button[aria-pressed=true],.app .molecule86-canvas-stage .v60-canvas3d-controls button[aria-pressed=true]{
+  background:var(--v85-accent);color:var(--v85-on-accent);border-color:var(--v85-accent);
+}
+.app .v61-builder .v61-piece-grid button[aria-pressed=true],
+.app.dark .v61-builder .v61-piece-grid button[aria-pressed=true] {
+  background:var(--v85-selection);color:var(--v85-ink);border:2px solid var(--v85-accent);
+}
+.app .v61-builder .v61-piece-grid button[aria-pressed=true] small{color:var(--v85-ink)}
+.app .molecule86-fullscreen .v61-piece-grid small,.app .molecule86-fullscreen .v61-guide,.app .molecule86-fullscreen .v61-caveat,.app .molecule86-fullscreen .v61-palette>p,.app .molecule86-fullscreen .v61-submit>span{color:var(--v85-muted)}
+.app .molecule86-fullscreen .v61-board-wrap{background:var(--v85-panel);border-color:var(--v85-line);min-width:0}
+.app .molecule86-fullscreen .v61-toolbar{flex-wrap:wrap;background:var(--v85-panel);color:var(--v85-ink);border-color:var(--v85-line);gap:6px}
+.app .molecule86-fullscreen .v61-toolbar button{width:44px;height:44px;background:var(--v85-soft);color:var(--v85-ink);border-color:var(--v85-line)}
+.app .molecule86-fullscreen .molecule86-board-tools{display:flex;flex-wrap:wrap;gap:6px;padding:7px 10px;background:var(--v85-panel);border-bottom:1px solid var(--v85-line)}
+.app .molecule86-fullscreen .molecule86-board-tools button{font-size:12px;padding:4px 10px}
+.app .molecule86-fullscreen .v61-drop-zone{height:clamp(270px,52dvh,640px);min-height:260px;aspect-ratio:auto}
+.app .molecule86-fullscreen .v61-guide{border-color:var(--v85-line);font-size:12px}
+.app .molecule86-fullscreen .v61-submit{border-color:var(--v85-line);padding:10px;gap:8px;flex-wrap:wrap}
+.app .molecule86-fullscreen .v61-submit button{min-height:44px;background:var(--v85-accent);color:var(--v85-on-accent);white-space:normal}
+.app .molecule86-fullscreen .v61-caveat{margin-top:10px;border-color:var(--v85-line);padding:12px 4px}
+.app .molecule86-viewer .molecule86-canvas-stage{background:var(--m86-board);aspect-ratio:auto}
+.app .molecule86-viewer .molecule86-canvas-stage canvas{width:100%;height:auto;aspect-ratio:900/540;min-height:220px;touch-action:none}
+.app .molecule86-canvas-stage .v60-canvas3d-controls{
+  position:static;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+  padding:8px;background:var(--v85-panel);border-top:1px solid var(--v85-line);
+}
+.app .molecule86-canvas-stage .v60-canvas3d-controls button{
+  min-width:44px;min-height:44px;justify-content:center;gap:6px;border-color:var(--v85-line);background:var(--v85-soft);color:var(--v85-ink)
+}
+.app .molecule86-canvas-stage .v60-canvas3d-controls button[data-elk-molecule-open=viewer]{background:var(--v85-accent);color:var(--v85-on-accent);font-size:12px;font-weight:700}
+.app .molecule86-canvas-stage canvas[data-pan=true]{cursor:move}
+.app .molecule86-view-hint{margin:0;padding:10px 12px;color:var(--v85-muted);background:var(--v85-panel);font-size:12px;line-height:1.55}
+.app .molecule86-viewer-fullscreen .molecule86-canvas-stage{min-height:0;flex:1 1 auto;display:flex;flex-direction:column;aspect-ratio:auto;background:var(--m86-board)}
+.app .molecule86-viewer-fullscreen canvas{display:block;flex:1 1 auto;width:100%;height:0;min-height:0;touch-action:none}
+.app .molecule86-viewer-fullscreen .v60-canvas3d-controls{flex:none}
+.app .molecule86-viewer-fullscreen .molecule86-view-hint{flex:none}
+@media(max-width:900px){
+  .app .v61-builder .molecule86-desktop-toggle,.app .v61-builder .molecule86-inline-builder{display:none}
+  .app .v61-builder .molecule86-mobile-summary{display:block;padding:0 15px 15px;font-size:12px;line-height:1.55}
+  .app .v61-builder .molecule86-launch-row{justify-content:flex-start;width:100%}
+  .app .v61-builder .molecule86-launch{width:100%}
+  .app .molecule86-fullscreen .v61-layout{display:flex;flex-direction:column;gap:10px}
+  .app .molecule86-fullscreen .v61-layout>*{width:100%}
+  .app .molecule86-fullscreen .v61-board-wrap{order:1}
+  .app .molecule86-fullscreen .v61-palette{order:0;max-height:none;overflow:visible}
+  /* Horizontally scroll the tools while keeping the canvas large and visible. */
+  .app .molecule86-fullscreen .v61-piece-grid{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-template-rows:auto;grid-auto-columns:94px;gap:6px;overflow-x:auto;padding:2px 0 6px;overscroll-behavior-x:contain}
+  .app .molecule86-fullscreen .v61-piece-grid button{min-height:60px;min-width:0}
+  .app .molecule86-fullscreen .v61-piece-grid small{font-size:11px}
+  .app .molecule86-fullscreen .v61-palette>p{margin:2px 0 5px}
+  .app .molecule86-fullscreen .v61-drop-zone{height:clamp(245px,38dvh,470px);min-height:245px}
+  .app .molecule86-fullscreen .v61-submit{flex-direction:row;align-items:center}
+  .app .molecule86-fullscreen .v61-submit>span{white-space:normal}
+}
+@media(max-width:420px){
+  .app .molecule86-fullscreen .molecule86-builder-content{padding:8px}
+  .app .molecule86-fullscreen .v61-toolbar{padding:6px}
+  .app .molecule86-fullscreen .v61-toolbar>span{font-size:11px}
+  .app .molecule86-fullscreen .v61-toolbar>div{gap:4px}
+  .app .molecule86-fullscreen .v61-toolbar button{width:44px}
+  .app .molecule86-fullscreen .v61-submit button{flex:1 1 auto}
+}
+@media(max-height:440px){
+  .app .molecule86-fullscreen .v61-drop-zone{height:280px}
+  .app .molecule86-viewer-fullscreen .molecule86-full-header{padding-top:4px;padding-bottom:4px}
+  .app .molecule86-viewer-fullscreen .molecule86-view-hint{font-size:11px;padding:5px 10px}
+}

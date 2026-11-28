@@ -73,7 +73,7 @@ export function ScanStudioV69({ setPage, addNote, addCard, notify, askAbout }: P
   return <main className="scan69" aria-label={tx('Pindai untuk belajar', 'Capture to study')}>
     <header className="scan69-topbar">
       <button type="button" onClick={goBack} className="scan69-back" aria-label={tx('Kembali', 'Back')}><ArrowLeft size={20} /></button>
-      <div className="scan69-identity"><span className="scan69-overline">EL-KĪMIYĀ · STUDY CAPTURE</span><strong>{tx('Foto ke Pemahaman', 'Photo to Understanding')}</strong></div>
+      <div className="scan69-identity"><span className="scan69-overline">{tx('EL-KĪMIYĀ · PINDAI MATERI','EL-KĪMIYĀ · STUDY CAPTURE')}</span><strong>{tx('Foto ke Pemahaman', 'Photo to Understanding')}</strong></div>
       <span className="scan69-step">{step === 'choose' ? '1' : step === 'review' ? '2' : '3'} / 3</span>
     </header>
 

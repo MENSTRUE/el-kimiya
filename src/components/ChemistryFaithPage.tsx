@@ -5,7 +5,7 @@ import {
   NotebookPen, ShieldCheck, Sparkles,
 } from 'lucide-react';
 import '../faith-chemistry.css';
-import { t } from '../lib/language';
+import { t, useLanguage } from '../lib/language';
 
 /** Qur'an Arabic verified against the Indonesian Ministry of Religious Affairs (Bimas Islam). */
 const LUQMAN_20_ARABIC =
@@ -36,6 +36,8 @@ type Props = {
 };
 
 export function ChemistryFaithPage({ onBack, onOpenLibrary, onAskTutor, onSaveNote }: Props) {
+  const {language}=useLanguage();
+  const tx=(id:string,en:string)=>language==='en'?en:id;
   const [exampleId, setExampleId] = useState<ExampleId>('observe');
   const [thought, setThought] = useState('');
   const [copied, setCopied] = useState(false);
@@ -82,7 +84,7 @@ export function ChemistryFaithPage({ onBack, onOpenLibrary, onAskTutor, onSaveNo
           </div>
           <div className="faith-verse-footer">
             <a href={SOURCE} target="_blank" rel="noopener noreferrer"><ExternalLink size={16}/> {t("Baca ayat & terjemahan resmi Kemenag")}</a>
-            <button onClick={() => void copyReflection()}>{copied ? <Check size={16}/> : <Copy size={16}/>} {copied ? 'Tersalin' : 'Salin pesan hikmah'}</button>
+            <button onClick={() => void copyReflection()}>{copied ? <Check size={16}/> : <Copy size={16}/>} {copied ? t('Tersalin') : t('Salin pesan hikmah')}</button>
           </div>
         </div>
         <aside className="faith-reading-note">
@@ -102,7 +104,7 @@ export function ChemistryFaithPage({ onBack, onOpenLibrary, onAskTutor, onSaveNo
       <section className="faith-experience" aria-labelledby="faith-experience-title">
         <div className="faith-section-head"><div><span className="faith-eyebrow">{t("03 / DARI KONSEP KE AKSI")}</span><h2 id="faith-experience-title">{t("Amati. Manfaatkan. Jaga.")}</h2></div><p>{t("Pilih contoh untuk melihat bagaimana pengetahuan kimia dan refleksi keislaman dapat berdampingan tanpa dicampuradukkan.")}</p></div>
         <div className="faith-experience-body">
-          <div className="faith-experience-tabs" role="tablist" aria-label="Contoh penerapan kimia">{EXAMPLES.map(item => { const Icon = item.icon; return <button key={item.id} role="tab" id={`faith-tab-${item.id}`} aria-controls="faith-example-panel" aria-selected={exampleId === item.id} className={exampleId === item.id ? 'active' : ''} onClick={() => setExampleId(item.id)}><Icon size={19}/><span>{item.short}</span><ChevronRight size={15}/></button> })}</div>
+          <div className="faith-experience-tabs" role="tablist" aria-label={tx('Contoh penerapan kimia','Examples of chemistry in practice')}>{EXAMPLES.map(item => { const Icon = item.icon; return <button key={item.id} role="tab" id={`faith-tab-${item.id}`} aria-controls="faith-example-panel" aria-selected={exampleId === item.id} className={exampleId === item.id ? 'active' : ''} onClick={() => setExampleId(item.id)}><Icon size={19}/><span>{t(item.short)}</span><ChevronRight size={15}/></button> })}</div>
           <article className="faith-experience-panel" role="tabpanel" id="faith-example-panel" aria-labelledby={`faith-tab-${exampleId}`} key={exampleId}>
             <div className="faith-panel-meta"><span>{t(example.category)}</span><span>{t(example.topic)}</span></div>
             <div className="faith-panel-main"><div><h3>{t(example.title)}</h3><div className="faith-fact"><strong>{t("FAKTA KIMIA")}</strong><p>{t(example.science)}</p></div><div className="faith-reflection"><strong>{t("REFLEKSI KEIMANAN")}</strong><p>{t(example.reflection)}</p></div></div><span className="faith-panel-formula" aria-hidden="true">{example.equation}</span></div>
@@ -113,7 +115,7 @@ export function ChemistryFaithPage({ onBack, onOpenLibrary, onAskTutor, onSaveNo
 
       <section className="faith-personal" aria-labelledby="faith-personal-title">
         <div><span className="faith-eyebrow">{t("04 / JURNAL TAFAKKUR")}</span><h2 id="faith-personal-title">{t("Ilmu apa yang ingin kamu manfaatkan?")}</h2><p>{t("Tulis satu contoh sederhana bagaimana kimia bisa memberi manfaat untuk orang lain atau membantu menjaga lingkungan. Refleksimu disimpan sebagai catatan pribadi di browser ini.")}</p></div>
-        <div className="faith-personal-form"><label htmlFor="faith-thought">{t("REFLEKSI PRIBADI")}</label><textarea id="faith-thought" maxLength={1200} rows={4} placeholder={t("Contoh: Saya ingin memahami cara mengolah air bersih agar bisa bermanfaat bagi masyarakat...")} value={thought} onChange={event => {setThought(event.target.value);setSaved(false)}}/><div><small>{thought.length}{t("/1.200 karakter · Tersimpan hanya setelah kamu menekan tombol")}</small><button disabled={thought.trim().length < 10} onClick={() => { onSaveNote('Refleksi QS. Luqman: 20', thought.trim(), 'Kimia & Keimanan · QS. Luqman [31]: 20'); setSaved(true); }}><NotebookPen size={17}/> {saved ? 'Catatan tersimpan' : 'Simpan refleksi'} </button></div></div>
+        <div className="faith-personal-form"><label htmlFor="faith-thought">{t("REFLEKSI PRIBADI")}</label><textarea id="faith-thought" maxLength={1200} rows={4} placeholder={t("Contoh: Saya ingin memahami cara mengolah air bersih agar bisa bermanfaat bagi masyarakat...")} value={thought} onChange={event => {setThought(event.target.value);setSaved(false)}}/><div><small>{thought.length}{t("/1.200 karakter · Tersimpan hanya setelah kamu menekan tombol")}</small><button disabled={thought.trim().length < 10} onClick={() => { onSaveNote('Refleksi QS. Luqman: 20', thought.trim(), 'Kimia & Keimanan · QS. Luqman [31]: 20'); setSaved(true); }}><NotebookPen size={17}/> {saved ? t('Catatan tersimpan') : t('Simpan refleksi')} </button></div></div>
       </section>
       <footer className="faith-footer"><FlaskConical size={17}/><span>{t("El-Kīmiyā · Belajar dengan ilmu, berkarya dengan manfaat, menjaga amanah.")}</span><a href={SOURCE} target="_blank" rel="noopener noreferrer">{t("Rujukan Al-Qur'an")} <ExternalLink size={14}/></a></footer>
     </main>
