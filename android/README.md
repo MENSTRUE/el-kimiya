@@ -1,46 +1,90 @@
-# El-Kīmiyā Android — Web + Native Firebase Hybrid (V1)
+# El-Kīmiyā Android
 
-`ELKIMIYA_ANDROID_HYBRID_WEB_V1`. This is the Android adaptation of the existing El-Kīmiyā V6.7 website; **it does not rewrite the React product in Kotlin**.
+[README Indonesia](../README.md) | [English](../README.en.md) | [Screenshot gallery](../docs/screenshots/README.md)
 
 ## Architecture
 
-- `MainActivity.kt`: HTTPS WebView loading https://el-kimiya.vercel.app/, preserving the public React landing, guest/onboarding, dashboard, public library, Research Mission, practice/flashcards and Molecular Studio as implemented on the website.
-- `NativeTutorActivity.kt`: the original Kotlin Compose Firebase Hybrid AI MVP, preserved by renaming the original `MainActivity` without changing Firebase generation logic.
-- Top toolbar: Back, Home, Refresh, **AI Native**, **PDF** (Android print/save as PDF).
-- WebView handles Android file picking, including PDF and text files. `webkitdirectory` folder upload is NOT equivalent to Chrome desktop; prefer **Pilih satu buku** for private PDFs.
-- Local `blob:` JSON/Markdown report export and `window.print` are handled via an **origin-scoped AndroidX WebMessage listener**, not an unrestricted `addJavascriptInterface`. On unsupported WebViews the fallback is to open the website in Chrome. Android `PrintManager` allows print/save to PDF.
-- HTTPS same-domain main-frame pages stay inside. External domains open in the system browser. No `file://` page navigation. Mixed content and file access are blocked.
-- Camera can be requested from the trusted web origin with the Android runtime permission dialog; permission can be denied.
+The Android application combines a WebView learning workspace with Kotlin, Jetpack Compose, and the native Firebase AI Logic hybrid inference SDK.
 
-## Requirements and usage
+- Application ID: `com.menstrue.elkimiya`
+- Android version: 0.8.6
+- Minimum Android API: 26
+- Compile SDK: 36
+- Java: 17
+- Production UI: https://el-kimiya.vercel.app/
 
-- The **same Firebase Android app** as before: application ID `com.menstrue.elkimiya`, `android/app/google-services.json` from Firebase Console. The file is gitignored.
-- AGP 8.11.1, Gradle 8.13, Kotlin 2.2.20, Android SDK 36, Compose BOM 2025.08.00 and AndroidX WebKit 1.14.0 (first build may download the new dependency).
-- Java/JDK 17 or supported toolchain; Android Studio supporting AGP 8.11.1.
-- Run `node scripts/check-android-hybrid-v1.mjs`, then `cd android; .\gradlew.bat :app:assembleDebug` on Windows.
-- Use USB debugging and `adb install -r app\build\outputs\apk\debug\app-debug.apk` to install.
+Minimum OS support does not guarantee on-device AI support.
 
-## What is and is not equivalent to desktop
+## Build
 
-| Capability | Android treatment |
-|---|---|
-| Landing, dashboard, lessons, mission, quiz, 2D/3D | Website UI displayed in WebView, subject to WebView compatibility |
-| Firebase Hybrid AI | Original Kotlin-native SDK screen, with verified `inferenceSource` when successful |
-| Local private books | Choose PDF in Android file picker; directory selection may be unavailable |
-| Report JSON/Markdown | Native save-document dialog for `blob:` download (max 2 MB) |
-| Report PDF | Android system Print/Save as PDF (requires print service support) |
-| Hugging Face semantic model | Only if Android WebView, memory and network support the browser model; no guarantee |
-| Web AI on-device (Chrome Prompt API) | Not guaranteed in Android WebView; use native Firebase screen for supported hardware |
-| Offline | React content requires network unless independently cached; native on-device model availability varies |
-| Login/account sync | No fake authentication; progress in WebView localStorage stays local to app, separate from Chrome |
+1. Open the `android/` directory in Android Studio.
+2. Register the application ID in your Firebase project.
+3. Place your Firebase configuration in `app/google-services.json`.
+4. Sync Gradle and connect an Android device.
+5. Use Android Studio Run or the following PowerShell commands.
 
-## Real-device QA before release
+```powershell
+cd android
+.\gradlew.bat :app:assembleDebug
+```
 
-1. Open app → landing → guest/onboarding → Research Mission → two synthetic trials → export JSON / print PDF.
-2. Navigate library → pick one PDF → check PDF original / text mode.
-3. Test RDKit molecule via live Vercel API; native AI cloud and on-device separately with visible actual inference source.
-4. Test Android Back, return from native AI, external links, application restart (local progress), dark mode, camera consent.
-5. Audit App Check debug token registration and Play Integrity before distributing a **release** build. **Never ship debug App Check token**.
-6. Confirm certificate / Android package settings and check license/permissions before publication.
+If the Gradle wrapper files are unavailable, use Android Studio or generate the wrapper using an installed Gradle distribution compatible with Gradle 8.13.
 
-**Privacy:** `android/app/google-services.json`, `private/chemistry-books`, and extracted private JSON are never copied by the installer and should not be committed. The `google-services.json` file is *not a secret by itself* but must have appropriate Google/Firebase key restrictions, security rules and App Check. Never include App Check debug tokens in version control.
+Install the debug APK:
+
+```powershell
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+
+& $adb devices -l
+& $adb install -r "app\build\outputs\apk\debug\app-debug.apk"
+& $adb shell am start -n "com.menstrue.elkimiya/.MainActivity"
+```
+
+The commands above are run from the `android/` directory. Installing as an update preserves existing app data when package signing is compatible.
+
+## Firebase App Check
+
+Debug builds use the App Check debug provider. A developer must register the debug token from their own installation in the corresponding Firebase Android app.
+
+Debug tokens are private credentials and must never be distributed in source code, documentation, screenshots, or APK configuration.
+
+Release builds use Play Integrity. Public distribution requires correctly configured signing, attestation, and supported devices. A debug token registered for one installation does not authorize every installation.
+
+Official guides:
+
+- https://firebase.google.com/docs/app-check/android/debug-provider
+- https://firebase.google.com/docs/app-check/android/play-integrity-provider
+
+## Live AI verification
+
+1. Sign in as Learner.
+2. Open AI Engine Status.
+3. Select Cloud only and run the real inference test.
+4. Confirm that the SDK reports `IN_CLOUD`.
+5. Check local model availability and download it when supported.
+6. Select On-device only and repeat the test.
+7. Confirm that the SDK reports `ON_DEVICE`.
+8. Test AI Chemistry Tutor in both modes.
+
+An unsupported device or failed request must display an honest limitation rather than simulated success.
+
+## Documentation evidence
+
+The November 28, 2026 documentation includes 17 Android screenshots covering:
+
+- Homepage, learner dashboard and mobile drawer.
+- Published content and book reader.
+- Native on-device and cloud inference.
+- AI Tutor responses in both modes.
+- Periodic table exploration.
+- Fullscreen molecule builder and 3D viewer.
+- Practice and flashcards.
+- Moduler dashboard, published content and AI configuration.
+
+View the [complete screenshot gallery](../docs/screenshots/README.md#android).
+
+## Distribution status
+
+Development-device inference has been demonstrated. Production distribution and attestation on other devices must be verified separately.
+
+No private debug credentials are included in this documentation.

@@ -1,65 +1,246 @@
-# El-Kīmiyā — Hybrid AI Chemistry Learning Platform
+<div align="center">
 
-**Understand Chemistry. Anywhere.** A chemistry-first learning experience combining an editorial Web study workspace, interactive practice, private references, and an experimental native Android client using Firebase AI Logic hybrid inference.
+<img src="public/brand/el-kimiya-approved-logo.svg" width="110" alt="El-Kīmiyā">
 
-**Status (18 Nov 2026):** V3 source delivery. UI and pure-logic features are implemented; Firebase runtime requires your project and device setup. **Do not treat the demo scenario as actual inference.** No copyrighted full books or PDF indexes are shipped in this repository.
+# El-Kīmiyā
 
-## Running on Windows (PowerShell)
+**Understand Chemistry. Anywhere.**
+
+Platform pembelajaran kimia berbasis Hybrid AI untuk Web dan Android.
+
+**Bahasa Indonesia** | [English](README.en.md)
+
+[![Live Website](https://img.shields.io/badge/Live-Website-176b71)](https://el-kimiya.vercel.app/)
+[![Firebase](https://img.shields.io/badge/Firebase-AI%20Logic-FFCA28)](https://firebase.google.com/)
+![Platform](https://img.shields.io/badge/Platform-Web%20%26%20Android-blue)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green)](LICENSE)
+
+**[Buka aplikasi](https://el-kimiya.vercel.app/) · [Galeri screenshot](docs/screenshots/README.md) · [Panduan Android](android/README.md)**
+
+</div>
+
+---
+
+## Tentang El-Kīmiyā
+
+El-Kīmiyā merupakan platform pembelajaran kimia yang memadukan materi bilingual, tutor AI, eksplorasi unsur, visualisasi molekul, latihan terstruktur, serta pengelolaan konten pembelajaran dalam satu ruang belajar.
+
+Proyek ini dikembangkan untuk membantu pelajar memahami konsep kimia secara kontekstual, bukan sekadar menghafal rumus.
+
+### Permasalahan
+
+- Konsep kimia dan struktur molekul sulit dipahami melalui teks saja.
+- Materi, latihan, referensi, dan tutor sering berada di platform berbeda.
+- Koneksi internet dan kemampuan perangkat pengguna tidak selalu sama.
+- Pembelajaran membutuhkan penjelasan yang interaktif dan transparan.
+
+### Solusi
+
+El-Kīmiyā menggabungkan Firebase AI Logic Hybrid Inference dengan pengalaman belajar interaktif yang mendukung pemrosesan AI lokal maupun cloud, sesuai kemampuan perangkat dan preferensi pengguna.
+
+## Fitur utama
+
+| Fitur | Deskripsi |
+|---|---|
+| AI Chemistry Tutor | Penjelasan kimia interaktif dengan respons AI dan notasi matematika. |
+| Hybrid AI Engine | Pemilihan inferensi lokal atau cloud serta verifikasi penyedia aktual dari SDK. |
+| My Library | 13 materi pembelajaran orisinal dalam Bahasa Indonesia dan Inggris, serta materi tambahan dari Moduler. |
+| Book Reader | Pembacaan materi dan PDF pribadi yang dipilih pengguna. |
+| Scan | Alur pembelajaran melalui gambar atau pemindaian materi. |
+| Chemistry Explorer | Eksplorasi interaktif 118 unsur tabel periodik. |
+| Molecular Intelligence Lab | Perakitan struktur molekul, validasi RDKit, dan visualisasi 2D/3D. |
+| Practice Lab | 1.152 variasi perhitungan terstruktur dalam 12 kompetensi, dengan pemeriksaan jawaban. |
+| Flashcards | Pembelajaran dan pengulangan konsep menggunakan kartu hafalan. |
+| Research Mission | Alur eksplorasi dan pembelajaran ilmiah. |
+| Chemistry & Faith | Pembelajaran kontekstual dengan pemisahan antara penjelasan ilmiah dan refleksi keagamaan. |
+| Learning Progress | Pelacakan progres pembelajaran dan catatan. |
+| Moduler Studio | Pengelolaan materi, soal, kartu hafalan, referensi, molekul, dan panduan tutor. |
+
+## Hybrid AI — Firebase AI Logic
+
+El-Kīmiyā menyediakan empat preferensi inferensi:
+
+1. Prefer on-device.
+2. On-device only.
+3. Prefer cloud.
+4. Cloud only.
+
+Pada browser, permintaan AI menggunakan Firebase Web SDK. Pada aplikasi Android, permintaan AI dari WebView diteruskan melalui bridge ke Firebase AI Logic Android SDK native.
+
+Hasil inferensi menampilkan sumber yang dilaporkan SDK:
+
+- `ON_DEVICE`: inferensi dilakukan pada perangkat.
+- `IN_CLOUD`: inferensi dilakukan melalui cloud.
+
+Skenario simulasi pada halaman Hybrid AI merupakan ilustrasi pembelajaran, bukan bukti inferensi aktual.
+
+Dukungan inferensi lokal bergantung pada kompatibilitas perangkat dan ketersediaan model. Mode lokal saja tidak diam-diam berpindah ke cloud.
+
+### Bukti inferensi
+
+| Web | Android |
+|---|---|
+| [Verifikasi cloud](docs/screenshots/README.md#web) | [Verifikasi on-device](docs/screenshots/android/06-hybrid-on-device-verification.png) |
+| [Respons AI Tutor cloud](docs/screenshots/README.md#web) | [Verifikasi cloud](docs/screenshots/android/08-hybrid-cloud-verification.png) |
+| | [Respons AI Tutor lokal](docs/screenshots/android/07-ai-tutor-on-device-response.png) |
+| | [Respons AI Tutor cloud](docs/screenshots/android/09-ai-tutor-cloud-response.png) |
+
+## Tampilan Android
+
+<div align="center">
+
+<img src="docs/screenshots/android/02-learner-dashboard.png" width="23%" alt="Dashboard Android">
+<img src="docs/screenshots/android/06-hybrid-on-device-verification.png" width="23%" alt="On-device inference">
+<img src="docs/screenshots/android/11-molecular-builder-fullscreen.png" width="23%" alt="Molecular builder">
+<img src="docs/screenshots/android/12-molecular-viewer-3d-fullscreen.png" width="23%" alt="Molecular viewer">
+
+</div>
+
+[Galeri lengkap Web dan Android](docs/screenshots/README.md).
+
+## Peran pengguna
+
+### Learner
+
+Mengakses ruang belajar, materi, tutor AI, laboratorium, latihan, catatan, dan progres.
+
+### Moduler
+
+Membuat dan mengelola konten pembelajaran bilingual melalui Content Studio. Materi yang diterbitkan dapat diakses oleh Learner.
+
+Perubahan panduan tutor oleh Moduler bersifat instruksi tambahan untuk pembelajaran, bukan pelatihan ulang model AI atau pengubahan model inferensi.
+
+Otorisasi data menggunakan Firebase Authentication dan Firestore Security Rules. Pemberian peran Moduler dilakukan oleh pengelola Firebase yang berwenang.
+
+## Arsitektur sistem
+
+```mermaid
+flowchart TD
+    A[Pengguna Web] --> B[Aplikasi React dan TypeScript]
+    M[Aplikasi Android] --> W[HTTPS WebView]
+    W --> B
+    A --> F[Firebase Web AI SDK]
+    W --> N[Native Android AI Bridge]
+    N --> K[Firebase Android AI SDK]
+    F --> L[On-device inference]
+    F --> C[Cloud inference]
+    K --> L
+    K --> C
+    B --> AUTH[Firebase Authentication]
+    B --> DB[Cloud Firestore]
+    B --> RD[FastAPI dan RDKit]
+```
+
+Firebase App Check membantu melindungi akses ke layanan Firebase.
+
+## Teknologi
+
+- React, TypeScript, Vite, Tailwind CSS.
+- Firebase AI Logic, Authentication, Firestore, App Check.
+- Kotlin, Jetpack Compose, Android WebView.
+- Python, FastAPI, RDKit.
+- PDF.js, Markdown, KaTeX.
+- Vercel untuk deployment web.
+
+## Menjalankan Web secara lokal
+
+Prasyarat: Git, Node.js 22.13+ atau versi 24, dan npm.
 
 ```powershell
-cd "D:\el kimiya"
-npm install
-npm run test:source
-npm run typecheck
-npm run build
+git clone https://github.com/MENSTRUE/el-kimiya.git
+cd el-kimiya
+
+npm ci
+Copy-Item .env.example .env
+
 npm run dev
 ```
 
-For step-by-step instructions to apply a V3 ZIP over your existing Git repo, create a private book index, configure Firebase, run Android, and push safely, read **[docs/RUN_WINDOWS_ID.md](docs/RUN_WINDOWS_ID.md)**.
+Isi `.env` menggunakan konfigurasi Firebase Web milik proyek sendiri sebelum menguji AI dan autentikasi.
 
-## Features
+Untuk memeriksa build:
 
-- **Web** — Responsive React/Vite TypeScript UI with the approved El-Kīmiyā logo, landing page, dashboard, learning reader, AI tutor, chemistry explorer, virtual equation balancing/pH practice, flashcards, notes and local progress (V2).
-- **Bibliographic catalog (V3)** — Eight user-supplied reference books, categorized chemistry / Islam integration, with metadata and reproduction notes. Full book text is **not** in the public app.
-- **Local PDF preview (V3)** — You may choose a PDF from your computer and read it *only in the current browser session*. No automatic OCR, no server upload.
-- **Local PDF index (V3)** — Optional offline tool `scripts/build_private_index.py` extracts text from personally held PDFs into a local JSON file, ignored by Git. Import that JSON on the Library page to search indexed PDF pages, inspect excerpts and prepare a source-labeled AI prompt.
-- **Web Firebase Hybrid AI (V2/V3)** — `src/lib/hybrid.ts` uses the real Firebase AI Logic `getGenerativeModel()` runtime with all four inference preferences and displays `response.inferenceSource`. Requires Firebase config and App Check. Chrome Desktop only for local Web model.
-- **Native Android MVP (V3)** — Kotlin + Compose in `android/` with Firebase AI Logic Android hybrid SDK; select inference preference and display actual `inferenceSource`. It is a small tutor MVP, not yet parity with Web. Android SDK hybrid is experimental.
-
-## Source privacy and rights
-
-- Source PDFs, extracted JSON indexes, `.env`, and `android/app/google-services.json` are gitignored; **never commit them**.
-- The catalog entries do not imply permission to re-host copyrighted textbooks. See [docs/BOOK_PROVENANCE.md](docs/BOOK_PROVENANCE.md).
-- Source-grounded AI prompting is user-initiated and gated by disclosure: a Firebase hybrid request can process locally **or** in the cloud depending on mode, support and connectivity. Do not transmit book excerpts unless you have the right to do so.
-- PDF page citations mean the one-based PDF page number extracted locally; printed book page numbers may differ. Qur’an/hadith citation accuracy and scientific claims require review.
-
-## Firebase setup
-
-1. Create Firebase project, register Web and Android apps, enable **AI Logic Gemini Developer API** and **App Check**.
-2. Web: `Copy-Item .env.example .env`, fill **public** Firebase Web config and a reCAPTCHA App Check site key. On localhost only set `VITE_APPCHECK_DEBUG=true`, register its browser console token with Firebase App Check. Never commit debug token.
-3. Android: download **private** `google-services.json` into `android/app/`, register the App Check Debug token from Logcat for local debug; register Play Integrity for release.
-4. Run actual hybrid requests and verify `ON_DEVICE` vs `IN_CLOUD` on supported devices. Do not claim full hybrid success based on scenario animations.
-
-Official API docs: [Web getting started](https://firebase.google.com/docs/ai-logic/hybrid/web/get-started), [Android getting started](https://firebase.google.com/docs/ai-logic/hybrid/android/get-started).
-
-## Directory map
-
-```text
-src/               # Existing full Web app and new source-library UI
-scripts/           # Source tests + private PDF indexing CLI
-android/           # Kotlin / Jetpack Compose hybrid AI MVP (not a WebView)
-public/brand/      # User-approved monochrome calligraphic logo
-private/           # Local research index, NEVER commit
-/docs/             # Run commands, book provenance and submission checklist
+```powershell
+npm run typecheck
+npm run build
+npm run preview
 ```
 
-## Submitting
+Backend RDKit publik menggunakan Vercel Python Function pada `/api/chemistry`. Server Vite biasa tidak menjalankan fungsi Python tersebut.
 
-See [docs/HACKATHON_SUBMISSION.md](docs/HACKATHON_SUBMISSION.md). A source ZIP alone is **not** a hackathon submission; the delivered project still needs configured Firebase/App Check, live platform/device validation, hosted Web, public source and 3-minute YouTube demo.
+Panduan backend: [Vercel Python dan RDKit](docs/V49_VERCEL_PYTHON_ID.md).
 
-License: Apache 2.0 applies to the authored source only, not third-party books.
+## Konfigurasi Firebase
 
+1. Buat proyek Firebase dan daftarkan aplikasi Web.
+2. Aktifkan Authentication dengan Email/Password.
+3. Aktifkan Firestore dan Firebase AI Logic.
+4. Konfigurasikan App Check sesuai provider yang digunakan.
+5. Tambahkan domain deployment ke konfigurasi domain yang sesuai.
+6. Isi variabel dari `.env.example`.
+7. Tinjau `firestore-v8.rules` sebelum menerapkannya.
+8. Untuk menguji Moduler, pemilik proyek menetapkan dokumen `v8Roles/{uid}` dengan field `role` bernilai `moduler`.
 
-## V3.2 — Activate real Firebase inference
+Jangan menonaktifkan App Check untuk mengatasi kegagalan inferensi.
 
-See [`docs/FIREBASE_LIVE_SETUP.md`](docs/FIREBASE_LIVE_SETUP.md). Use `npm run firebase:check` to validate local Web configuration (not model access), `npm run verify` to run source checks, TypeScript, and build. The Web app supports App Check reCAPTCHA Enterprise or v3; Firebase must still be configured and actual inference verified on compatible devices.
+## Menjalankan Android
+
+Gunakan Android Studio, JDK 17, Android SDK 36, dan konfigurasi Firebase Android sendiri.
+
+Package: `com.menstrue.elkimiya`.
+
+Aplikasi Android menggunakan tampilan web produksi melalui WebView, dengan integrasi AI melalui SDK Android native.
+
+Panduan lengkap: [Android README](android/README.md).
+
+## Pengujian
+
+```powershell
+npm ci
+npm run typecheck
+npm run build
+node scripts/check-v82.cjs
+node scripts/check-v83.cjs
+node --test scripts/test-studio85.mjs scripts/test-rich-answer85.mjs scripts/qa-v85/test-visual-v85.mjs
+```
+
+Pengujian yang telah didokumentasikan pada 28 November 2026 mencakup respons AI cloud pada web, inferensi lokal dan cloud Android, penerbitan materi Moduler yang terlihat oleh Learner, tabel periodik, serta perakitan dan viewer molekul layar penuh.
+
+Dokumentasi Android terdiri dari 17 screenshot dari pengujian pada perangkat Samsung SM-S948B.
+
+Bukti screenshot bukan sertifikasi bahwa seluruh kombinasi perangkat, bahasa, tema, jaringan, dan skenario regresi selalu lulus.
+
+## Privasi, keamanan, dan batasan
+
+- PDF pribadi dan indeks sumber lokal tidak didistribusikan dalam repositori.
+- Permintaan cloud mengirimkan masukan yang diperlukan kepada layanan AI.
+- Inferensi lokal memerlukan perangkat dan model yang kompatibel.
+- Data pembelajaran yang tersimpan lokal bukan sinkronisasi cloud otomatis.
+- Hasil AI dapat keliru dan perlu diverifikasi dengan sumber ilmiah.
+- Deskriptor RDKit bukan hasil pengukuran laboratorium.
+- Bank soal numerik merupakan variasi terstruktur, bukan ribuan konsep independen.
+- Distribusi Android publik memerlukan konfigurasi release signing dan Play Integrity yang sesuai.
+
+Jangan mengunggah token App Check, kredensial, data akun pribadi, `.env`, `google-services.json`, atau PDF berhak cipta tanpa izin.
+
+## BuildHybridAI 2026
+
+Pengembangan El-Kīmiyā mencakup perluasan integrasi hybrid AI aktual, penyatuan ruang belajar Web dan Android, perbaikan antarmuka mobile, penambahan Content Studio, serta dokumentasi verifikasi inferensi melalui SDK.
+
+Tujuannya adalah menghadirkan pembelajaran kimia yang adaptif terhadap kemampuan perangkat dan konektivitas pengguna.
+
+## Lisensi
+
+Kode sumber orisinal El-Kīmiyā menggunakan [Apache License 2.0](LICENSE).
+
+Buku, dataset, merek, dan sumber pihak ketiga mengikuti ketentuan lisensinya masing-masing.
+
+---
+
+<div align="center">
+
+**El-Kīmiyā — Understand Chemistry. Anywhere.**
+
+[English documentation](README.en.md)
+
+</div>
