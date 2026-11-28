@@ -73,7 +73,10 @@ function MolecularCanvas3D({ geometry, label }: { geometry: Geometry3D; label: s
     const measure = () => {
       const r = canvas.getBoundingClientRect();
       const dark = canvas.closest('.app')?.classList.contains('dark') ?? document.documentElement.dataset.elkTheme === 'dark';
-      if (r.width > 0 && r.height > 0) setSize({ w: Math.round(r.width), h: Math.round(r.height), ratio: Math.min(2, window.devicePixelRatio || 1) });
+      if (r.width > 0 && r.height > 0) setSize(prev => {
+        const w = Math.round(r.width), h = Math.round(r.height), ratio = Math.min(2, window.devicePixelRatio || 1);
+        return prev.w === w && prev.h === h && prev.ratio === ratio ? prev : {w,h,ratio};
+      });
       setTheme(dark);
     };
     measure();

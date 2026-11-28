@@ -95,6 +95,8 @@ import java.util.Locale
 
 private const val WEB_ROOT = "https://el-kimiya.vercel.app/"
 private const val WEB_RELEASE_85 = "8.5"
+private const val WEB_POLISH_86 = "8.6"
+private const val WEB_MOLECULE_861 = "8.6.1"
 private const val MAX_PAINT_WAIT_85 = 30000L
 private const val WEB_HOST = "el-kimiya.vercel.app"
 private const val WEB_ORIGIN = "https://el-kimiya.vercel.app"
@@ -186,7 +188,7 @@ class MainActivity : ComponentActivity() {
                     return
                 }
                 backInFlight85 = true
-                val script = """(() => {const close = document.querySelector('[data-elk-drawer-open="true"] [data-elk-drawer-close]');if(!close)return false;close.click();return true;})()"""
+                val script = """(() => {const close = document.querySelector('[data-elk-molecule-fullscreen] [data-elk-drawer-close]') || document.querySelector('[data-elk-drawer-open="true"] [data-elk-drawer-close]');if(!close)return false;close.click();return true;})()"""
                 view.evaluateJavascript(script) { result ->
                     backInFlight85 = false
                     if (browser !== view || isFinishing || isDestroyed) return@evaluateJavascript
@@ -253,7 +255,7 @@ class MainActivity : ComponentActivity() {
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
                             Text(
-                                if (staleWeb85) tr85("Versi web V8.5 belum diterima. Tunggu deployment Vercel, lalu coba lagi.", "Web release V8.5 has not arrived. Wait for the Vercel deployment, then retry.")
+                                if (staleWeb85) tr85("Versi web V8.6.1 belum diterima. Tunggu deployment Vercel, lalu coba lagi.", "Web release V8.6.1 has not arrived. Wait for the Vercel deployment, then retry.")
                                 else tr85("Periksa koneksi dan coba lagi. Materi serta akun tetap tersimpan.", "Check the connection and retry. Your learning data and account remain saved."),
                                 color = palette.secondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
@@ -313,7 +315,7 @@ class MainActivity : ComponentActivity() {
         val nonce = System.currentTimeMillis()
         view.stopLoading()
         view.clearCache(true) // HTTP cache only; no cookies, WebStorage or offline notes are erased.
-        view.loadUrl("${WEB_ROOT}?elk_release=$WEB_RELEASE_85&refresh=$nonce$fragment")
+        view.loadUrl("${WEB_ROOT}?elk_release=$WEB_MOLECULE_861&refresh=$nonce$fragment")
         toast(tr85("Mengambil website terbaru…","Fetching the latest website…"))
     }
 
@@ -347,7 +349,7 @@ class MainActivity : ComponentActivity() {
         setBackgroundColor(if (resolveDark(this@MainActivity, themeMode))
             android.graphics.Color.rgb(18, 36, 52) else android.graphics.Color.rgb(247, 247, 242))
         settings.javaScriptEnabled = true
-        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3 ElKimiyaRelease/8.5"
+        settings.userAgentString = settings.userAgentString + " ElKimiyaAndroid/8.3 ElKimiyaRelease/8.6"
         nativeAI83?.invalidate()
         nativeAI83 = NativeAiBridge83(this@MainActivity, this).also { it.install() }
         // React provides its own dark design; never invert its colors algorithmically.
@@ -361,6 +363,9 @@ class MainActivity : ComponentActivity() {
         settings.setSupportMultipleWindows(false)
         settings.javaScriptCanOpenWindowsAutomatically = false
         settings.setGeolocationEnabled(false)
+        // The mobile molecular canvas owns touch zoom; honor the web viewport.
+        settings.useWideViewPort = true
+        settings.loadWithOverviewMode = false
         settings.builtInZoomControls = false
         CookieManager.getInstance().setAcceptCookie(true)
         CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
@@ -505,7 +510,7 @@ class MainActivity : ComponentActivity() {
                 toast(tr85("Mengunduh $filename","Downloading $filename"))
             } catch (e: Exception) { openExternally(uri) }
         })
-        loadUrl("${WEB_ROOT}?elk_release=$WEB_RELEASE_85")
+        loadUrl("${WEB_ROOT}?elk_release=$WEB_MOLECULE_861")
     }
 
     // Fullscreen Compose splash is removed only after React has committed visible content.
@@ -519,7 +524,9 @@ class MainActivity : ComponentActivity() {
         if (!currentDocument85(view, epoch85) || !busy || errorLoading) return
         val script = """
             (() => {
-              if(document.documentElement.getAttribute('data-elk-release') !== '$WEB_RELEASE_85') return 'stale';
+              if(document.documentElement.getAttribute('data-elk-release') !== '$WEB_RELEASE_85' ||
+                 document.documentElement.getAttribute('data-elk-polish-release') !== '$WEB_POLISH_86' ||
+                 document.documentElement.getAttribute('data-elk-molecule-release') !== '$WEB_MOLECULE_861') return 'stale';
               const root=document.getElementById('root');
               const child=root && root.firstElementChild;
               return child && child.id !== 'elk-boot85' && child.getBoundingClientRect().height > 0 ? 'ready' : 'pending';

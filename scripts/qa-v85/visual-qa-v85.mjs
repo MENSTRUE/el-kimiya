@@ -7,17 +7,18 @@ import { execFileSync } from 'node:child_process';
 import { LEARNER_ROUTES,MODULER_ROUTES,createMatrix,trustedUrl,screenshotName,summarize,classifyAudit,inspectPage,auditPage,inspectDrawer,clickVisible,inspectSplash,splashVerdict,viewports } from './visual-core-v85.mjs';
 const val=(k,def)=>{const i=process.argv.indexOf(k);return i<0?def:process.argv[i+1];};
 const flags=new Set(process.argv.slice(2));
-const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick'),drawerOnly:flags.has('--drawer-only'),polish:flags.has('--polish')};
+const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick'),drawerOnly:flags.has('--drawer-only'),polish:flags.has('--polish'),native86:flags.has('--native86')};
 if(!['learner','moduler','both'].includes(options.role))throw Error('Use --role learner|moduler|both');
 if(options.androidOnly&&!options.adb)throw Error('--android-only requires --adb <path>');
 if(options.drawerOnly&&!options.androidOnly)throw Error('--drawer-only requires --android-only');
 if(options.polish&&(!options.drawerOnly||!options.androidOnly))throw Error('--polish requires --android-only --drawer-only');
+if(options.native86&&!options.polish)throw Error('--native86 requires --polish --android-only --drawer-only');
 const base=options.url,origin=new URL(base).origin;
 const modes=options.androidOnly?['android']:options.adb?['desktop','mobile','android']:['desktop','mobile'];
 const fullMatrix=options.drawerOnly?[]:createMatrix(options.role,modes);
 const matrix=options.quick?fullMatrix.filter(c=>c.theme==='dark'&&c.language==='id'):fullMatrix;
 const actualRoles=options.role==='both'?['learner','moduler']:[options.role];
-const expectedDrawerChecks=(actualRoles.length+(options.polish&&actualRoles.includes('learner')?1:0))*(options.quick?1:4);
+const expectedDrawerChecks=(actualRoles.length+(options.polish&&actualRoles.includes('learner')?(options.native86?2:1):0))*(options.quick?1:4);
 const screenshots=join(options.report,'screenshots');mkdirSync(screenshots,{recursive:true});
 const results=[],extras=[];const startedAt=new Date().toISOString();
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
@@ -25,7 +26,7 @@ const safeError=e=>typeof e?.message==='string'&&/^[A-Z][A-Z0-9_]{3,90}$/.test(e
 function persist(){
  const summary=summarize(results,matrix);const supplemental={pass:extras.filter(e=>e.status==='PASS').length,fail:extras.filter(e=>e.status==='FAIL').length,warn:extras.filter(e=>e.status==='WARN').length,blocked:extras.filter(e=>e.status==='BLOCKED').length};
  const complete=options.drawerOnly?supplemental.pass===expectedDrawerChecks&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0:summary.certified&&!options.quick&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0;
- const data={startedAt,updatedAt:new Date().toISOString(),version:options.polish?'8.6':'8.5.1',url:base,quick:options.quick,drawerOnly:options.drawerOnly,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
+ const data={startedAt,updatedAt:new Date().toISOString(),version:options.polish?'8.6':'8.5.1',url:base,quick:options.quick,drawerOnly:options.drawerOnly,native86:options.native86,expectedSupplemental:expectedDrawerChecks,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
  writeFileSync(join(options.report,'report.json'),JSON.stringify(data,null,2));return data;
 }
 function addResult(c,state){
@@ -116,6 +117,7 @@ async function builderAudit86(target,c){
   await navigate(target,{...c,route});
   const mark=await target.eval(()=>document.documentElement.dataset.elkPolishRelease==='8.6');
   if(!mark)throw Error('V86_MARKER_MISSING');
+  if(options.native86&&!await target.eval(()=>document.documentElement.dataset.elkMoleculeRelease==='8.6.1'))throw Error('V861_MARKER_MISSING');
   if(!await click(target,'learner','[data-elk-molecule-open="builder"]',true))throw Error('MOLECULE_LAUNCHER_MISSING');
   opened=true;
   const deadline=Date.now()+6000;
@@ -139,7 +141,7 @@ async function builderAudit86(target,c){
   if(opened){
    try{
     const selector='[data-elk-molecule-fullscreen="builder"] [data-elk-drawer-close]';
-    const clicked=await click(target,'learner',selector,true);
+    const clicked=options.native86?(await target.androidBack(),true):await click(target,'learner',selector,true);
     if(clicked){
      const until=Date.now()+5000;
      while(Date.now()<until){
@@ -150,8 +152,69 @@ async function builderAudit86(target,c){
    }catch{}
   }
  }
- addExtra({check:'molecule-builder',...c,status:!error&&closed?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'MOLECULE_CLOSE_FAILED':'MOLECULE_FULLSCREEN_GEOMETRY_AND_CLOSE'),geometry,closed,screenshot});
+ if(options.native86&&closed&&!await waitFor(target,x=>x.ready&&x.role==='learner'&&x.route===route,5000)){closed=false;error='MOLECULE_NATIVE_BACK_ROUTE_LOST';}
+ addExtra({check:'molecule-builder',...c,status:!error&&closed?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'MOLECULE_CLOSE_FAILED':(options.native86?'MOLECULE_NATIVE_BACK_AND_FULLSCREEN':'MOLECULE_FULLSCREEN_GEOMETRY_AND_CLOSE')),geometry,closed,screenshot});
  if(opened&&!closed)throw Error('MOLECULE_CLOSE_FAILED');
+}
+// Live read-only chemistry backend (no fake geometry, no Firestore mutations).
+async function viewerAudit86(target,c){
+ let opened=false,closed=false,shot=null,error='',stage='2D_NOT_AVAILABLE';
+ try{
+  await click(target,'learner','.v60-tabs button:first-child',true);
+  const until=Date.now()+35000;
+  while(Date.now()<until){
+   if(await target.eval(()=>{const img=document.querySelector('.v60-svg-stage img');return !!img?.complete&&img.naturalWidth>0;}))break;
+   await delay(300);
+  }
+  if(!await target.eval(()=>{const img=document.querySelector('.v60-svg-stage img');return !!img?.complete&&img.naturalWidth>0;}))throw Error('LIVE_RDKIT_2D_UNAVAILABLE');
+  stage='LIVE_RDKIT_3D_UNAVAILABLE';
+  if(!await click(target,'learner','.v60-tabs button:nth-child(2)',true))throw Error(stage);
+  const readyUntil=Date.now()+35000;
+  while(Date.now()<readyUntil){
+   if(await target.eval(()=>!!document.querySelector('[data-elk-molecule-open="viewer"]')))break;
+   await delay(300);
+  }
+  if(!await click(target,'learner','[data-elk-molecule-open="viewer"]',true))throw Error(stage);
+  opened=true;stage='VIEWER_FULLSCREEN_GEOMETRY';
+  let ok=false;
+  const drawUntil=Date.now()+6000;
+  while(Date.now()<drawUntil){
+   ok=await target.eval(()=>{
+    const panel=document.querySelector('[data-elk-molecule-fullscreen="viewer"]'),canvas=panel?.querySelector('canvas');
+    if(!canvas||!canvas.width||!canvas.height)return false;
+    const b=canvas.getBoundingClientRect(),r=panel.getBoundingClientRect();
+    if(r.top>3||r.left>3||r.right<innerWidth-3||r.bottom<innerHeight-3||b.width<innerWidth*.7||b.height<160)return false;
+    const ctx=canvas.getContext('2d');if(!ctx)return false;
+    const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    const colors=new Set();for(let i=0;i<d.length;i+=Math.max(4,4*Math.floor(d.length/4/20000)))colors.add(d[i]+256*d[i+1]+65536*d[i+2]);
+    return colors.size>12;
+   });
+   if(ok)break;await delay(150);
+  }
+  if(!ok)throw Error(stage);
+  const canvasToken=()=>{const canvas=document.querySelector('[data-elk-molecule-fullscreen="viewer"] canvas');if(!canvas)return null;const data=canvas.toDataURL();let hash=0;for(let i=0;i<data.length;i++)hash=(Math.imul(hash,31)+data.charCodeAt(i))|0;return data.length+':'+hash;};
+  const before=await target.eval(canvasToken);
+  if(!before||!await click(target,'learner','[data-elk-molecule-fullscreen="viewer"] .v60-canvas3d-controls button:first-child',true))throw Error('VIEWER_FULLSCREEN_ZOOM_CONTROL');
+  await delay(300);
+  if(before===await target.eval(canvasToken))throw Error('VIEWER_FULLSCREEN_ZOOM_NO_CHANGE');
+  shot=['learner','android',c.theme,c.language,'molecule-3d'].join('-')+'.png';
+  await target.capture(join(screenshots,shot));
+ }catch(e){error=safeError(e);}
+ finally{
+  if(opened){
+   try{
+    await target.androidBack();
+    const until=Date.now()+5000;
+    while(Date.now()<until){
+     if(!await target.eval(()=>!!document.querySelector('[data-elk-molecule-fullscreen="viewer"]'))){closed=true;break;}
+     await delay(150);
+    }
+    if(closed&&!await waitFor(target,x=>x.ready&&x.role==='learner'&&x.route==='molecules',5000))closed=false;
+   }catch{}
+  }
+ }
+ addExtra({check:'molecule-viewer',...c,status:!error&&closed&&shot?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'VIEWER_NATIVE_BACK_FAILED':'VIEWER_FULLSCREEN_LIVE_RDKIT_AND_NATIVE_BACK'),closed,screenshot:shot});
+ if(opened&&!closed)throw Error('VIEWER_NATIVE_BACK_FAILED');
 }
 async function navigate(target,c){
  if(c.viewport!=='desktop')await openDrawer(target,c);
@@ -311,7 +374,8 @@ async function runAndroid(){
   run=adbRunner(options.adb,serial);
   const pkg='com.menstrue.elkimiya',probe=await probePackage(run,pkg);
   if(probe.presence!=='PRESENT')throw Error('APK_NOT_INSTALLED');
-  if(probe.version!=='0.8.5')throw Error('ANDROID_V85_APK_REQUIRED');
+  if(options.native86&&probe.version!=='0.8.6')throw Error('ANDROID_V86_APK_REQUIRED');
+  if(!options.native86&&!['0.8.5','0.8.6'].includes(probe.version))throw Error('ANDROID_V85_OR_V86_APK_REQUIRED');
   run('shell','am','start','-n',pkg+'/.MainActivity');
   const until=Date.now()+45000;
   let url;
@@ -329,7 +393,7 @@ async function runAndroid(){
   }
   if(!url)throw Error('WEBVIEW_DEVTOOLS_NOT_AVAILABLE');
   cdp=await connectWebView(url);
-  const target={kind:'android',eval:cdp.evaluate,capture:path=>{
+  const target={kind:'android',eval:cdp.evaluate,androidBack:async()=>{run('shell','input','keyevent','KEYCODE_BACK');},capture:path=>{
    const png=execFileSync(options.adb,['-s',serial,'exec-out','screencap','-p'],{windowsHide:true,timeout:20000,maxBuffer:30*1024*1024});
    if(png[0]!==137||png[1]!==80||png[2]!==78||png[3]!==71)throw Error('ANDROID_SCREENSHOT_INVALID');
    writeFileSync(path,png);
@@ -346,7 +410,7 @@ async function runAndroid(){
       for(const theme of options.quick?['dark']:['dark','light'])for(const language of options.quick?['id']:['id','en']){
        const c={role,viewport:'android',theme,language};
        await setAppearance(target,c);await drawerAudit(target,c);
-       if(options.polish&&role==='learner')await builderAudit86(target,c);
+       if(options.polish&&role==='learner'){await builderAudit86(target,c);if(options.native86)await viewerAudit86(target,c);}
       }
      }finally{try{await setAppearance(target,{role,viewport:'android',theme:initial.theme,language:initial.language});}catch{}}
     }catch(e){addExtra({check:'android-drawer-role',role,status:'BLOCKED',detail:safeError(e)});}

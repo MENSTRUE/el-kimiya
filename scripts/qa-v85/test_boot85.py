@@ -18,8 +18,8 @@ checks={
 'native timeout recovery': 'MAX_PAINT_WAIT_85' in m and 'errorLoading = true' in m,
 'origin and native gates intact': 'NativeAiBridge83(this@MainActivity, this)' in m and 'window.__elkV82NativeAllowed' in m and m.count('nativeAI83?.invalidate()')>=4,
 'no forced algorithmic inversion': 'setAlgorithmicDarkeningAllowed(settings, false)' in m,
-'service worker stays network first navigation': "cache:'no-store'" in sw and 'el-kimiya-app-shell-v85' in sw,
-'APK version 0.8.5': 'versionCode = 5' in gradle and 'versionName = "0.8.5"' in gradle,
+'service worker stays network first navigation': "cache:'no-store'" in sw and 'el-kimiya-app-shell-v86' in sw,
+'APK version 0.8.6': 'versionCode = 6' in gradle and 'versionName = "0.8.6"' in gradle,
 }
 for n,v in checks.items(): print(('[PASS] ' if v else '[FAIL] ')+n)
 raise SystemExit(not all(checks.values()))

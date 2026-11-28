@@ -175,6 +175,13 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
   const en = language === 'en';
   const tx = (id: string, english: string) => en ? english : id;
   const [opened, setOpened] = useState(true);
+  const [compact, setCompact] = useState(() => matchMedia('(max-width: 900px)').matches);
+  useEffect(() => {
+    const query = matchMedia('(max-width: 900px)');
+    const update = () => setCompact(query.matches);
+    query.addEventListener('change', update); update();
+    return () => query.removeEventListener('change', update);
+  }, []);
   const [active, setActive] = useState<Piece>('slash');
   const [history, setHistory] = useState<History>({ past: [], present: initial(), future: [] });
   const [picked, setPicked] = useState<Pick>({ type: 'node', id: 2 });
@@ -194,13 +201,16 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
     if (!svg) return;
     const update = () => {
       const r = svg.getBoundingClientRect();
-      if (r.width && r.height) setBoardSize({ w: r.width, h: r.height });
+      if (r.width && r.height) setBoardSize(prev => {
+        const w = Math.round(r.width), h = Math.round(r.height);
+        return prev.w === w && prev.h === h ? prev : { w, h };
+      });
     };
     update();
     const observer = new ResizeObserver(update);
     observer.observe(svg);
     return () => observer.disconnect();
-  }, [full.expanded, opened]);
+  }, [full.expanded, opened, compact]);
   const viewScale = Math.min(boardSize.w / W, boardSize.h / H) * camera.zoom;
   const spanX = boardSize.w / viewScale, spanY = boardSize.h / viewScale;
   const viewBox = full.expanded ? `${camera.x - spanX / 2} ${camera.y - spanY / 2} ${spanX} ${spanY}` : `0 0 ${W} ${H}`;
@@ -413,7 +423,7 @@ export function VisualMolecularBuilderV61({ onResult }: { onResult: (result: Bui
       </div>
     </div>
     <p className="molecule86-mobile-summary">{nodes.length} {tx('atom','atoms')} · {edges.length} {tx('ikatan','bonds')} — {tx('Rakit di ruang kerja khusus dengan kontrol sentuh besar.', 'Build in a dedicated workspace with large touch controls.')}</p>
-    {!full.expanded && opened && <div className="molecule86-inline-builder">{tools}</div>}
+    {!full.expanded && opened && !compact && <div className="molecule86-inline-builder">{tools}</div>}
     {full.expanded && <MoleculeFullscreen86 kind="builder" title={tx('Perakit molekul','Molecular builder')} anchor={rootRef.current} onClose={full.close}>
       <section className="v61-builder molecule86-builder-content">{tools}</section>
     </MoleculeFullscreen86>}

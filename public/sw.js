@@ -1,6 +1,6 @@
 /* El-Kīmiyā offline app-shell cache. Educational content is local/browser-only.
    This does NOT cache cloud AI or enable Gemini Nano on unsupported browsers. */
-const CACHE_NAME = 'el-kimiya-app-shell-v86';
+const CACHE_NAME = 'el-kimiya-app-shell-v861';
 const CACHEABLE_ORIGINS = new Set([self.location.origin]);
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['/', '/index.html', '/manifest.webmanifest', '/brand/favicon-192.png'].map(path => new Request(path, {cache:'reload'})))).then(() => self.skipWaiting()));

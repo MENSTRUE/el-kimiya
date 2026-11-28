@@ -25,9 +25,13 @@
 }
 .app .v61-builder .molecule86-launch{background:var(--v85-accent);color:var(--v85-on-accent);border-color:var(--v85-accent)}
 .app .v61-builder .molecule86-mobile-summary{display:none;color:var(--v85-muted)}
+/* Show just the committed workspace in normal document flow. Keeping the app
+ * shell mounted retains user state without a non-painting fixed overlay. */
+.app[data-elk-molecule-screen]{min-height:100vh;min-height:100dvh}
+.app[data-elk-molecule-screen] > :not(.molecule86-fullscreen){display:none!important}
 .app .molecule86-fullscreen{
-  position:fixed;inset:0;z-index:2147483100;isolation:isolate;
-  width:100%;height:100%;height:100dvh;max-width:none;max-height:none;
+  position:relative;inset:auto;z-index:auto;
+  width:100%;height:100vh;height:100dvh;max-width:none;max-height:none;
   display:flex;flex-direction:column;overflow:hidden;
   background:var(--v85-bg);color:var(--v85-ink);padding:0;
   padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
