@@ -60,6 +60,22 @@ export function MoleculeFullscreen86({ kind, title, anchor, onClose, children }:
     // lock, or global inert mutation. The old layout is hidden only after the
     // new panel is actually in the DOM. Existing React/graph state stays alive.
     host.dataset.elkMoleculeScreen = kind;
+    // Some Android WebViews resolve CSS viewport-unit height to zero while
+    // innerHeight still describes the real, nonzero viewport. Size this
+    // dedicated screen from that actual measurement, before its first paint.
+    const sizeToViewport = () => {
+      const height = window.innerHeight;
+      if (!Number.isFinite(height) || height <= 0) return;
+      const px = Math.round(height) + 'px';
+      panel.style.height = px;
+      panel.style.minHeight = px;
+      panel.style.maxHeight = px;
+      panel.dataset.elkMoleculeViewport = 'measured';
+    };
+    sizeToViewport();
+    const viewportFrame = window.requestAnimationFrame(sizeToViewport);
+    window.addEventListener('resize', sizeToViewport);
+    window.visualViewport?.addEventListener('resize', sizeToViewport);
     window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
     closeRef.current?.focus({ preventScroll: true });
     const onKey = (event: KeyboardEvent) => {
@@ -73,6 +89,9 @@ export function MoleculeFullscreen86({ kind, title, anchor, onClose, children }:
     window.addEventListener('keydown', onKey, true);
     return () => {
       window.removeEventListener('keydown', onKey, true);
+      window.cancelAnimationFrame(viewportFrame);
+      window.removeEventListener('resize', sizeToViewport);
+      window.visualViewport?.removeEventListener('resize', sizeToViewport);
       if (host.dataset.elkMoleculeScreen === kind) delete host.dataset.elkMoleculeScreen;
       window.scrollTo({ left: scrollX, top: scrollY, behavior: 'instant' });
       requestAnimationFrame(() => {

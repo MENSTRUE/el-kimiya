@@ -118,6 +118,7 @@ async function builderAudit86(target,c){
   const mark=await target.eval(()=>document.documentElement.dataset.elkPolishRelease==='8.6');
   if(!mark)throw Error('V86_MARKER_MISSING');
   if(options.native86&&!await target.eval(()=>document.documentElement.dataset.elkMoleculeRelease==='8.6.1'))throw Error('V861_MARKER_MISSING');
+  if(options.native86&&!await target.eval(()=>document.documentElement.dataset.elkMoleculeHotfix==='8.6.2'))throw Error('V862_MARKER_MISSING');
   if(!await click(target,'learner','[data-elk-molecule-open="builder"]',true))throw Error('MOLECULE_LAUNCHER_MISSING');
   opened=true;
   const deadline=Date.now()+6000;
@@ -128,12 +129,12 @@ async function builderAudit86(target,c){
     if(!root||!svg)return null;
     const r=root.getBoundingClientRect(),b=svg.getBoundingClientRect();
     const hit=document.elementFromPoint(Math.round(b.left+b.width/2),Math.round(b.top+b.height/2));
-    return {visible:r.width>0&&r.height>0,full:r.left<=3&&r.top<=3&&r.right>=innerWidth-3&&r.bottom>=innerHeight-3,canvasWidth:Math.round(b.width),canvasHeight:Math.round(b.height),width:innerWidth,height:innerHeight,hit:!!hit&&svg.contains(hit)};
+    return {visible:r.width>0&&r.height>0,full:r.left<=3&&r.top<=3&&r.right>=innerWidth-3&&r.bottom>=innerHeight-3,canvasWidth:Math.round(b.width),canvasHeight:Math.round(b.height),width:innerWidth,height:innerHeight,hit:!!hit&&svg.contains(hit),panelRect:{left:r.left,top:r.top,width:r.width,height:r.height},cssHeight:getComputedStyle(root).height,measured:root.dataset.elkMoleculeViewport==='measured',visualHeight:window.visualViewport?.height??null};
    });
    if(geometry?.full&&geometry?.hit)break;
    await delay(150);
   }
-  if(!geometry?.visible||!geometry.full||!geometry.hit||geometry.canvasWidth<geometry.width*.65||geometry.canvasHeight<170)throw Error('MOLECULE_FULLSCREEN_GEOMETRY');
+  if(!geometry?.visible||!geometry.full||!geometry.hit||(options.native86&&!geometry.measured)||geometry.canvasWidth<geometry.width*.65||geometry.canvasHeight<170)throw Error('MOLECULE_FULLSCREEN_GEOMETRY');
   screenshot=['learner','android',c.theme,c.language,'molecule-builder'].join('-')+'.png';
   await target.capture(join(screenshots,screenshot));
  }catch(e){error=safeError(e);}
@@ -158,7 +159,7 @@ async function builderAudit86(target,c){
 }
 // Live read-only chemistry backend (no fake geometry, no Firestore mutations).
 async function viewerAudit86(target,c){
- let opened=false,closed=false,shot=null,error='',stage='2D_NOT_AVAILABLE';
+ let opened=false,closed=false,shot=null,error='',stage='2D_NOT_AVAILABLE',geometry=null;
  try{
   await click(target,'learner','.v60-tabs button:first-child',true);
   const until=Date.now()+35000;
@@ -179,19 +180,23 @@ async function viewerAudit86(target,c){
   let ok=false;
   const drawUntil=Date.now()+6000;
   while(Date.now()<drawUntil){
-   ok=await target.eval(()=>{
+   geometry=await target.eval(()=>{
     const panel=document.querySelector('[data-elk-molecule-fullscreen="viewer"]'),canvas=panel?.querySelector('canvas');
-    if(!canvas||!canvas.width||!canvas.height)return false;
+    if(!canvas)return null;
     const b=canvas.getBoundingClientRect(),r=panel.getBoundingClientRect();
-    if(r.top>3||r.left>3||r.right<innerWidth-3||r.bottom<innerHeight-3||b.width<innerWidth*.7||b.height<160)return false;
-    const ctx=canvas.getContext('2d');if(!ctx)return false;
+    const hit=document.elementFromPoint(Math.round(b.x+b.width/2),Math.round(b.y+b.height/2));
+    const full=r.width>0&&r.height>0&&r.top<=3&&r.left<=3&&r.right>=innerWidth-3&&r.bottom>=innerHeight-3&&b.width>=innerWidth*.7&&b.height>=160;
+    const state={full,hit:!!hit&&canvas.contains(hit),panelRect:{left:r.left,top:r.top,width:r.width,height:r.height},canvasWidth:b.width,canvasHeight:b.height,width:innerWidth,height:innerHeight,cssHeight:getComputedStyle(panel).height,measured:panel.dataset.elkMoleculeViewport==='measured',visualHeight:window.visualViewport?.height??null,colors:0};
+    if(!full||!canvas.width||!canvas.height)return state;
+    const ctx=canvas.getContext('2d');if(!ctx)return state;
     const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
     const colors=new Set();for(let i=0;i<d.length;i+=Math.max(4,4*Math.floor(d.length/4/20000)))colors.add(d[i]+256*d[i+1]+65536*d[i+2]);
-    return colors.size>12;
+    state.colors=colors.size;return state;
    });
+   ok=!!geometry?.full&&geometry.hit&&geometry.measured&&geometry.colors>12;
    if(ok)break;await delay(150);
   }
-  if(!ok)throw Error(stage);
+  if(!ok)throw Error(geometry?.full&&geometry.hit&&geometry.measured?'VIEWER_RENDER_EMPTY':stage);
   const canvasToken=()=>{const canvas=document.querySelector('[data-elk-molecule-fullscreen="viewer"] canvas');if(!canvas)return null;const data=canvas.toDataURL();let hash=0;for(let i=0;i<data.length;i++)hash=(Math.imul(hash,31)+data.charCodeAt(i))|0;return data.length+':'+hash;};
   const before=await target.eval(canvasToken);
   if(!before||!await click(target,'learner','[data-elk-molecule-fullscreen="viewer"] .v60-canvas3d-controls button:first-child',true))throw Error('VIEWER_FULLSCREEN_ZOOM_CONTROL');
@@ -213,7 +218,7 @@ async function viewerAudit86(target,c){
    }catch{}
   }
  }
- addExtra({check:'molecule-viewer',...c,status:!error&&closed&&shot?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'VIEWER_NATIVE_BACK_FAILED':'VIEWER_FULLSCREEN_LIVE_RDKIT_AND_NATIVE_BACK'),closed,screenshot:shot});
+ addExtra({check:'molecule-viewer',...c,status:!error&&closed&&shot?'PASS':opened?'FAIL':'BLOCKED',detail:error||(!closed?'VIEWER_NATIVE_BACK_FAILED':'VIEWER_FULLSCREEN_LIVE_RDKIT_AND_NATIVE_BACK'),geometry,closed,screenshot:shot});
  if(opened&&!closed)throw Error('VIEWER_NATIVE_BACK_FAILED');
 }
 async function navigate(target,c){
