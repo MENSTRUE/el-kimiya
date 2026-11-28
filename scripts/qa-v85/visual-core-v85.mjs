@@ -117,8 +117,11 @@ export function inspectDrawer(){
  const r=visible.getBoundingClientRect();
  const nav=[...visible.querySelectorAll('[data-elk-route]')].map(e=>e.dataset.elkRoute);
  const uniqueRoutes=[...new Set(nav)];
+ const navSurface=visible.querySelector('.v85-nav-surface');
+ const painted=!!navSurface&&navSurface.contains(document.elementFromPoint(Math.min(r.right-8,r.left+100),Math.min(r.bottom-8,r.top+100)))&&navSurface.getBoundingClientRect().height>=r.height-4;
+ const release=visible.getAttribute('data-elk-drawer-release')==='8.5.1';
  const toggle=[...document.querySelectorAll('[data-elk-drawer-toggle]')].find(e=>e.getBoundingClientRect().width>0&&getComputedStyle(e).display!=='none');
- return {visible:true,coverage:Math.round(100*Math.min(r.height,innerHeight)/innerHeight),top:Math.round(r.top),bottom:Math.round(r.bottom),left:Math.round(r.left),right:Math.round(r.right),height:innerHeight,width:innerWidth,expanded:toggle?.getAttribute('aria-expanded')==='true',focusInside:visible.contains(document.activeElement),routes:uniqueRoutes.filter(x=>/^[a-z]+$/.test(x))};
+ return {visible:true,painted,release,coverage:Math.round(100*Math.min(r.height,innerHeight)/innerHeight),top:Math.round(r.top),bottom:Math.round(r.bottom),left:Math.round(r.left),right:Math.round(r.right),height:innerHeight,width:innerWidth,expanded:toggle?.getAttribute('aria-expanded')==='true',focusInside:visible.contains(document.activeElement),routes:uniqueRoutes.filter(x=>/^[a-z]+$/.test(x))};
 }
 export function splashVerdict(sample){
  if(!sample)return {status:'WARN',detail:'NOT_OBSERVED_DURING_ACTUAL_PAINT'};

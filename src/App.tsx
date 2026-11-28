@@ -1,5 +1,6 @@
+import { Drawer851 } from "./v8/Drawer851";
 import { learningStorage as elkLearningStorage } from './v8/learningStorage';
-import { useEffect, useLayoutEffect, useState, useRef, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import {
   Atom,
   Bell,
@@ -174,17 +175,6 @@ function Sidebar({page,setPage,mobile,open,close}:{
 }) {
   const {user,role}=usePlatform();
   const {language}=useLanguage();
-  const ref=useRef<HTMLDialogElement>(null);
-  useEffect(()=>{
-    const dialog=ref.current;
-    if(!mobile||!dialog)return;
-    if(open&&!dialog.open)dialog.showModal();
-    else if(!open&&dialog.open)dialog.close();
-    if(!open)return;
-    const oldOverflow=document.documentElement.style.overflow;
-    document.documentElement.style.overflow='hidden';
-    return ()=>{document.documentElement.style.overflow=oldOverflow};
-  },[mobile,open]);
   const groups=[
     {title:"Learning space",items:navItems.slice(0,6)},
     {title:"Study tools",items:navItems.slice(6,13)},
@@ -211,7 +201,7 @@ function Sidebar({page,setPage,mobile,open,close}:{
     </div>
   </aside>;
   if(!mobile)return contents;
-  return <dialog id="elk-drawer" className="v85-drawer" ref={ref} data-elk-drawer data-elk-drawer-open={open?"true":"false"} aria-hidden={!open} aria-label={t("Main navigation")} onCancel={event=>{event.preventDefault();close()}} onClose={close} onClick={event=>{if(event.target===event.currentTarget)close()}}>{contents}</dialog>;
+  return <Drawer851 id="elk-drawer" open={open} label={t("Main navigation")} close={close}>{contents}</Drawer851>;
 }
 
 function DrawerToggle85({open,showMenu}:{open:boolean;showMenu:()=>void}) {

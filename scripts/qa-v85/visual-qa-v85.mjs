@@ -7,12 +7,13 @@ import { execFileSync } from 'node:child_process';
 import { LEARNER_ROUTES,MODULER_ROUTES,createMatrix,trustedUrl,screenshotName,summarize,classifyAudit,inspectPage,auditPage,inspectDrawer,clickVisible,inspectSplash,splashVerdict,viewports } from './visual-core-v85.mjs';
 const val=(k,def)=>{const i=process.argv.indexOf(k);return i<0?def:process.argv[i+1];};
 const flags=new Set(process.argv.slice(2));
-const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick')};
+const options={url:trustedUrl(val('--url','http://127.0.0.1:4173/')),role:val('--role','both'),report:resolve(val('--report-dir','reports/visual-v85')),adb:val('--adb',null),serial:val('--serial',null),androidOnly:flags.has('--android-only'),browserExe:val('--browser-exe',null),quick:flags.has('--quick'),drawerOnly:flags.has('--drawer-only')};
 if(!['learner','moduler','both'].includes(options.role))throw Error('Use --role learner|moduler|both');
 if(options.androidOnly&&!options.adb)throw Error('--android-only requires --adb <path>');
+if(options.drawerOnly&&!options.androidOnly)throw Error('--drawer-only requires --android-only');
 const base=options.url,origin=new URL(base).origin;
 const modes=options.androidOnly?['android']:options.adb?['desktop','mobile','android']:['desktop','mobile'];
-const fullMatrix=createMatrix(options.role,modes);
+const fullMatrix=options.drawerOnly?[]:createMatrix(options.role,modes);
 const matrix=options.quick?fullMatrix.filter(c=>c.theme==='dark'&&c.language==='id'):fullMatrix;
 const actualRoles=options.role==='both'?['learner','moduler']:[options.role];
 const screenshots=join(options.report,'screenshots');mkdirSync(screenshots,{recursive:true});
@@ -21,8 +22,8 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
 const safeError=e=>typeof e?.message==='string'&&/^[A-Z][A-Z0-9_]{3,90}$/.test(e.message)?e.message:'RUNTIME_OR_NAVIGATION_ERROR';
 function persist(){
  const summary=summarize(results,matrix);const supplemental={pass:extras.filter(e=>e.status==='PASS').length,fail:extras.filter(e=>e.status==='FAIL').length,warn:extras.filter(e=>e.status==='WARN').length,blocked:extras.filter(e=>e.status==='BLOCKED').length};
- const complete=summary.certified&&!options.quick&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0;
- const data={startedAt,updatedAt:new Date().toISOString(),version:'8.5',url:base,quick:options.quick,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
+ const complete=options.drawerOnly?supplemental.pass===actualRoles.length*(options.quick?1:4)&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0:summary.certified&&!options.quick&&supplemental.fail===0&&supplemental.blocked===0&&supplemental.warn===0;
+ const data={startedAt,updatedAt:new Date().toISOString(),version:'8.5.1',url:base,quick:options.quick,drawerOnly:options.drawerOnly,matrix:summary,supplemental,complete,results,extras,note:'Contrast checks measure visible solid-background text only; screenshots remain local. This does not verify translations semantically, camera permissions, Firebase model inference or CRUD/release behavior.'};
  writeFileSync(join(options.report,'report.json'),JSON.stringify(data,null,2));return data;
 }
 function addResult(c,state){
@@ -92,7 +93,7 @@ async function openDrawer(target,c){
 async function drawerAudit(target,c){
  let drawer=await openDrawer(target,c);
  const routes=c.role==='learner'?LEARNER_ROUTES:MODULER_ROUTES;
- const pass=drawer.visible&&drawer.coverage>=96&&drawer.top<=4&&drawer.bottom>=drawer.height-4&&drawer.left>=-3&&drawer.right<=drawer.width+3&&drawer.expanded&&drawer.focusInside&&routes.every(r=>drawer.routes.includes(r));
+ const pass=drawer.visible&&drawer.release&&drawer.painted&&drawer.coverage>=96&&drawer.top<=4&&drawer.bottom>=drawer.height-4&&drawer.left>=-3&&drawer.right<=drawer.width+3&&drawer.expanded&&drawer.focusInside&&routes.every(r=>drawer.routes.includes(r));
  const png=screenshotName({...c,route:'drawer'});
  let screenshot=null;
  try{await target.capture(join(screenshots,png));screenshot=png;}catch{}
@@ -291,8 +292,20 @@ async function runAndroid(){
   }};
   // No auth mutation; the owner switches roles using the application's real login flow.
   for(const role of actualRoles){
-   await observeSplash(target,role,'android');
-   await runMatrix(target,role,'android');
+   if(options.drawerOnly){
+    try{
+     const initial=await manualLogin(target,role,'android');
+     try{
+      for(const theme of options.quick?['dark']:['dark','light'])for(const language of options.quick?['id']:['id','en']){
+       const c={role,viewport:'android',theme,language};
+       await setAppearance(target,c);await drawerAudit(target,c);
+      }
+     }finally{try{await setAppearance(target,{role,viewport:'android',theme:initial.theme,language:initial.language});}catch{}}
+    }catch(e){addExtra({check:'android-drawer-role',role,status:'BLOCKED',detail:safeError(e)});}
+   }else{
+    await observeSplash(target,role,'android');
+    await runMatrix(target,role,'android');
+   }
   }
  }catch(e){addExtra({check:'android',status:'BLOCKED',detail:safeError(e)});}
  finally{cdp?.close();if(port&&run)try{run('forward','--remove','tcp:'+port);}catch{}}

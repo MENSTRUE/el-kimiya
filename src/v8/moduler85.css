@@ -59,13 +59,10 @@
  padding:0;background:var(--m-panel);color:var(--m-ink);border:1px solid var(--m-line);border-radius:11px;
 }
 .app .v85-mod-shell .v81-mobile-menu{display:none}
-.app .v85-mod-shell .v85-moduler-drawer:not([open]){display:none!important}
-.app .v85-mod-shell .v85-moduler-drawer[open]{
- position:fixed;inset:0 auto 0 0;margin:0;width:min(326px,calc(100vw - 30px));max-width:100vw;
- height:100vh;height:100dvh;max-height:none;border:0;border-right:1px solid var(--m-nav-line);padding:0;
- background:var(--m-nav);color:var(--m-nav-text);border-radius:0;overflow:hidden;transform:none;
+.app .v85-mod-shell .v851-drawer-overlay .v85-moduler-drawer{
+ width:min(326px,calc(100vw - 30px));background:var(--m-nav);color:var(--m-nav-text);
+ border-right:1px solid var(--m-nav-line)
 }
-.app .v85-mod-shell .v85-moduler-drawer::backdrop{background:rgba(4,18,28,.64)}
 .app .v85-mod-shell .v85-mod-drawer-content{
  display:flex;flex-direction:column;gap:12px;width:100%;height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;
  overscroll-behavior:contain;padding:max(18px,env(safe-area-inset-top)) 16px max(18px,env(safe-area-inset-bottom));

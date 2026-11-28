@@ -148,16 +148,27 @@ html[data-elk-theme="dark"],html[data-elk-theme="dark"] body,html[data-elk-theme
 .app[data-elk-ui-v85=ready] .page-entrance{min-width:0;max-width:100%;padding-bottom:env(safe-area-inset-bottom)}
 .app[data-elk-ui-v85=ready] .v85-drawer-toggle{display:inline-grid;place-items:center;flex:0 0 auto;width:44px;height:44px}
 .app[data-elk-ui-v85=ready] .v85-nav-close{display:inline-grid;place-items:center;flex:0 0 auto;width:44px;height:44px}
-.app[data-elk-ui-v85=ready] .v85-drawer{
-  position:fixed;inset:0 auto 0 0;margin:0;padding:0;
-  width:min(348px,90vw);max-width:none;max-height:none;height:100vh;height:100dvh;
-  background:var(--v85-panel);color:var(--v85-ink);border:0;border-right:1px solid var(--v85-line);
-  overflow:hidden;box-shadow:14px 0 50px #07131f66
+/* V8.5.1: no native dialog/top-layer composition. A single fixed backdrop
+   and an independent, explicitly painted, full-height navigation panel. */
+.app .v851-drawer-overlay{
+  position:fixed;inset:0;z-index:2147483000;margin:0;padding:0;
+  width:100%;height:100%;overflow:hidden;display:block;
+  background:rgba(4,18,28,.64);isolation:isolate
 }
-.app[data-elk-ui-v85=ready] .v85-drawer:not([open]){display:none}
-.app[data-elk-ui-v85=ready] .v85-drawer[open]{display:block}
-.app[data-elk-ui-v85=ready] .v85-drawer::backdrop{background:#07131fa8}
-.app[data-elk-ui-v85=ready] .v85-drawer .v85-nav-surface{position:relative;inset:auto;width:100%;height:100%;border:0}
+.app .v851-drawer-overlay[hidden],.app .v851-drawer-overlay[data-state=closed]{display:none!important}
+.app .v851-drawer-overlay .v851-drawer-panel{
+  position:absolute;top:0;left:0;bottom:0;right:auto;display:block;
+  box-sizing:border-box;width:min(348px,90vw);max-width:calc(100% - 24px);height:100%;max-height:none;
+  margin:0;padding:0;border:0;border-right:1px solid var(--v85-line);border-radius:0;
+  background:var(--v85-panel);color:var(--v85-ink);overflow:hidden;
+  visibility:visible;opacity:1;transform:none;box-shadow:14px 0 50px #07131f66;z-index:1
+}
+.app .v851-drawer-overlay .v85-drawer .v85-nav-surface{
+  position:relative;inset:auto;box-sizing:border-box;width:100%;height:100%;min-height:0;max-height:none;
+  border:0;display:flex;flex-direction:column;visibility:visible;opacity:1;transform:none;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch
+}
+.app .v851-drawer-overlay .sidebar .brand-wordmark{display:block}
 .app[data-elk-ui-v85=ready] .topbar{
   display:flex;align-items:center;justify-content:space-between;gap:14px;
   position:sticky;top:0;z-index:40;height:auto;min-height:84px;

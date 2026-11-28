@@ -5,15 +5,16 @@ import sys,re
 p=Path(sys.argv[1] if len(sys.argv)>1 else 'ui85/src')
 app=(p/'App.tsx').read_text(); main=(p/'main.tsx').read_text(); splash=(p/'v8/SessionBoundary.tsx').read_text(); lang=(p/'lib/language.tsx').read_text(); css=(p/'v8/design85.css').read_text() if (p/'v8/design85.css').exists() else ""
 routes=((p/'v8/routes81.ts')).read_text()
+drawer=(p/'v8/Drawer851.tsx').read_text(encoding='utf-8')
 expected=set(re.findall(r"'([^']+)'",re.search(r'const learnerRoutes = new Set\(\[(.*?)\]\)',routes).group(1)))
 nav=app[app.index("const navItems:"):app.index("const books =")]
 nav_ids=re.findall(r'id: "([^"]+)"',nav)
 checks={
 'all 17 route entries in one shared list':len(nav_ids)==17 and set(nav_ids)==expected,
 'bottom navigation removed from real DOM':'MobileBottomNav' not in app and 'className="mobile-nav"' not in app,
-'learner desktop and drawer share route navigation':'data-elk-route={item.id}' in app and 'data-elk-drawer-open' in app,
+'learner desktop and drawer share route navigation':'data-elk-route={item.id}' in app and 'data-elk-drawer-open' in drawer,
 'accessible hamburger and close controls':'data-elk-drawer-toggle' in app and 'aria-expanded=' in app and 'aria-controls="elk-drawer"' in app and 'data-elk-drawer-close' in app,
-'native modal and overlay close':'dialog.showModal()' in app and 'event.target===event.currentTarget' in app and 'onCancel=' in app,
+ 'shared fixed overlay and dismissal':'<Drawer851 ' in app and 'event.target===event.currentTarget' in drawer and 'Escape' in drawer,
 'route/back closes drawer': bool(re.search(r'handler=\(\)=>\{setMenu85\(false\);setCurrentPage\(hashPage\(\)\)',app)),
 'desktop permanent navigation preserves native security check':'v82-session-nav' in app and 'className="app-shell"' in app and 'className="page-entrance"' in app,
 'V84 and V85 readiness alongside native role/session attributes': all(x in app for x in ['data-elk-ui-v84','data-elk-ui-v85','data-elk-ai-v83','data-elk-ai-session']),
